@@ -19,9 +19,12 @@ export const ItemDetail = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <nav>
-        <Link to="/" className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-4 py-2 rounded-full">
+        <Link 
+          to="/items" 
+          className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-4 py-2 rounded-full"
+        >
           <span>&larr;</span>
-          <span>Back to List</span>
+          <span>Back to Items</span>
         </Link>
       </nav>
 

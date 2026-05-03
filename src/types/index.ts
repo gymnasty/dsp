@@ -1,4 +1,4 @@
-export type Category = 'Resource' | 'Component' | 'Building' | 'Other';
+export type Category = 'Components' | 'Buildings';
 
 export interface Item {
   id: string;
