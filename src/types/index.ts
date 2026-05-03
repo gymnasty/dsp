@@ -1,0 +1,22 @@
+export type Category = 'Resource' | 'Component' | 'Building' | 'Other';
+
+export interface Item {
+  id: string;
+  name: string;
+  category: Category;
+  description?: string;
+}
+
+export interface Ingredient {
+  itemId: string;
+  count: number;
+}
+
+export interface Recipe {
+  id: string;
+  outputItemId: string;
+  outputCount: number;
+  time: number; // in seconds
+  ingredients: Ingredient[];
+  producedIn: string;
+}
