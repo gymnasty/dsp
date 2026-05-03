@@ -5,6 +5,7 @@ export interface Item {
   name: string;
   category: Category;
   description?: string;
+  iconPath?: string;
 }
 
 export interface Ingredient {
