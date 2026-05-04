@@ -7,13 +7,20 @@ export type ItemType = typeof ITEM_TYPES[keyof typeof ITEM_TYPES];
 
 export const CATEGORIES = {
   NATURAL_RESOURCES: 'Natural Resources',
-  MATERIALS: 'Materials',
-  COMPONENTS: 'Components',
+  INTERMEDIATE_PRODUCTS: 'Intermediate Products',
+  DARK_FOG_COMPONENTS: 'Dark Fog Components',
+  ENERGY_SOURCES: 'Energy Sources',
+  AMMUNITION: 'Ammunition',
+  OTHER_CONSUMABLES: 'Other Consumables',
+  SCIENCE: 'Science',
+  LOGISTICS_SHIPS: 'Logistics Ships',
+  COMBAT_UNITS: 'Combat Units',
+  DYSON_SPHERE: 'Dyson Sphere',
+  // Facility categories (still needed for Buildings)
   PRODUCTION: 'Production',
   LOGISTICS: 'Logistics',
   POWER: 'Power',
   DEFENSE: 'Defense',
-  SCIENCE: 'Science',
 } as const;
 
 export type Category = typeof CATEGORIES[keyof typeof CATEGORIES];

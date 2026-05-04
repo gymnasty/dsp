@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
+import { ITEM_TYPES } from '../types';
 
 export const ItemDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -63,7 +64,7 @@ export const ItemDetail = () => {
             Items
           </Link>
           <span className="text-slate-300">/</span>
-          <span className="text-slate-400 px-1">{item.category}</span>
+          <span className="text-slate-400 px-1">{item.type === ITEM_TYPES.COMPONENT ? 'Components' : 'Buildings'}</span>
           <span className="text-slate-300">/</span>
           <span className="text-slate-900 px-1">{item.name}</span>
         </div>
@@ -99,6 +100,9 @@ export const ItemDetail = () => {
               <img src={item.iconPath} alt={item.name} className="w-20 h-20 object-contain" />
             </div>
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{item.name}</h1>
+            <div className="mt-2 px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest rounded-full border border-slate-200">
+              {item.category}
+            </div>
           </div>
           
           {/* Total Raw Materials (Only if not a raw material itself) */}

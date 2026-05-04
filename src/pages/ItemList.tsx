@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { BUILDING_GRID, COMPONENT_GRID, ITEMS } from '../data/items';
+import { ITEMS } from '../data/items';
+import { BUILDING_GRID, COMPONENT_GRID } from '../data/layouts';
 
 export const ItemList = () => {
   const GridTable = ({ grid, title, icon, subtitle }: { grid: (string | null)[][], title: string, icon: string, subtitle: string }) => (
