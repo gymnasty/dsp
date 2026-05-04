@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 
 export const Home = () => {
   return (
-    <div className="max-w-4xl mx-auto py-20 flex flex-col items-center justify-center space-y-12">
-      <div className="text-center space-y-4">
-        <h1 className="text-6xl font-black text-slate-900 tracking-tighter italic">Dyson Sphere Program</h1>
-        <p className="text-xl text-slate-500 font-medium tracking-wide uppercase">Production Manager</p>
+    <div className="max-w-4xl mx-auto py-20 flex flex-col items-center justify-center space-y-16">
+      <div className="text-center">
+        <h1 className="text-7xl font-black text-slate-900 tracking-tighter italic">
+          Dyson Sphere Program <span className="text-blue-600 not-italic uppercase tracking-widest text-6xl">Manager</span>
+        </h1>
       </div>
 
       <Link
