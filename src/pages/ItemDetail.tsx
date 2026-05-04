@@ -87,6 +87,15 @@ export const ItemDetail = () => {
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* ... existing code ... */}
+      </div>
+
+      {/* Since I need to edit TWO parts of the same file in one turn, 
+          I will do the second replacement (Recipe Card part) in the next turn to follow mandates.
+      */}
+
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Info Header - Mobile/Side */}
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col items-center text-center">
@@ -167,6 +176,13 @@ export const ItemDetail = () => {
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Cycle Time</span>
                     <span className="text-sm font-bold text-slate-700">{recipe.time}s</span>
                   </div>
+                  <div className="w-px h-8 bg-slate-200"></div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Total Time</span>
+                    <span className="text-sm font-bold text-blue-600">
+                      {Math.ceil(targetCount / recipe.outputCount) * recipe.time}s
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
@@ -211,7 +227,6 @@ export const ItemDetail = () => {
                       </div>
                       <div className="text-4xl font-black text-green-400">
                         x{recipe.outputCount * Math.ceil(targetCount / recipe.outputCount)}
-                        <span className="text-sm ml-2 text-white/40 font-bold uppercase">/ cycle</span>
                       </div>
                     </div>
 
@@ -231,7 +246,6 @@ export const ItemDetail = () => {
                               </div>
                               <span className="text-sm font-mono font-bold text-blue-400">
                                 x{extra.count * multiplier}
-                                <span className="text-[10px] ml-1 text-white/20 uppercase">/ cycle</span>
                               </span>
                             </div>
                           );
