@@ -7,6 +7,22 @@ export type Category =
   | 'Power'
   | 'Buildings';
 
+export const FACILITIES = {
+  SMELTER: 'Smelter',
+  ASSEMBLER: 'Assembler',
+  CHEMICAL_PLANT: 'Chemical Plant',
+  OIL_REFINERY: 'Oil Refinery',
+  MATRIX_LAB: 'Matrix Lab',
+  PARTICLE_COLLIDER: 'Particle Collider',
+  FRACTIONATOR: 'Fractionator',
+  WATER_PUMP: 'Water Pump',
+  OIL_EXTRACTOR: 'Oil Extractor',
+  ORBITAL_COLLECTOR: 'Orbital Collector',
+  MINING_MACHINE: 'Mining Machine',
+} as const;
+
+export type Facility = typeof FACILITIES[keyof typeof FACILITIES];
+
 export interface Item {
   id: string;
   name: string;
@@ -27,5 +43,5 @@ export interface Recipe {
   extraOutputs?: Ingredient[];
   time: number; // in seconds
   ingredients: Ingredient[];
-  producedIn: string;
+  producedIn: Facility;
 }

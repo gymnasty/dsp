@@ -1,4 +1,4 @@
-import { Recipe } from '../types';
+import { Recipe, FACILITIES } from '../types';
 import { ITEMS } from './items';
 
 export const RECIPES: Recipe[] = [
@@ -8,7 +8,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 1,
     ingredients: [{ itemId: ITEMS.IRON_ORE.id, count: 1 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'magnet',
@@ -16,7 +16,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 1.5,
     ingredients: [{ itemId: ITEMS.IRON_ORE.id, count: 1 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'gear',
@@ -24,7 +24,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 1,
     ingredients: [{ itemId: ITEMS.IRON_INGOT.id, count: 1 }],
-    producedIn: 'Assembler'
+    producedIn: FACILITIES.ASSEMBLER
   },
   {
     id: 'magnetic_coil',
@@ -35,7 +35,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.MAGNET.id, count: 2 },
       { itemId: ITEMS.COPPER_INGOT.id, count: 1 }
     ],
-    producedIn: 'Assembler'
+    producedIn: FACILITIES.ASSEMBLER
   },
   {
     id: 'copper_ingot',
@@ -43,7 +43,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 1,
     ingredients: [{ itemId: ITEMS.COPPER_ORE.id, count: 1 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'stone_brick',
@@ -51,7 +51,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 1,
     ingredients: [{ itemId: ITEMS.STONE.id, count: 1 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'glass',
@@ -59,7 +59,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 2,
     ingredients: [{ itemId: ITEMS.STONE.id, count: 2 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'steel',
@@ -67,7 +67,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 3,
     ingredients: [{ itemId: ITEMS.IRON_INGOT.id, count: 3 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'energetic_graphite',
@@ -75,7 +75,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 2,
     ingredients: [{ itemId: ITEMS.COAL.id, count: 2 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'high_purity_silicon',
@@ -83,7 +83,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 2,
     ingredients: [{ itemId: ITEMS.SILICON_ORE.id, count: 2 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'titanium_ingot',
@@ -91,7 +91,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 2,
     ingredients: [{ itemId: ITEMS.TITANIUM_ORE.id, count: 2 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'electric_motor',
@@ -103,7 +103,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.GEAR.id, count: 1 },
       { itemId: ITEMS.MAGNETIC_COIL.id, count: 1 }
     ],
-    producedIn: 'Assembler'
+    producedIn: FACILITIES.ASSEMBLER
   },
   {
     id: 'electromagnetic_turbine',
@@ -114,7 +114,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.ELECTRIC_MOTOR.id, count: 2 },
       { itemId: ITEMS.MAGNETIC_COIL.id, count: 2 }
     ],
-    producedIn: 'Assembler'
+    producedIn: FACILITIES.ASSEMBLER
   },
   {
     id: 'microcrystalline_component',
@@ -125,7 +125,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.HIGH_PURITY_SILICON.id, count: 2 },
       { itemId: ITEMS.COPPER_INGOT.id, count: 1 }
     ],
-    producedIn: 'Assembler'
+    producedIn: FACILITIES.ASSEMBLER
   },
   {
     id: 'processor',
@@ -136,7 +136,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.CIRCUIT_BOARD.id, count: 2 },
       { itemId: ITEMS.MICROCRYSTALLINE_COMPONENT.id, count: 2 }
     ],
-    producedIn: 'Assembler'
+    producedIn: FACILITIES.ASSEMBLER
   },
   {
     id: 'electromagnetic_matrix',
@@ -147,7 +147,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.MAGNETIC_COIL.id, count: 1 },
       { itemId: ITEMS.CIRCUIT_BOARD.id, count: 1 }
     ],
-    producedIn: 'Matrix Lab'
+    producedIn: FACILITIES.MATRIX_LAB
   },
   {
     id: 'energy_matrix',
@@ -158,7 +158,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.ENERGETIC_GRAPHITE.id, count: 2 },
       { itemId: ITEMS.HYDROGEN.id, count: 2 }
     ],
-    producedIn: 'Matrix Lab'
+    producedIn: FACILITIES.MATRIX_LAB
   },
   {
     id: 'diamond',
@@ -166,7 +166,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 2,
     ingredients: [{ itemId: ITEMS.ENERGETIC_GRAPHITE.id, count: 2 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'diamond_kimberlite',
@@ -174,7 +174,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 2,
     time: 1.5,
     ingredients: [{ itemId: ITEMS.KIMBERLITE_ORE.id, count: 1 }],
-    producedIn: 'Smelter'
+    producedIn: FACILITIES.SMELTER
   },
   {
     id: 'plastic',
@@ -185,7 +185,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.REFINED_OIL.id, count: 2 },
       { itemId: ITEMS.ENERGETIC_GRAPHITE.id, count: 1 }
     ],
-    producedIn: 'Chemical Plant'
+    producedIn: FACILITIES.CHEMICAL_PLANT
   },
   {
     id: 'organic_crystal',
@@ -197,7 +197,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.REFINED_OIL.id, count: 1 },
       { itemId: ITEMS.WATER.id, count: 1 }
     ],
-    producedIn: 'Chemical Plant'
+    producedIn: FACILITIES.CHEMICAL_PLANT
   },
   {
     id: 'titanium_crystal',
@@ -208,7 +208,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.ORGANIC_CRYSTAL.id, count: 1 },
       { itemId: ITEMS.TITANIUM_INGOT.id, count: 3 }
     ],
-    producedIn: 'Assembler'
+    producedIn: FACILITIES.ASSEMBLER
   },
   {
     id: 'structure_matrix',
@@ -219,7 +219,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.DIAMOND.id, count: 1 },
       { itemId: ITEMS.TITANIUM_CRYSTAL.id, count: 1 }
     ],
-    producedIn: 'Matrix Lab'
+    producedIn: FACILITIES.MATRIX_LAB
   },
   {
     id: 'graphene',
@@ -230,7 +230,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.ENERGETIC_GRAPHITE.id, count: 3 },
       { itemId: ITEMS.SULFURIC_ACID.id, count: 1 }
     ],
-    producedIn: 'Chemical Plant'
+    producedIn: FACILITIES.CHEMICAL_PLANT
   },
   {
     id: 'carbon_nanotube',
@@ -241,7 +241,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.GRAPHENE.id, count: 3 },
       { itemId: ITEMS.TITANIUM_INGOT.id, count: 1 }
     ],
-    producedIn: 'Chemical Plant'
+    producedIn: FACILITIES.CHEMICAL_PLANT
   },
   {
     id: 'sulfuric_acid',
@@ -253,7 +253,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.STONE.id, count: 8 },
       { itemId: ITEMS.WATER.id, count: 4 }
     ],
-    producedIn: 'Chemical Plant'
+    producedIn: FACILITIES.CHEMICAL_PLANT
   },
   {
     id: 'refined_oil',
@@ -262,7 +262,7 @@ export const RECIPES: Recipe[] = [
     time: 4,
     ingredients: [{ itemId: ITEMS.CRUDE_OIL.id, count: 2 }],
     extraOutputs: [{ itemId: ITEMS.HYDROGEN.id, count: 1 }],
-    producedIn: 'Oil Refinery'
+    producedIn: FACILITIES.OIL_REFINERY
   },
   {
     id: 'x_ray_cracking',
@@ -274,7 +274,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.HYDROGEN.id, count: 2 }
     ],
     extraOutputs: [{ itemId: ITEMS.HYDROGEN.id, count: 3 }],
-    producedIn: 'Oil Refinery'
+    producedIn: FACILITIES.OIL_REFINERY
   },
   {
     id: 'circuit_board',
@@ -285,6 +285,6 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.IRON_INGOT.id, count: 2 },
       { itemId: ITEMS.COPPER_INGOT.id, count: 1 }
     ],
-    producedIn: 'Assembler'
+    producedIn: FACILITIES.ASSEMBLER
   }
 ];
