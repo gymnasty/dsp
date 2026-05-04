@@ -18,11 +18,8 @@ export const Home = () => {
         </div>
         <h2 className="text-4xl font-black text-slate-800 mb-3 tracking-tight">Items</h2>
         <p className="text-slate-500 text-sm leading-relaxed font-medium">
-          Components and Buildings Directory
+          Components and Buildings
         </p>
-        <div className="mt-10 px-10 py-4 bg-slate-900 text-white rounded-full text-xs font-black uppercase tracking-[0.3em] group-hover:bg-blue-600 transition-colors shadow-xl shadow-slate-200 group-hover:shadow-blue-200">
-          Enter
-        </div>
       </Link>
     </div>
   );

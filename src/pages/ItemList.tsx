@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ITEMS, COMPONENT_GRID, BUILDING_GRID } from '../data/items';
+import { BUILDING_GRID, COMPONENT_GRID, ITEMS } from '../data/items';
 
 export const ItemList = () => {
   const GridTable = ({ grid, title, icon, subtitle }: { grid: (string | null)[][], title: string, icon: string, subtitle: string }) => (
@@ -62,11 +62,6 @@ export const ItemList = () => {
         <span className="text-slate-400">/</span>
         <span className="text-slate-900 font-bold uppercase tracking-widest">Items</span>
       </nav>
-
-      <div className="flex flex-col gap-2 mb-12 border-b border-slate-200 pb-8">
-        <h1 className="text-5xl font-black tracking-tighter text-slate-900 italic">Production Directory</h1>
-        <p className="text-lg text-slate-500 font-medium">Complete manufacturing and logistics overview.</p>
-      </div>
 
       <div className="space-y-20">
         <GridTable 
