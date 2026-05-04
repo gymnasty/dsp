@@ -1,96 +1,87 @@
 import { Link } from 'react-router-dom';
-import { ITEMS } from '../data/items';
-import { Item } from '../types';
+import { ITEMS, COMPONENT_GRID, BUILDING_GRID } from '../data/items';
 
 export const ItemList = () => {
-  const components = Object.values(ITEMS).filter(item => item.category === 'Components');
-  const buildings = Object.values(ITEMS).filter(item => item.category === 'Buildings');
-
-  const ItemTable = ({ items, title, icon }: { items: Item[], title: string, icon: string }) => (
-    <section className="space-y-6">
-      <div className="flex items-center gap-3 border-b-2 border-slate-100 pb-4 px-2">
-        <span className="text-3xl">{icon}</span>
-        <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">{title}</h2>
-        <span className="px-3 py-1 bg-slate-100 rounded-full text-[10px] font-bold text-slate-500 tracking-widest ml-auto">
-          {items.length} ITEMS
-        </span>
+  const GridTable = ({ grid, title, icon, subtitle }: { grid: (string | null)[][], title: string, icon: string, subtitle: string }) => (
+    <section className="space-y-4">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded text-xl">{icon}</span>
+        <h2 className="text-xl font-bold text-slate-800 uppercase tracking-tight">{title}</h2>
       </div>
-      
-      <div className="overflow-x-auto bg-white rounded-3xl border border-slate-200 shadow-sm">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-slate-50/80 border-b border-slate-100">
-              <th className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest w-24">Icon</th>
-              <th className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Name</th>
-              <th className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">ID</th>
-              <th className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest w-32 text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
-            {items.length > 0 ? (
-              items.map((item) => (
-                <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
-                  <td className="px-6 py-4">
-                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 group-hover:scale-110 transition-transform overflow-hidden">
-                      {item.iconPath ? (
-                        <img src={item.iconPath} alt={item.name} className="w-10 h-10 object-contain" />
-                      ) : (
-                        <span className="text-2xl">📦</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Link to={`/item/${item.id}`} className="font-bold text-slate-800 hover:text-blue-600 transition-colors">
-                      {item.name}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4">
-                    <code className="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded">
-                      {item.id}
-                    </code>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <Link 
-                      to={`/item/${item.id}`} 
-                      className="text-xs font-black text-blue-600 uppercase tracking-widest hover:underline"
-                    >
-                      View Details →
-                    </Link>
-                  </td>
+
+      <div className="inline-block border border-slate-300 rounded overflow-hidden shadow-sm">
+        <div className="bg-slate-100 px-4 py-2 border-b border-slate-300 flex justify-between items-center">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{subtitle}</span>
+        </div>
+        <div className="bg-white p-1 overflow-x-auto">
+          <table className="border-collapse">
+            <tbody>
+              {grid.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((itemId, colIndex) => {
+                    if (itemId === null) {
+                      return <td key={`${rowIndex}-${colIndex}`} className="w-12 h-12 border border-slate-100 bg-slate-50/50"></td>;
+                    }
+                    
+                    const item = Object.values(ITEMS).find(i => i.id === itemId);
+                    
+                    return (
+                      <td key={`${rowIndex}-${colIndex}`} className="p-0 border border-slate-200">
+                        <Link
+                          to={item ? `/item/${item.id}` : '#'}
+                          className="group relative block w-12 h-12 hover:bg-blue-50 transition-colors flex items-center justify-center p-1"
+                          title={item?.name || itemId}
+                        >
+                          {item?.iconPath ? (
+                            <img src={item.iconPath} alt={item.name} className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
+                          ) : (
+                            <div className="text-[8px] text-slate-300 text-center leading-tight overflow-hidden px-1">{item?.name || itemId}</div>
+                          )}
+                          {item && (
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-30 shadow-xl">
+                              {item.name}
+                            </div>
+                          )}
+                        </Link>
+                      </td>
+                    );
+                  })}
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={4} className="px-6 py-12 text-center text-slate-400 italic">
-                  No items registered in this section yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-16 py-8 px-4">
-      <nav className="mb-8">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-blue-600 transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100">
-          <span>🏠</span>
-          <span>Main Menu</span>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-900 font-black uppercase tracking-widest">Items</span>
-        </Link>
+    <div className="max-w-[1400px] mx-auto py-8 px-4 bg-white min-h-screen">
+      <nav className="mb-6 flex gap-2 text-xs">
+        <Link to="/" className="text-blue-600 hover:underline">Main Menu</Link>
+        <span className="text-slate-400">/</span>
+        <span className="text-slate-900 font-bold uppercase tracking-widest">Items</span>
       </nav>
 
-      <div className="flex flex-col gap-2 mb-12">
+      <div className="flex flex-col gap-2 mb-12 border-b border-slate-200 pb-8">
         <h1 className="text-5xl font-black tracking-tighter text-slate-900 italic">Production Directory</h1>
-        <p className="text-lg text-slate-500 font-medium">Comprehensive table of all Dyson Sphere Program materials and facilities.</p>
+        <p className="text-lg text-slate-500 font-medium">Complete manufacturing and logistics overview.</p>
       </div>
 
       <div className="space-y-20">
-        <ItemTable items={components} title="Components" icon="⚙️" />
-        <ItemTable items={buildings} title="Buildings" icon="🏭" />
+        <GridTable 
+          grid={COMPONENT_GRID} 
+          title="Components" 
+          icon="⚙️" 
+          subtitle="Materials & Resources" 
+        />
+        
+        <GridTable 
+          grid={BUILDING_GRID} 
+          title="Buildings" 
+          icon="🏭" 
+          subtitle="Logistics & Production Facilities" 
+        />
       </div>
     </div>
   );

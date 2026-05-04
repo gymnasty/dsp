@@ -1,4 +1,10 @@
-export type Category = 'Components' | 'Buildings';
+export type Category = 
+  | 'Natural Resources' 
+  | 'Materials' 
+  | 'Components' 
+  | 'Production' 
+  | 'Logistics' 
+  | 'Power';
 
 export interface Item {
   id: string;
