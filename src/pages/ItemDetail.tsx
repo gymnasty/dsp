@@ -126,13 +126,6 @@ export const ItemDetail = () => {
               </div>
             </div>
           )}
-
-          <div className="bg-blue-600 rounded-3xl p-8 text-white shadow-lg shadow-blue-200">
-            <h3 className="text-lg font-bold mb-2">Production Tip</h3>
-            <p className="text-blue-100 text-sm leading-relaxed">
-              Ensure you have a consistent supply of {item.name} to maintain your Dyson Sphere progress.
-            </p>
-          </div>
         </div>
 
         {/* Detailed Sections */}
@@ -218,6 +211,7 @@ export const ItemDetail = () => {
                       </div>
                       <div className="text-4xl font-black text-green-400">
                         x{recipe.outputCount * Math.ceil(targetCount / recipe.outputCount)}
+                        <span className="text-sm ml-2 text-white/40 font-bold uppercase">/ cycle</span>
                       </div>
                     </div>
 
@@ -235,7 +229,10 @@ export const ItemDetail = () => {
                                 </div>
                                 <span className="text-xs font-medium text-slate-300">{extraItem?.name}</span>
                               </div>
-                              <span className="text-sm font-mono font-bold text-blue-400">x{extra.count * multiplier}</span>
+                              <span className="text-sm font-mono font-bold text-blue-400">
+                                x{extra.count * multiplier}
+                                <span className="text-[10px] ml-1 text-white/20 uppercase">/ cycle</span>
+                              </span>
                             </div>
                           );
                         })}
