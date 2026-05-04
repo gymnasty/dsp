@@ -1,11 +1,22 @@
-export type Category = 
-  | 'Natural Resources' 
-  | 'Materials' 
-  | 'Components' 
-  | 'Production' 
-  | 'Logistics' 
-  | 'Power'
-  | 'Buildings';
+export const ITEM_TYPES = {
+  COMPONENT: 'Component',
+  BUILDING: 'Building',
+} as const;
+
+export type ItemType = typeof ITEM_TYPES[keyof typeof ITEM_TYPES];
+
+export const CATEGORIES = {
+  NATURAL_RESOURCES: 'Natural Resources',
+  MATERIALS: 'Materials',
+  COMPONENTS: 'Components',
+  PRODUCTION: 'Production',
+  LOGISTICS: 'Logistics',
+  POWER: 'Power',
+  DEFENSE: 'Defense',
+  SCIENCE: 'Science',
+} as const;
+
+export type Category = typeof CATEGORIES[keyof typeof CATEGORIES];
 
 export const FACILITIES = {
   SMELTER: 'Smelter',
@@ -26,6 +37,7 @@ export type Facility = typeof FACILITIES[keyof typeof FACILITIES];
 export interface Item {
   id: string;
   name: string;
+  type: ItemType;
   category: Category;
   description?: string;
   iconPath?: string;
