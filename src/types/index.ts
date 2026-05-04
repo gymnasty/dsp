@@ -12,16 +12,18 @@ export const CATEGORIES = {
   ENERGY_SOURCES: 'Energy Sources',
   AMMUNITION: 'Ammunition',
   OTHER_CONSUMABLES: 'Other Consumables',
-  SCIENCE: 'Science',
   LOGISTICS_SHIPS: 'Logistics Ships',
   COMBAT_UNITS: 'Combat Units',
   DYSON_SPHERE: 'Dyson Sphere',
-  // Facility categories (still needed for Buildings)
+  // Facility categories
+  MINING: 'Mining',
+  POWER_GENERATION: 'Power Generation',
+  POWER_TRANSMISSION_STORAGE: 'Power Transmission & Storage',
   PRODUCTION: 'Production',
-  LOGISTICS: 'Logistics',
-  POWER: 'Power',
-  DEFENSE: 'Defense',
-} as const;
+  SCIENCE: 'Science',
+  LOGISTICS_STORAGE: 'Logistics & Storage',
+  COMBAT_BUILDINGS: 'Combat Buildings',
+  } as const;
 
 export type Category = typeof CATEGORIES[keyof typeof CATEGORIES];
 
