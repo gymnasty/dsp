@@ -1,4 +1,4 @@
-# Dyson Sphere Program Manager
+# Dyson Sphere Program Tools
 
 Dyson Sphere Program (DSP) のアイテムとその製作レシピを管理するためのローカル用 Web ツールです。
 アイテム間の依存関係（材料）や、そのアイテムが何に使われるか（逆引き）を簡単に確認できます。

@@ -5,7 +5,7 @@ export const Home = () => {
     <div className="max-w-4xl mx-auto py-20 flex flex-col items-center justify-center space-y-16">
       <div className="text-center">
         <h1 className="text-7xl font-black text-slate-900 tracking-tighter italic">
-          Dyson Sphere Program <span className="text-blue-600 not-italic uppercase tracking-widest text-6xl">Manager</span>
+          Dyson Sphere Program <span className="text-blue-600 not-italic uppercase tracking-widest text-6xl">Tools</span>
         </h1>
       </div>
 

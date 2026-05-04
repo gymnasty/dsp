@@ -8,7 +8,7 @@ export const Layout = () => {
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">D</div>
             <span className="text-xl font-bold tracking-tight text-slate-800">
-              Dyson Sphere Program <span className="text-blue-600">Manager</span>
+              Dyson Sphere Program <span className="text-blue-600">Tools</span>
             </span>
           </Link>
           <nav className="flex gap-6">
@@ -22,7 +22,7 @@ export const Layout = () => {
       <footer className="bg-white border-t border-slate-200 py-8">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm text-slate-400">
-            Dyson Sphere Program Manager &copy; 2026
+            Dyson Sphere Program Tools &copy; 2026
           </p>
         </div>
       </footer>

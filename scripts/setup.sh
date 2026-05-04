@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting setup for Dyson Sphere Program Item Manager..."
+echo "🚀 Starting setup for Dyson Sphere Program Tools..."
 
 # 1. Homebrew check
 if ! command -v brew &> /dev/null; then
