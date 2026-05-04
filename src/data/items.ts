@@ -1,4 +1,4 @@
-import { Item, Category } from '../types';
+import { Item } from '../types';
 
 export const ITEMS: Record<string, Item> = {
   // Components

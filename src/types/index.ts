@@ -4,7 +4,8 @@ export type Category =
   | 'Components' 
   | 'Production' 
   | 'Logistics' 
-  | 'Power';
+  | 'Power'
+  | 'Buildings';
 
 export interface Item {
   id: string;
@@ -23,6 +24,7 @@ export interface Recipe {
   id: string;
   outputItemId: string;
   outputCount: number;
+  extraOutputs?: Ingredient[];
   time: number; // in seconds
   ingredients: Ingredient[];
   producedIn: string;
