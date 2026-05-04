@@ -58,10 +58,15 @@ export const ItemList = () => {
 
   return (
     <div className="max-w-[1400px] mx-auto py-8 px-4 bg-white min-h-screen">
-      <nav className="mb-6 flex gap-2 text-xs">
-        <Link to="/" className="text-blue-600 hover:underline">Main Menu</Link>
-        <span className="text-slate-400">/</span>
-        <span className="text-slate-900 font-bold uppercase tracking-widest">Items</span>
+      <nav className="mb-8 flex items-center gap-2 text-sm font-bold">
+        <Link 
+          to="/" 
+          className="text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-lg"
+        >
+          Main Menu
+        </Link>
+        <span className="text-slate-300">/</span>
+        <span className="text-slate-900 px-1">Items</span>
       </nav>
 
       <div className="space-y-20">
