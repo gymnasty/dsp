@@ -55,13 +55,18 @@ export const ItemDetail = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <nav className="flex justify-between items-center">
-        <Link 
-          to="/items" 
-          className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-4 py-2 rounded-full"
-        >
-          <span>&larr;</span>
-          <span>Back to Items</span>
-        </Link>
+        <div className="flex items-center gap-2 text-sm font-bold">
+          <Link 
+            to="/items" 
+            className="text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-lg"
+          >
+            Items
+          </Link>
+          <span className="text-slate-300">/</span>
+          <span className="text-slate-400 px-1">{item.category}</span>
+          <span className="text-slate-300">/</span>
+          <span className="text-slate-900 px-1">{item.name}</span>
+        </div>
 
         {!isRawMaterial && (
           <div className="flex items-center gap-4 bg-white px-6 py-2 rounded-full border border-slate-200 shadow-sm">
@@ -87,15 +92,6 @@ export const ItemDetail = () => {
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* ... existing code ... */}
-      </div>
-
-      {/* Since I need to edit TWO parts of the same file in one turn, 
-          I will do the second replacement (Recipe Card part) in the next turn to follow mandates.
-      */}
-
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Info Header - Mobile/Side */}
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col items-center text-center">
@@ -103,9 +99,6 @@ export const ItemDetail = () => {
               <img src={item.iconPath} alt={item.name} className="w-20 h-20 object-contain" />
             </div>
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{item.name}</h1>
-            <div className="mt-2 px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 uppercase tracking-widest">
-              {item.category}
-            </div>
           </div>
           
           {/* Total Raw Materials (Only if not a raw material itself) */}
