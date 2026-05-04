@@ -4,6 +4,8 @@ import { RECIPES } from '../data/recipes';
 
 export const ItemDetail = () => {
   const { id } = useParams<{ id: string }>();
+  
+  // Find the current item using ID from the ITEMS object values
   const item = Object.values(ITEMS).find((i) => i.id === id);
   const recipe = RECIPES.find((r) => r.outputItemId === id);
   
@@ -13,7 +15,12 @@ export const ItemDetail = () => {
   );
 
   if (!item) {
-    return <div>Item not found</div>;
+    return (
+      <div className="max-w-6xl mx-auto py-20 text-center">
+        <h2 className="text-2xl font-bold text-slate-400">Item not found</h2>
+        <Link to="/items" className="text-blue-600 hover:underline mt-4 inline-block">Return to Directory</Link>
+      </div>
+    );
   }
 
   return (
@@ -32,8 +39,8 @@ export const ItemDetail = () => {
         {/* Main Info Header - Mobile/Side */}
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col items-center text-center">
-            <div className="w-32 h-32 bg-slate-50 rounded-3xl flex items-center justify-center text-6xl shadow-inner mb-6 border border-slate-100">
-              📦
+            <div className="w-32 h-32 bg-slate-50 rounded-3xl flex items-center justify-center shadow-inner mb-6 border border-slate-100 overflow-hidden">
+              <img src={item.iconPath} alt={item.name} className="w-20 h-20 object-contain" />
             </div>
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{item.name}</h1>
             <div className="mt-2 px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 uppercase tracking-widest">
@@ -85,8 +92,8 @@ export const ItemDetail = () => {
                           to={`/item/${ing.itemId}`}
                           className="flex items-center gap-4 p-4 bg-white border border-slate-100 rounded-2xl hover:border-blue-300 hover:shadow-md transition-all group"
                         >
-                          <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                            📦
+                          <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-50 group-hover:scale-110 transition-transform overflow-hidden">
+                            <img src={ingItem?.iconPath} alt={ingItem?.name} className="w-8 h-8 object-contain" />
                           </div>
                           <div className="flex-grow">
                             <div className="text-sm font-bold text-slate-700">{ingItem?.name || ing.itemId}</div>
@@ -142,8 +149,8 @@ export const ItemDetail = () => {
                         to={`/item/${r.outputItemId}`}
                         className="flex items-center gap-4 p-4 bg-white border border-slate-100 rounded-2xl hover:border-indigo-300 hover:shadow-md transition-all group"
                       >
-                        <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                          📦
+                        <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-50 group-hover:scale-110 transition-transform overflow-hidden">
+                          <img src={outputItem?.iconPath} alt={outputItem?.name} className="w-8 h-8 object-contain" />
                         </div>
                         <div>
                           <div className="text-sm font-bold text-slate-700">{outputItem?.name}</div>
