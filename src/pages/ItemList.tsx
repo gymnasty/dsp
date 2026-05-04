@@ -31,16 +31,16 @@ export const ItemList = () => {
                         <Link
                           to={item ? `/item/${item.id}` : '#'}
                           className="group relative block w-12 h-12 hover:bg-blue-50 transition-colors flex items-center justify-center p-1"
-                          title={item?.name || itemId}
+                          title={item?.nameJa || itemId}
                         >
                           {item?.iconPath ? (
-                            <img src={item.iconPath} alt={item.name} className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
+                            <img src={item.iconPath} alt={item.nameJa} className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
                           ) : (
-                            <div className="text-[8px] text-slate-300 text-center leading-tight overflow-hidden px-1">{item?.name || itemId}</div>
+                            <div className="text-[8px] text-slate-300 text-center leading-tight overflow-hidden px-1">{item?.nameJa || itemId}</div>
                           )}
                           {item && (
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-30 shadow-xl">
-                              {item.name}
+                              {item.nameJa}
                             </div>
                           )}
                         </Link>

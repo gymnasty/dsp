@@ -1,5 +1,5 @@
-import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
 import { ITEM_TYPES } from '../types';
@@ -66,7 +66,7 @@ export const ItemDetail = () => {
           <span className="text-slate-300">/</span>
           <span className="text-slate-400 px-1">{item.type === ITEM_TYPES.COMPONENT ? 'Components' : 'Buildings'}</span>
           <span className="text-slate-300">/</span>
-          <span className="text-slate-900 px-1">{item.name}</span>
+          <span className="text-slate-900 px-1">{item.nameJa}</span>
         </div>
 
         {!isRawMaterial && (
@@ -97,9 +97,9 @@ export const ItemDetail = () => {
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col items-center text-center">
             <div className="w-32 h-32 bg-slate-50 rounded-3xl flex items-center justify-center shadow-inner mb-6 border border-slate-100 overflow-hidden">
-              <img src={item.iconPath} alt={item.name} className="w-20 h-20 object-contain" />
+              <img src={item.iconPath} alt={item.nameJa} className="w-20 h-20 object-contain" />
             </div>
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{item.name}</h1>
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{item.nameJa}</h1>
             <div className="mt-2 px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest rounded-full border border-slate-200">
               {item.category}
             </div>
@@ -119,10 +119,10 @@ export const ItemDetail = () => {
                     <div key={materialId} className="flex items-center justify-between group">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center p-1 overflow-hidden">
-                          <img src={materialItem?.iconPath} alt={materialItem?.name} className="w-6 h-6 object-contain" />
+                          <img src={materialItem?.iconPath} alt={materialItem?.nameJa} className="w-6 h-6 object-contain" />
                         </div>
                         <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
-                          {materialItem?.name || materialId}
+                          {materialItem?.nameJa || materialId}
                         </span>
                       </div>
                       <span className="text-sm font-mono font-bold text-green-400">x{count}</span>
@@ -198,10 +198,10 @@ export const ItemDetail = () => {
                           className="flex items-center gap-4 p-4 bg-white border border-slate-100 rounded-2xl hover:border-blue-300 hover:shadow-md transition-all group"
                         >
                           <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-50 group-hover:scale-110 transition-transform overflow-hidden">
-                            <img src={ingItem?.iconPath} alt={ingItem?.name} className="w-8 h-8 object-contain" />
+                            <img src={ingItem?.iconPath} alt={ingItem?.nameJa} className="w-8 h-8 object-contain" />
                           </div>
                           <div className="flex-grow">
-                            <div className="text-sm font-bold text-slate-700">{ingItem?.name || ing.itemId}</div>
+                            <div className="text-sm font-bold text-slate-700">{ingItem?.nameJa || ing.itemId}</div>
                             <div className="text-[10px] font-bold text-slate-400 uppercase">{ingItem?.category}</div>
                           </div>
                           <div className="text-lg font-black text-blue-600 font-mono text-right">
@@ -219,7 +219,7 @@ export const ItemDetail = () => {
                         <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-xl">✨</div>
                         <div>
                           <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Primary Yield</div>
-                          <div className="text-sm font-bold">{item.name}</div>
+                          <div className="text-sm font-bold">{item.nameJa}</div>
                         </div>
                       </div>
                       <div className="text-4xl font-black text-green-400">
@@ -237,9 +237,9 @@ export const ItemDetail = () => {
                             <div key={extra.itemId} className="flex justify-between items-center">
                               <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center p-0.5">
-                                  <img src={extraItem?.iconPath} alt={extraItem?.name} className="w-5 h-5 object-contain" />
+                                  <img src={extraItem?.iconPath} alt={extraItem?.nameJa} className="w-5 h-5 object-contain" />
                                 </div>
-                                <span className="text-xs font-medium text-slate-300">{extraItem?.name}</span>
+                                <span className="text-xs font-medium text-slate-300">{extraItem?.nameJa}</span>
                               </div>
                               <span className="text-sm font-mono font-bold text-blue-400">
                                 x{extra.count * multiplier}
@@ -282,10 +282,10 @@ export const ItemDetail = () => {
                         className="flex items-center gap-4 p-4 bg-white border border-slate-100 rounded-2xl hover:border-indigo-300 hover:shadow-md transition-all group"
                       >
                         <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-50 group-hover:scale-110 transition-transform overflow-hidden">
-                          <img src={outputItem?.iconPath} alt={outputItem?.name} className="w-8 h-8 object-contain" />
+                          <img src={outputItem?.iconPath} alt={outputItem?.nameJa} className="w-8 h-8 object-contain" />
                         </div>
                         <div className="flex-grow">
-                          <div className="text-sm font-bold text-slate-700">{outputItem?.name}</div>
+                          <div className="text-sm font-bold text-slate-700">{outputItem?.nameJa}</div>
                           <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{outputItem?.category}</div>
                         </div>
                         <div className="text-right">
