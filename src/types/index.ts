@@ -47,6 +47,7 @@ export type Facility = typeof FACILITIES[keyof typeof FACILITIES];
 export interface Item {
   id: string;
   name: string;
+  nameJa?: string;
   type: ItemType;
   category: Category;
   description?: string;
