@@ -39,6 +39,7 @@ export const FACILITIES = {
   OIL_EXTRACTOR: 'Oil Extractor',
   ORBITAL_COLLECTOR: 'Orbital Collector',
   MINING_MACHINE: 'Mining Machine',
+  ENERGY_EXCHANGER: 'Energy Exchanger',
 } as const;
 
 export type Facility = typeof FACILITIES[keyof typeof FACILITIES];
