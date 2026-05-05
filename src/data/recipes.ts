@@ -117,7 +117,7 @@ export const RECIPES: Recipe[] = [
     producedIn: FACILITIES.ASSEMBLER
   },
   {
-    id: 'microcrystalline_component', // ?
+    id: 'microcrystalline_component',
     outputItemId: ITEMS.MICROCRYSTALLINE_COMPONENT.id,
     outputCount: 1,
     time: 2,
@@ -593,8 +593,8 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 6,
     ingredients: [
-      { itemId: ITEMS.COPPER_INGOT.id, count: 10 },
       { itemId: ITEMS.HIGH_PURITY_SILICON.id, count: 10 },
+      { itemId: ITEMS.COPPER_INGOT.id, count: 10 },
       { itemId: ITEMS.CIRCUIT_BOARD.id, count: 5 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -620,8 +620,8 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { itemId: ITEMS.IRON_INGOT.id, count: 8 },
       { itemId: ITEMS.STONE_BRICK.id, count: 4 },
-      { itemId: ITEMS.ELECTRIC_MOTOR.id, count: 4 },
-      { itemId: ITEMS.CIRCUIT_BOARD.id, count: 2 }
+      { itemId: ITEMS.CIRCUIT_BOARD.id, count: 2 },
+      { itemId: ITEMS.ELECTRIC_MOTOR.id, count: 4 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1546,7 +1546,7 @@ export const RECIPES: Recipe[] = [
       { itemId: ITEMS.PLANE_SMELTER.id, count: 1 },
       { itemId: ITEMS.NEGENTROPY_SINGULARITY.id, count: 10 },
       { itemId: ITEMS.ENERGY_SHARD.id, count: 30 },
-      { itemId: ITEMS.CORE_ELEMENT.id, count: 4 }
+      { itemId: ITEMS.QUANTUM_CHIP.id, count: 4 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1557,9 +1557,9 @@ export const RECIPES: Recipe[] = [
     time: 5,
     ingredients: [
       { itemId: ITEMS.ASSEMBLING_MACHINE_MKIII.id, count: 1 },
-      { itemId: ITEMS.NEGENTROPY_SINGULARITY.id, count: 10 },
+      { itemId: ITEMS.MATTER_RECOMBINATOR.id, count: 10 },
       { itemId: ITEMS.ENERGY_SHARD.id, count: 30 },
-      { itemId: ITEMS.CORE_ELEMENT.id, count: 4 }
+      { itemId: ITEMS.QUANTUM_CHIP.id, count: 4 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1570,9 +1570,9 @@ export const RECIPES: Recipe[] = [
     time: 10,
     ingredients: [
       { itemId: ITEMS.CHEMICAL_PLANT.id, count: 1 },
-      { itemId: ITEMS.QUANTUM_CHIP.id, count: 2 },
-      { itemId: ITEMS.GLASS.id, count: 10 },
-      { itemId: ITEMS.TITANIUM_ALLOY.id, count: 10 }
+      { itemId: ITEMS.TITANIUM_GLASS.id, count: 10 },
+      { itemId: ITEMS.STRANGE_MATTER.id, count: 3 },
+      { itemId: ITEMS.QUANTUM_CHIP.id, count: 3 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1597,7 +1597,7 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { itemId: ITEMS.TITANIUM_ALLOY.id, count: 20 },
       { itemId: ITEMS.FRAME_MATERIAL.id, count: 20 },
-      { itemId: ITEMS.SUPER_MAGNETIC_RING.id, count: 50 },
+      { itemId: ITEMS.SUPER_MAGNETIC_RING.id, count: 25 },
       { itemId: ITEMS.GRAPHENE.id, count: 10 },
       { itemId: ITEMS.PROCESSOR.id, count: 8 }
     ],
@@ -1610,9 +1610,9 @@ export const RECIPES: Recipe[] = [
     time: 30,
     ingredients: [
       { itemId: ITEMS.MATRIX_LAB.id, count: 1 },
-      { itemId: ITEMS.QUANTUM_CHIP.id, count: 10 },
-      { itemId: ITEMS.FRAME_MATERIAL.id, count: 10 },
-      { itemId: ITEMS.DYSON_SPHERE_COMPONENT.id, count: 10 }
+      { itemId: ITEMS.SILICON_BASED_NEURON.id, count: 10 },
+      { itemId: ITEMS.DARK_FOG_MATRIX.id, count: 20 },
+      { itemId: ITEMS.QUANTUM_CHIP.id, count: 4 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1661,7 +1661,7 @@ export const RECIPES: Recipe[] = [
     time: 8,
     ingredients: [
       { itemId: ITEMS.IRON_INGOT.id, count: 8 },
-      { itemId: ITEMS.ELECTROMAGNETIC_TURBINE.id, count: 4 },
+      { itemId: ITEMS.PLASMA_EXCITER.id, count: 4 },
       { itemId: ITEMS.PROCESSOR.id, count: 4 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -1739,8 +1739,8 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { itemId: ITEMS.STEEL.id, count: 20 },
       { itemId: ITEMS.HIGH_PURITY_SILICON.id, count: 20 },
-      { itemId: ITEMS.PROCESSOR.id, count: 10 },
-      { itemId: ITEMS.GRAVITON_LENS.id, count: 5 },
+      { itemId: ITEMS.PHOTON_COMBINER.id, count: 10 },
+      { itemId: ITEMS.PROCESSOR.id, count: 5 },
       { itemId: ITEMS.SUPER_MAGNETIC_RING.id, count: 20 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -1753,8 +1753,8 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { itemId: ITEMS.TITANIUM_ALLOY.id, count: 80 },
       { itemId: ITEMS.FRAME_MATERIAL.id, count: 30 },
-      { itemId: ITEMS.PROCESSOR.id, count: 20 },
-      { itemId: ITEMS.GRAVITON_LENS.id, count: 10 }
+      { itemId: ITEMS.GRAVITON_LENS.id, count: 20 },
+      { itemId: ITEMS.QUANTUM_CHIP.id, count: 10 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   }
