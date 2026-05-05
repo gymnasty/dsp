@@ -1,6 +1,8 @@
 import { CATEGORIES } from '../types';
 import { ITEMS } from './items';
 
+// 建築物の表示順データ
+// 生産シミュレータの選択 UI の並び順を定義
 export const BUILDING_ORDER: Record<string, string[]> = {
   [CATEGORIES.POWER]: [
     ITEMS.WIND_TURBINE.id,

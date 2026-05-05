@@ -1,6 +1,7 @@
 import { FACILITIES, Recipe } from '../types';
 import { ITEMS } from './items';
 
+// 全レシピのマスターデータ
 export const RECIPES: Recipe[] = [
   {
     id: 'iron_ingot',

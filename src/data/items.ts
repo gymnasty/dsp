@@ -1,5 +1,6 @@
-import { CATEGORIES, Item, ITEM_TYPES, FACILITIES } from '../types';
+import { CATEGORIES, FACILITIES, Item, ITEM_TYPES } from '../types';
 
+// 全アイテムのマスターデータ
 const _ITEMS = {
   // --- Natural Resources ---
   COAL: { id: "coal", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.NATURAL_RESOURCES, iconPath: "/icons/coal.png" },
