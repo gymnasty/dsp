@@ -3,14 +3,46 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
-import { ITEM_TYPES } from '../types';
+import { ITEM_TYPES, FACILITIES } from '../types';
 import { getItemName } from '../utils/i18n';
+
+const FACILITY_ITEM_MAP: Record<string, string> = {
+  [FACILITIES.SMELTER]: 'arc_smelter',
+  [FACILITIES.ASSEMBLER]: 'assembling_machine_mki',
+  [FACILITIES.CHEMICAL_PLANT]: 'chemical_plant',
+  [FACILITIES.OIL_REFINERY]: 'oil_refinery',
+  [FACILITIES.MATRIX_LAB]: 'matrix_lab',
+  [FACILITIES.PARTICLE_COLLIDER]: 'miniature_particle_collider',
+  [FACILITIES.FRACTIONATOR]: 'fractionator',
+  [FACILITIES.WATER_PUMP]: 'water_pump',
+  [FACILITIES.OIL_EXTRACTOR]: 'oil_extractor',
+  [FACILITIES.ORBITAL_COLLECTOR]: 'orbital_collector',
+  [FACILITIES.MINING_MACHINE]: 'mining_machine',
+  [FACILITIES.ENERGY_EXCHANGER]: 'energy_exchanger',
+};
 
 export const ItemDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [targetCount, setTargetCount] = useState(1);
   const { t } = useTranslation();
-  
+
+  const FacilityLink = ({ facility }: { facility: string }) => {
+    const facilityItemId = FACILITY_ITEM_MAP[facility];
+    const translatedName = t(`facilities.${facility}`);
+
+    if (facilityItemId) {
+      return (
+        <Link 
+          to={`/item/${facilityItemId}`}
+          className="text-blue-600 hover:text-blue-700 hover:underline decoration-blue-300 underline-offset-4 transition-colors"
+        >
+          {translatedName}
+        </Link>
+      );
+    }
+    return <span>{translatedName}</span>;
+  };
+
   // Find the current item using ID from the ITEMS object values
   const item = Object.values(ITEMS).find((i) => i.id === id);
   const itemRecipes = RECIPES.filter((r) => r.outputItemId === id);
@@ -174,7 +206,9 @@ export const ItemDetail = () => {
                 <div className="flex gap-4">
                   <div className="flex flex-col items-end">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{t('itemDetail.facility')}</span>
-                    <span className="text-sm font-bold text-slate-700">{t(`facilities.${recipe.producedIn}`)}</span>
+                    <span className="text-sm font-bold text-slate-700">
+                      <FacilityLink facility={recipe.producedIn} />
+                    </span>
                   </div>
                   <div className="w-px h-8 bg-slate-200"></div>
                   <div className="flex flex-col items-end">
