@@ -1,6 +1,6 @@
 import { CATEGORIES, Item, ITEM_TYPES, FACILITIES } from '../types';
 
-export const ITEMS: Record<string, Item> = {
+const _ITEMS = {
   // --- Natural Resources ---
   COAL: { id: "coal", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.NATURAL_RESOURCES, iconPath: "/icons/coal.png" },
   COPPER_ORE: { id: "copper_ore", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.NATURAL_RESOURCES, iconPath: "/icons/copper_ore.png" },
@@ -211,3 +211,5 @@ export const ITEMS: Record<string, Item> = {
   RAY_RECEIVER: { id: "ray_receiver", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COSMO, iconPath: "/icons/ray_receiver.png" },
   VERTICAL_LAUNCHING_SILO: { id: "vertical_launching_silo", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COSMO, iconPath: "/icons/vertical_launching_silo.png" },
 };
+
+export const ITEMS: Record<keyof typeof _ITEMS, Item> & Record<string, Item> = _ITEMS;

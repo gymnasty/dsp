@@ -1,85 +1,86 @@
 import { CATEGORIES } from '../types';
+import { ITEMS } from './items';
 
 export const BUILDING_ORDER: Record<string, string[]> = {
   [CATEGORIES.POWER]: [
-    'wind_turbine',
-    'solar_panel',
-    'thermal_power_plant',
-    'mini_fusion_power_plant',
-    'geothermal_power_station',
-    'artificial_star',
-    'tesla_tower',
-    'wireless_power_tower',
-    'satellite_substation',
-    'accumulator',
-    'full_accumulator',
-    'energy_exchanger'
+    ITEMS.WIND_TURBINE.id,
+    ITEMS.SOLAR_PANEL.id,
+    ITEMS.THERMAL_POWER_PLANT.id,
+    ITEMS.MINI_FUSION_POWER_PLANT.id,
+    ITEMS.GEOTHERMAL_POWER_STATION.id,
+    ITEMS.ARTIFICIAL_STAR.id,
+    ITEMS.TESLA_TOWER.id,
+    ITEMS.WIRELESS_POWER_TOWER.id,
+    ITEMS.SATELLITE_SUBSTATION.id,
+    ITEMS.ACCUMULATOR.id,
+    ITEMS.FULL_ACCUMULATOR.id,
+    ITEMS.ENERGY_EXCHANGER.id
   ],
   [CATEGORIES.COLLECTION]: [
-    'mining_machine',
-    'advanced_mining_machine',
-    'water_pump',
-    'oil_extractor',
-    'orbital_collector'
+    ITEMS.MINING_MACHINE.id,
+    ITEMS.ADVANCED_MINING_MACHINE.id,
+    ITEMS.WATER_PUMP.id,
+    ITEMS.OIL_EXTRACTOR.id,
+    ITEMS.ORBITAL_COLLECTOR.id
   ],
   [CATEGORIES.LOGISTICS]: [
-    'conveyor_belt_mki',
-    'conveyor_belt_mkii',
-    'conveyor_belt_mkiii',
-    'sorter_mki',
-    'sorter_mkii',
-    'sorter_mkiii',
-    'pile_sorter',
-    'splitter',
-    'automatic_piler',
-    'traffic_monitor',
-    'spray_coater',
-    'holo_beacon'
+    ITEMS.CONVEYOR_BELT_MKI.id,
+    ITEMS.CONVEYOR_BELT_MKII.id,
+    ITEMS.CONVEYOR_BELT_MKIII.id,
+    ITEMS.SORTER_MKI.id,
+    ITEMS.SORTER_MKII.id,
+    ITEMS.SORTER_MKIII.id,
+    ITEMS.PILE_SORTER.id,
+    ITEMS.SPLITTER.id,
+    ITEMS.AUTOMATIC_PILER.id,
+    ITEMS.TRAFFIC_MONITOR.id,
+    ITEMS.SPRAY_COATER.id,
+    ITEMS.HOLO_BEACON.id
   ],
   [CATEGORIES.STORAGE]: [
-    'storage_mki',
-    'storage_mkii',
-    'storage_tank'
+    ITEMS.STORAGE_MKI.id,
+    ITEMS.STORAGE_MKII.id,
+    ITEMS.STORAGE_TANK.id
   ],
   [CATEGORIES.PRODUCTION_BUILDING]: [
-    'arc_smelter',
-    'plane_smelter',
-    'negentropy_smelter',
-    'assembling_machine_mki',
-    'assembling_machine_mkii',
-    'assembling_machine_mkiii',
-    're_composing_assembler',
-    'oil_refinery',
-    'chemical_plant',
-    'quantum_chemical_plant',
-    'fractionator',
-    'miniature_particle_collider'
+    ITEMS.ARC_SMELTER.id,
+    ITEMS.PLANE_SMELTER.id,
+    ITEMS.NEGENTROPY_SMELTER.id,
+    ITEMS.ASSEMBLING_MACHINE_MKI.id,
+    ITEMS.ASSEMBLING_MACHINE_MKII.id,
+    ITEMS.ASSEMBLING_MACHINE_MKIII.id,
+    ITEMS.RE_COMPOSING_ASSEMBLER.id,
+    ITEMS.OIL_REFINERY.id,
+    ITEMS.CHEMICAL_PLANT.id,
+    ITEMS.QUANTUM_CHEMICAL_PLANT.id,
+    ITEMS.FRACTIONATOR.id,
+    ITEMS.MINIATURE_PARTICLE_COLLIDER.id
   ],
   [CATEGORIES.TRANSPORT]: [
-    'logistics_distributor',
-    'planetary_logistics_station',
-    'interstellar_logistics_station'
+    ITEMS.LOGISTICS_DISTRIBUTOR.id,
+    ITEMS.PLANETARY_LOGISTICS_STATION.id,
+    ITEMS.INTERSTELLAR_LOGISTICS_STATION.id
   ],
   [CATEGORIES.DEFENSE]: [
-    'gauss_turret',
-    'missile_turret',
-    'implosion_cannon',
-    'laser_turret',
-    'plasma_turret',
-    'sr_plasma_turret',
-    'jammer_tower',
-    'signal_tower',
-    'planetary_shield_generator',
-    'battlefield_analysis_base'
+    ITEMS.GAUSS_TURRET.id,
+    ITEMS.MISSILE_TURRET.id,
+    ITEMS.IMPLOSION_CANNON.id,
+    ITEMS.LASER_TURRET.id,
+    ITEMS.PLASMA_TURRET.id,
+    ITEMS.SR_PLASMA_TURRET.id,
+    ITEMS.JAMMER_TOWER.id,
+    ITEMS.SIGNAL_TOWER.id,
+    ITEMS.PLANETARY_SHIELD_GENERATOR.id,
+    ITEMS.BATTLEFIELD_ANALYSIS_BASE.id
   ],
   [CATEGORIES.COSMO]: [
-    'matrix_lab',
-    'self_evolution_lab',
-    'em_rail_ejector',
-    'ray_receiver',
-    'vertical_launching_silo'
+    ITEMS.MATRIX_LAB.id,
+    ITEMS.SELF_EVOLUTION_LAB.id,
+    ITEMS.EM_RAIL_EJECTOR.id,
+    ITEMS.RAY_RECEIVER.id,
+    ITEMS.VERTICAL_LAUNCHING_SILO.id
   ],
   [CATEGORIES.ENVIRONMENT]: [
-    'foundation'
+    ITEMS.FOUNDATION.id
   ]
 };
