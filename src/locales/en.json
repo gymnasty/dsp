@@ -1,7 +1,8 @@
 {
   "menu": {
     "home": "Home",
-    "items": "Items",
+    "items": "Item Directory",
+    "simulator": "Production Simulator",
     "mainMenu": "Main Menu"
   },
   "categories": {
@@ -58,6 +59,24 @@
     "rawMaterialDesc": "This item is gathered directly from the environment.",
     "notUsed": "Not currently used in any complex manufacturing recipes.",
     "recipe": "Recipe"
+  },
+  "simulator": {
+    "title": "Production Simulator",
+    "inputs": "External Inputs",
+    "processors": "Production Facilities",
+    "results": "Simulation Results",
+    "addItem": "Add Item",
+    "addRecipe": "Add Recipe",
+    "rate": "Rate (items/s)",
+    "count": "Facility Count",
+    "item": "Item",
+    "netRate": "Net Rate",
+    "inputRate": "Input",
+    "consumption": "Consumption",
+    "production": "Production",
+    "empty": "No data. Add inputs or facilities to start simulation.",
+    "perSecond": "/s",
+    "perMinute": "/min"
   },
   "home": {
     "subtitle": "Components and Buildings"

@@ -44,6 +44,9 @@ export const Layout = () => {
             <Link to="/items" className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors">
               {t('menu.items')}
             </Link>
+            <Link to="/simulator" className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors">
+              {t('menu.simulator')}
+            </Link>
             
             <div className="relative" ref={menuRef}>
               <button 
