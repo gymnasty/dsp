@@ -72,9 +72,11 @@
     "item": "Item",
     "netRate": "Net Rate",
     "inputRate": "Input",
+    "externalOutput": "External Output",
     "consumption": "Consumption",
     "production": "Production",
     "empty": "No data. Add inputs or facilities to start simulation.",
+    "clearAll": "Clear All",
     "perSecond": "/s",
     "perMinute": "/min"
   },
