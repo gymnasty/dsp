@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const Home = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="max-w-4xl mx-auto py-20 flex flex-col items-center justify-center space-y-16">
       <div className="text-center">
@@ -16,9 +19,9 @@ export const Home = () => {
         <div className="w-32 h-32 bg-slate-50 rounded-[2.5rem] mb-8 flex items-center justify-center text-7xl group-hover:scale-110 group-hover:bg-blue-50 transition-all duration-500 shadow-inner border border-slate-100">
           📦
         </div>
-        <h2 className="text-4xl font-black text-slate-800 mb-3 tracking-tight">Items</h2>
+        <h2 className="text-4xl font-black text-slate-800 mb-3 tracking-tight">{t('menu.items')}</h2>
         <p className="text-slate-500 text-sm leading-relaxed font-medium">
-          Components and Buildings
+          {t('home.subtitle')}
         </p>
       </Link>
     </div>

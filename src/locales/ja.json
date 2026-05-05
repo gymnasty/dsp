@@ -1,0 +1,65 @@
+{
+  "menu": {
+    "home": "ホーム",
+    "items": "アイテム一覧",
+    "mainMenu": "メインメニュー"
+  },
+  "categories": {
+    "components": "コンポーネント",
+    "buildings": "施設",
+    "materialsAndResources": "材料・資源",
+    "logisticsAndProduction": "物流・生産施設",
+    "Natural Resources": "天然資源",
+    "Intermediate Products": "中間製品",
+    "Dark Fog Components": "ダークフォグ部品",
+    "Energy Sources": "エネルギー源",
+    "Ammunition": "弾薬",
+    "Other Consumables": "その他消耗品",
+    "Logistics Ships": "物流船",
+    "Combat Units": "戦闘ユニット",
+    "Dyson Sphere": "ダイソンスフィア",
+    "Mining": "採掘",
+    "Power Generation": "発電",
+    "Power Transmission & Storage": "送電・蓄電",
+    "Production": "生産",
+    "Science": "研究",
+    "Logistics & Storage": "物流・保管",
+    "Combat Buildings": "戦闘施設"
+  },
+  "facilities": {
+    "Smelter": "溶鉱炉",
+    "Assembler": "組立機",
+    "Chemical Plant": "化学プラント",
+    "Oil Refinery": "原油精製所",
+    "Matrix Lab": "マトリックス研究室",
+    "Particle Collider": "粒子衝突器",
+    "Fractionator": "分留器",
+    "Water Pump": "汲み上げポンプ",
+    "Oil Extractor": "原油抽出機",
+    "Orbital Collector": "軌道採集機",
+    "Mining Machine": "採掘機",
+    "Energy Exchanger": "エネルギー交換器"
+  },
+  "itemDetail": {
+    "itemNotFound": "アイテムが見つかりません",
+    "returnToDirectory": "一覧に戻る",
+    "targetQuantity": "目標個数",
+    "totalRawMaterials": "合計原材料",
+    "productionRecipe": "製作レシピ",
+    "facility": "製作施設",
+    "cycleTime": "サイクル時間",
+    "totalTime": "合計時間",
+    "base": "基本",
+    "primaryYield": "主な生成物",
+    "byproducts": "副産物",
+    "consumedBy": "消費先",
+    "requires": "必要数",
+    "rawMaterial": "原材料 / 資源",
+    "rawMaterialDesc": "このアイテムは環境から直接収集されます。",
+    "notUsed": "現在、複雑な製造レシピでは使用されていません。",
+    "recipe": "レシピ"
+  },
+  "home": {
+    "subtitle": "コンポーネントと施設"
+  }
+}

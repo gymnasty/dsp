@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ITEMS } from '../data/items';
 import { BUILDING_GRID, COMPONENT_GRID } from '../data/layouts';
+import { getItemName } from '../utils/i18n';
 
 export const ItemList = () => {
+  const { t } = useTranslation();
+
   const GridTable = ({ grid, title, icon, subtitle }: { grid: (string | null)[][], title: string, icon: string, subtitle: string }) => (
     <section className="space-y-4">
       <div className="flex items-center gap-2 mb-4">
@@ -25,22 +29,23 @@ export const ItemList = () => {
                     }
                     
                     const item = Object.values(ITEMS).find(i => i.id === itemId);
+                    const name = getItemName(item);
                     
                     return (
                       <td key={`${rowIndex}-${colIndex}`} className="p-0 border border-slate-200">
                         <Link
                           to={item ? `/item/${item.id}` : '#'}
                           className="group relative block w-12 h-12 hover:bg-blue-50 transition-colors flex items-center justify-center p-1"
-                          title={item?.nameJa || itemId}
+                          title={name || itemId}
                         >
                           {item?.iconPath ? (
-                            <img src={item.iconPath} alt={item.nameJa} className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
+                            <img src={item.iconPath} alt={name} className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
                           ) : (
-                            <div className="text-[8px] text-slate-300 text-center leading-tight overflow-hidden px-1">{item?.nameJa || itemId}</div>
+                            <div className="text-[8px] text-slate-300 text-center leading-tight overflow-hidden px-1">{name || itemId}</div>
                           )}
                           {item && (
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-30 shadow-xl">
-                              {item.nameJa}
+                              {name}
                             </div>
                           )}
                         </Link>
@@ -63,25 +68,25 @@ export const ItemList = () => {
           to="/" 
           className="text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-lg"
         >
-          Main Menu
+          {t('menu.mainMenu')}
         </Link>
         <span className="text-slate-300">/</span>
-        <span className="text-slate-900 px-1">Items</span>
+        <span className="text-slate-900 px-1">{t('menu.items')}</span>
       </nav>
 
       <div className="space-y-20">
         <GridTable 
           grid={COMPONENT_GRID} 
-          title="Components" 
+          title={t('categories.components')} 
           icon="⚙️" 
-          subtitle="Materials & Resources" 
+          subtitle={t('categories.materialsAndResources')} 
         />
         
         <GridTable 
           grid={BUILDING_GRID} 
-          title="Buildings" 
+          title={t('categories.buildings')} 
           icon="🏭" 
-          subtitle="Logistics & Production Facilities" 
+          subtitle={t('categories.logisticsAndProduction')} 
         />
       </div>
     </div>

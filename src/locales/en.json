@@ -1,0 +1,65 @@
+{
+  "menu": {
+    "home": "Home",
+    "items": "Items",
+    "mainMenu": "Main Menu"
+  },
+  "categories": {
+    "components": "Components",
+    "buildings": "Buildings",
+    "materialsAndResources": "Materials & Resources",
+    "logisticsAndProduction": "Logistics & Production Facilities",
+    "Natural Resources": "Natural Resources",
+    "Intermediate Products": "Intermediate Products",
+    "Dark Fog Components": "Dark Fog Components",
+    "Energy Sources": "Energy Sources",
+    "Ammunition": "Ammunition",
+    "Other Consumables": "Other Consumables",
+    "Logistics Ships": "Logistics Ships",
+    "Combat Units": "Combat Units",
+    "Dyson Sphere": "Dyson Sphere",
+    "Mining": "Mining",
+    "Power Generation": "Power Generation",
+    "Power Transmission & Storage": "Power Transmission & Storage",
+    "Production": "Production",
+    "Science": "Science",
+    "Logistics & Storage": "Logistics & Storage",
+    "Combat Buildings": "Combat Buildings"
+  },
+  "facilities": {
+    "Smelter": "Smelter",
+    "Assembler": "Assembler",
+    "Chemical Plant": "Chemical Plant",
+    "Oil Refinery": "Oil Refinery",
+    "Matrix Lab": "Matrix Lab",
+    "Particle Collider": "Particle Collider",
+    "Fractionator": "Fractionator",
+    "Water Pump": "Water Pump",
+    "Oil Extractor": "Oil Extractor",
+    "Orbital Collector": "Orbital Collector",
+    "Mining Machine": "Mining Machine",
+    "Energy Exchanger": "Energy Exchanger"
+  },
+  "itemDetail": {
+    "itemNotFound": "Item not found",
+    "returnToDirectory": "Return to Directory",
+    "targetQuantity": "Target Quantity",
+    "totalRawMaterials": "Total Raw Materials",
+    "productionRecipe": "Production Recipe",
+    "facility": "Facility",
+    "cycleTime": "Cycle Time",
+    "totalTime": "Total Time",
+    "base": "base",
+    "primaryYield": "Primary Yield",
+    "byproducts": "Byproducts",
+    "consumedBy": "Consumed By",
+    "requires": "Requires",
+    "rawMaterial": "Raw Material / Resource",
+    "rawMaterialDesc": "This item is gathered directly from the environment.",
+    "notUsed": "Not currently used in any complex manufacturing recipes.",
+    "recipe": "Recipe"
+  },
+  "home": {
+    "subtitle": "Components and Buildings"
+  }
+}
