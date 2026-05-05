@@ -5,7 +5,7 @@ import { RECIPES } from '../data/recipes';
 import { BUILDING_ORDER } from '../data/buildingOrder';
 import { ITEM_TYPES, CATEGORIES } from '../types';
 import { getItemName } from '../utils/i18n';
-import { Plus, Trash2, Calculator, Package, Factory, TrendingUp, ArrowDownToLine } from 'lucide-react';
+import { Plus, Trash2, Calculator, Package, Factory, TrendingUp, ArrowDownToLine, ArrowRight } from 'lucide-react';
 
 interface InputState {
   itemId: string;
@@ -20,6 +20,7 @@ interface OutputState {
 interface ProcessorState {
   recipeId: string;
   count: number;
+  facilityId: string;
 }
 
 export const Simulator = () => {
@@ -158,7 +159,8 @@ export const Simulator = () => {
   // Update selectedFacilityId when availableFacilities changes
   useEffect(() => {
     if (availableFacilities.length > 0) {
-      if (!availableFacilities.find(i => i.id === selectedFacilityId)) {
+      const currentExists = availableFacilities.find(i => i.id === selectedFacilityId);
+      if (!currentExists) {
         setSelectedFacilityId(availableFacilities[0].id);
       }
     } else {
@@ -174,7 +176,7 @@ export const Simulator = () => {
 
   const availableRecipes = useMemo(() => {
     if (!selectedProduceItemId || !selectedFacilityId) return [];
-    const facilityItem = ITEMS[selectedFacilityId];
+    const facilityItem = Object.values(ITEMS).find(i => i.id === selectedFacilityId);
     if (!facilityItem?.facilityType) return [];
     
     return RECIPES.filter(r => 
@@ -192,7 +194,20 @@ export const Simulator = () => {
     }
   }, [availableRecipes]);
 
-  const [newCount, setNewCount] = useState(1);
+  const addProcessor = () => {
+    if (!newRecipeId || !selectedFacilityId) return;
+    setProcessors([...processors, { recipeId: newRecipeId, count: 1, facilityId: selectedFacilityId }]);
+  };
+
+  const updateProcessorCount = (index: number, count: number) => {
+    const nextProcessors = [...processors];
+    nextProcessors[index].count = Math.max(0, count);
+    setProcessors(nextProcessors);
+  };
+
+  const removeProcessor = (index: number) => {
+    setProcessors(processors.filter((_, i) => i !== index));
+  };
 
   const addInput = () => {
     if (!newItemId) return;
@@ -224,21 +239,6 @@ export const Simulator = () => {
     setOutputs(outputs.filter((_, i) => i !== index));
   };
 
-  const addProcessor = () => {
-    if (!newRecipeId || !selectedFacilityId) return;
-    setProcessors([...processors, { recipeId: newRecipeId, count: newCount, facilityId: selectedFacilityId }]);
-  };
-
-  const updateProcessorCount = (index: number, count: number) => {
-    const nextProcessors = [...processors];
-    nextProcessors[index].count = Math.max(0, count);
-    setProcessors(nextProcessors);
-  };
-
-  const removeProcessor = (index: number) => {
-    setProcessors(processors.filter((_, i) => i !== index));
-  };
-
   // Calculation
   const results = useMemo(() => {
     const itemStats: Record<string, { input: number; consumption: number; production: number; sink: number }> = {};
@@ -263,7 +263,7 @@ export const Simulator = () => {
     // Processors
     processors.forEach(proc => {
       const recipe = RECIPES.find(r => r.id === proc.recipeId);
-      const facilityItem = Object.values(ITEMS).find(i => i.id === (proc as any).facilityId);
+      const facilityItem = Object.values(ITEMS).find(i => i.id === proc.facilityId);
       
       if (recipe) {
         const speed = facilityItem?.productionSpeed || 1;
@@ -575,20 +575,11 @@ export const Simulator = () => {
               </div>
             )}
             
-            <div className="flex gap-4 pt-2">
-              <div className="flex-grow flex items-center bg-slate-100 rounded-2xl px-4 py-3">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-4">{t('simulator.count')}</label>
-                <input 
-                  type="number" 
-                  value={newCount}
-                  onChange={(e) => setNewCount(Math.max(0, parseInt(e.target.value) || 0))}
-                  className="flex-grow bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-lg"
-                />
-                <span className="text-slate-400 font-bold ml-2">台</span>
-              </div>
+            <div className="flex justify-end pt-2">
               <button 
                 onClick={addProcessor}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-95 font-bold flex items-center gap-2"
+                disabled={!newRecipeId || !selectedFacilityId}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-8 py-3 rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-95 font-bold flex items-center gap-2"
               >
                 <Plus size={20} />
                 {t('simulator.addRecipe')}
@@ -598,27 +589,59 @@ export const Simulator = () => {
             <div className="space-y-3 pt-4 border-t border-slate-100">
               {processors.map((proc, idx) => {
                 const recipe = RECIPES.find(r => r.id === proc.recipeId);
-                const facilityItem = Object.values(ITEMS).find(i => i.id === (proc as any).facilityId);
-                const item = Object.values(ITEMS).find(i => i.id === recipe?.outputItemId);
+                const facilityItem = Object.values(ITEMS).find(i => i.id === proc.facilityId);
                 const speed = facilityItem?.productionSpeed || 1;
                 const rate = recipe ? (recipe.outputCount * proc.count * speed) / recipe.time : 0;
+                
                 return (
                   <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-md">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 min-w-[200px]">
                       <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-sm border border-slate-100">
-                        <img src={item?.iconPath} alt="" className="w-full h-full object-contain" />
+                        <img src={facilityItem?.iconPath} alt="" className="w-full h-full object-contain" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-slate-700">{getItemName(item)}</p>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight bg-slate-100 px-1.5 py-0.5 rounded border border-slate-100">
-                            {getItemName(facilityItem)}
-                          </span>
-                        </div>
+                        <p className="text-sm font-bold text-slate-700">{getItemName(facilityItem)}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex-grow flex items-center justify-center gap-3">
+                      <div className="flex items-center gap-1">
+                        {recipe?.ingredients.map(ing => {
+                          const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
+                          return (
+                            <div key={ing.itemId} className="relative group/ing">
+                              <img src={ingItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(ingItem)} />
+                              <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/80 px-0.5 rounded leading-none border border-slate-200">{ing.count}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div className="text-slate-300">
+                        <ArrowRight size={16} />
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {[
+                          { itemId: recipe?.outputItemId, count: recipe?.outputCount },
+                          ...(recipe?.extraOutputs || []).map(e => ({ itemId: e.itemId, count: e.count }))
+                        ].map((out, i) => {
+                          const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
+                          return (
+                            <div key={`${out.itemId}-${i}`} className="relative group/out">
+                              <img src={outItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(outItem)} />
+                              <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/80 px-0.5 rounded leading-none border border-slate-200">{out.count}</span>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4 shrink-0">
+                      <div className="text-right">
+                        <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+                          +{rate.toFixed(2)}/s
+                        </p>
+                      </div>
+
                       <div className="flex flex-col items-end">
                         <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3 py-1 shadow-inner">
                           <input 
@@ -628,11 +651,6 @@ export const Simulator = () => {
                             className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-lg p-0"
                           />
                           <span className="text-[10px] font-black text-slate-400 ml-2 uppercase tracking-tighter">台</span>
-                        </div>
-                        <div className="mt-1 text-right">
-                          <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
-                            +{rate.toFixed(2)}/s
-                          </p>
                         </div>
                       </div>
                       

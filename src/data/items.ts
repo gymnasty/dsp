@@ -134,11 +134,11 @@ export const ITEMS: Record<string, Item> = {
 
   // --- Buildings ---
   // Mining
-  MINING_MACHINE: { id: "mining_machine", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/mining_machine.png" },
-  WATER_PUMP: { id: "water_pump", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/water_pump.png" },
-  OIL_EXTRACTOR: { id: "oil_extractor", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/oil_extractor.png" },
-  ORBITAL_COLLECTOR: { id: "orbital_collector", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/orbital_collector.png" },
-  ADVANCED_MINING_MACHINE: { id: "advanced_mining_machine", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/advanced_mining_machine.png" },
+  MINING_MACHINE: { id: "mining_machine", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/mining_machine.png", facilityType: FACILITIES.MINING_MACHINE, productionSpeed: 1 },
+  WATER_PUMP: { id: "water_pump", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/water_pump.png", facilityType: FACILITIES.WATER_PUMP, productionSpeed: 1 },
+  OIL_EXTRACTOR: { id: "oil_extractor", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/oil_extractor.png", facilityType: FACILITIES.OIL_EXTRACTOR, productionSpeed: 1 },
+  ORBITAL_COLLECTOR: { id: "orbital_collector", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/orbital_collector.png", facilityType: FACILITIES.ORBITAL_COLLECTOR, productionSpeed: 1 },
+  ADVANCED_MINING_MACHINE: { id: "advanced_mining_machine", type: ITEM_TYPES.BUILDING, category: CATEGORIES.COLLECTION, iconPath: "/icons/advanced_mining_machine.png", facilityType: FACILITIES.MINING_MACHINE, productionSpeed: 2 },
 
   // Power Generation
   WIND_TURBINE: { id: "wind_turbine", type: ITEM_TYPES.BUILDING, category: CATEGORIES.POWER, iconPath: "/icons/wind_turbine.png" },
@@ -152,7 +152,7 @@ export const ITEMS: Record<string, Item> = {
   TESLA_TOWER: { id: "tesla_tower", type: ITEM_TYPES.BUILDING, category: CATEGORIES.POWER, iconPath: "/icons/tesla_tower.png" },
   WIRELESS_POWER_TOWER: { id: "wireless_power_tower", type: ITEM_TYPES.BUILDING, category: CATEGORIES.POWER, iconPath: "/icons/wireless_power_tower.png" },
   SATELLITE_SUBSTATION: { id: "satellite_substation", type: ITEM_TYPES.BUILDING, category: CATEGORIES.POWER, iconPath: "/icons/satellite_substation.png" },
-  ENERGY_EXCHANGER: { id: "energy_exchanger", type: ITEM_TYPES.BUILDING, category: CATEGORIES.POWER, iconPath: "/icons/energy_exchanger.png" },
+  ENERGY_EXCHANGER: { id: "energy_exchanger", type: ITEM_TYPES.BUILDING, category: CATEGORIES.POWER, iconPath: "/icons/energy_exchanger.png", facilityType: FACILITIES.ENERGY_EXCHANGER, productionSpeed: 1 },
   ACCUMULATOR: { id: "accumulator", type: ITEM_TYPES.BUILDING, category: CATEGORIES.POWER, iconPath: "/icons/accumulator.png" },
   FULL_ACCUMULATOR: { id: "full_accumulator", type: ITEM_TYPES.BUILDING, category: CATEGORIES.POWER, iconPath: "/icons/full_accumulator.png" },
 

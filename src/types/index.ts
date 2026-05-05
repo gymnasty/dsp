@@ -15,6 +15,7 @@ export const CATEGORIES = {
   LOGISTICS_SHIPS: 'Logistics Ships',
   COMBAT_UNITS: 'Combat Units',
   DYSON_SPHERE: 'Dyson Sphere',
+  SCIENCE: 'Science',
   // New Building Categories
   POWER: 'Power',
   COLLECTION: 'Collection',
