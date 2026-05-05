@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
+import { ITEM_TYPES } from '../types';
 import { getItemName } from '../utils/i18n';
 import { Plus, Trash2, Calculator, Package, Factory, TrendingUp, ArrowDownToLine } from 'lucide-react';
 
@@ -35,21 +36,49 @@ export const Simulator = () => {
     return sortedItems.filter(item => ids.has(item.id));
   }, [sortedItems]);
 
+  // Facilities that can produce something
+  const availableFacilities = useMemo(() => {
+    const facilities = new Set(RECIPES.map(r => r.producedIn));
+    return Array.from(facilities).sort((a, b) => t(`facilities.${a}`).localeCompare(t(`facilities.${b}`)));
+  }, [t]);
+
   const [newItemId, setNewItemId] = useState(sortedItems[0]?.id || '');
   const [newRate, setNewRate] = useState(1);
   
   const [newTargetItemId, setNewTargetItemId] = useState(sortedItems[0]?.id || '');
   const [newTargetRate, setNewTargetRate] = useState(1);
 
-  const [selectedProduceItemId, setSelectedProduceItemId] = useState(producibleItems[0]?.id || '');
+  const [selectedFacility, setSelectedFacility] = useState(availableFacilities[0] || '');
+
+  const itemsForFacility = useMemo(() => {
+    const recipes = RECIPES.filter(r => r.producedIn === selectedFacility);
+    const itemIds = new Set(recipes.map(r => r.outputItemId));
+    return sortedItems.filter(item => itemIds.has(item.id));
+  }, [selectedFacility, sortedItems]);
+
+  const [selectedProduceItemId, setSelectedProduceItemId] = useState('');
+  
+  // Update selectedProduceItemId when itemsForFacility changes
+  useEffect(() => {
+    if (itemsForFacility.length > 0) {
+      if (!itemsForFacility.find(i => i.id === selectedProduceItemId)) {
+        setSelectedProduceItemId(itemsForFacility[0].id);
+      }
+    } else {
+      setSelectedProduceItemId('');
+    }
+  }, [itemsForFacility, selectedProduceItemId]);
+
   const availableRecipes = useMemo(() => 
-    RECIPES.filter(r => r.outputItemId === selectedProduceItemId),
-  [selectedProduceItemId]);
+    RECIPES.filter(r => r.outputItemId === selectedProduceItemId && r.producedIn === selectedFacility),
+  [selectedProduceItemId, selectedFacility]);
   
   const [newRecipeId, setNewRecipeId] = useState('');
   useEffect(() => {
     if (availableRecipes.length > 0) {
       setNewRecipeId(availableRecipes[0].id);
+    } else {
+      setNewRecipeId('');
     }
   }, [availableRecipes]);
 
@@ -156,12 +185,6 @@ export const Simulator = () => {
   }, [inputs, outputs, processors]);
 
   const sortedResults = useMemo(() => [...results].sort((a, b) => b.netRate - a.netRate), [results]);
-
-  const formatRatio = (rate: number, timeBase: number = 10) => {
-    const count = rate * timeBase;
-    const formattedCount = Math.round(count * 10) / 10;
-    return `x${formattedCount} / ${timeBase}s`;
-  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -336,20 +359,78 @@ export const Simulator = () => {
                 {t('simulator.processors')}
               </h2>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('simulator.item')}</label>
-                  <select 
-                    value={selectedProduceItemId} 
-                    onChange={(e) => setSelectedProduceItemId(e.target.value)}
-                    className="w-full bg-slate-100 border-none rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    {producibleItems.map(item => (
-                      <option key={item.id} value={item.id}>{getItemName(item)}</option>
-                    ))}
-                  </select>
+            <div className="p-6 space-y-6">
+              <div className="space-y-3">
+                <div className="flex justify-between items-end px-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('itemDetail.facility')}</label>
+                  <p className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">{t(`facilities.${selectedFacility}`)}</p>
                 </div>
+                <div className="flex flex-wrap gap-1">
+                  {availableFacilities.map(f => {
+                    // Try to find a building item that matches this facility type for the icon
+                    const facilityItem = Object.values(ITEMS).find(item => 
+                      item.type === ITEM_TYPES.BUILDING && 
+                      item.id.toLowerCase().replace(/_/g, '') === f.toLowerCase().replace(/ /g, '')
+                    ) || Object.values(ITEMS).find(item => item.id.includes(f.toLowerCase().split(' ')[0]));
+
+                    return (
+                      <button
+                        key={f}
+                        onClick={() => setSelectedFacility(f)}
+                        className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
+                          selectedFacility === f 
+                            ? 'border-blue-500 bg-blue-50 shadow-sm z-10' 
+                            : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                        }`}
+                        title={t(`facilities.${f}`)}
+                      >
+                        <img 
+                          src={facilityItem?.iconPath} 
+                          alt={t(`facilities.${f}`)} 
+                          className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedFacility === f ? 'scale-110' : ''}`}
+                        />
+                        {selectedFacility === f && (
+                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between items-end px-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('simulator.item')}</label>
+                  {selectedProduceItemId && (
+                    <p className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100">
+                      {getItemName(Object.values(ITEMS).find(i => i.id === selectedProduceItemId))}
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-1 max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-slate-200 bg-slate-50 rounded-lg">
+                  {itemsForFacility.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => setSelectedProduceItemId(item.id)}
+                      className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
+                        selectedProduceItemId === item.id 
+                          ? 'border-blue-500 bg-blue-50 shadow-sm z-10' 
+                          : 'border-slate-200 bg-white hover:border-slate-400 hover:bg-slate-50'
+                      }`}
+                      title={getItemName(item)}
+                    >
+                      <img 
+                        src={item.iconPath} 
+                        alt={getItemName(item)} 
+                        className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedProduceItemId === item.id ? 'scale-110' : ''}`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {availableRecipes.length > 1 && (
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.productionRecipe')}</label>
                   <select 
@@ -359,12 +440,14 @@ export const Simulator = () => {
                   >
                     {availableRecipes.map(recipe => (
                       <option key={recipe.id} value={recipe.id}>
-                        {t(`facilities.${recipe.producedIn}`)} (x{recipe.outputCount} / {recipe.time}s)
+                        {recipe.ingredients.map(ing => getItemName(Object.values(ITEMS).find(item => item.id === ing.itemId))).join(' + ')} 
+                        {' -> '} 
+                        {recipe.outputCount}x {getItemName(Object.values(ITEMS).find(item => item.id === recipe.outputItemId))}
                       </option>
                     ))}
                   </select>
                 </div>
-              </div>
+              )}
               
               <div className="flex gap-4 pt-2">
                 <div className="flex-grow flex items-center bg-slate-100 rounded-2xl px-4 py-3">
@@ -420,7 +503,7 @@ export const Simulator = () => {
                           </div>
                           <div className="mt-1 text-right">
                             <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
-                              +{rate.toFixed(2)}/s ({formatRatio(rate, 10)})
+                              +{rate.toFixed(2)}/s
                             </p>
                           </div>
                         </div>
@@ -442,14 +525,14 @@ export const Simulator = () => {
 
         {/* Right Column: Results */}
         <div className="space-y-8">
-          <section className="bg-slate-900 rounded-3xl text-white shadow-xl overflow-hidden flex flex-col h-full sticky top-24 max-h-[calc(100vh-8rem)]">
+          <section className="bg-slate-900 rounded-3xl text-white shadow-xl overflow-hidden flex flex-col h-full sticky top-24">
             <div className="px-8 py-6 border-b border-white/10 bg-white/5 flex justify-between items-center">
               <h2 className="text-sm font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
                 <TrendingUp size={16} />
                 {t('simulator.results')}
               </h2>
             </div>
-            <div className="p-8 flex-grow overflow-auto">
+            <div className="p-8 flex-grow">
               {sortedResults.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-4 py-20">
                   <Calculator size={48} className="opacity-20" />
