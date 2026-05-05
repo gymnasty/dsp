@@ -166,10 +166,74 @@ export const Simulator = () => {
     }
   }, [availableFacilities, selectedFacilityId]);
 
-  const [newItemId, setNewItemId] = useState(sortedItems[0]?.id || '');
+  // All items grouped by category for generic selection
+  const allCategories = useMemo(() => {
+    const categories: Record<string, string[]> = {};
+    Object.values(ITEMS).forEach(item => {
+      const category = item.category;
+      if (!categories[category]) categories[category] = [];
+      categories[category].push(item.id);
+    });
+
+    const order = [
+      CATEGORIES.NATURAL_RESOURCES,
+      CATEGORIES.INTERMEDIATE_PRODUCTS,
+      CATEGORIES.ENERGY_SOURCES,
+      CATEGORIES.COMBAT_UNITS,
+      CATEGORIES.DYSON_SPHERE,
+      CATEGORIES.SCIENCE,
+      CATEGORIES.DARK_FOG_COMPONENTS,
+      CATEGORIES.OTHER_CONSUMABLES,
+      CATEGORIES.POWER,
+      CATEGORIES.COLLECTION,
+      CATEGORIES.LOGISTICS,
+      CATEGORIES.STORAGE,
+      CATEGORIES.PRODUCTION_BUILDING,
+      CATEGORIES.TRANSPORT,
+      CATEGORIES.DEFENSE,
+      CATEGORIES.COSMO,
+      CATEGORIES.ENVIRONMENT
+    ];
+
+    return Object.entries(categories).sort((a, b) => {
+      const indexA = order.indexOf(a[0] as any);
+      const indexB = order.indexOf(b[0] as any);
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      return a[0].localeCompare(b[0]);
+    });
+  }, []);
+
+  const [inputCategory, setInputCategory] = useState<string>(allCategories[0]?.[0] || '');
+  const [outputCategory, setOutputCategory] = useState<string>(allCategories[0]?.[0] || '');
+
+  const itemsInInputCategory = useMemo(() => {
+    const cat = allCategories.find(c => c[0] === inputCategory);
+    return cat ? sortedItems.filter(item => cat[1].includes(item.id)) : [];
+  }, [inputCategory, allCategories, sortedItems]);
+
+  const itemsInOutputCategory = useMemo(() => {
+    const cat = allCategories.find(c => c[0] === outputCategory);
+    return cat ? sortedItems.filter(item => cat[1].includes(item.id)) : [];
+  }, [outputCategory, allCategories, sortedItems]);
+
+  const [newItemId, setNewItemId] = useState('');
+  useEffect(() => {
+    if (itemsInInputCategory.length > 0 && !itemsInInputCategory.find(i => i.id === newItemId)) {
+      setNewItemId(itemsInInputCategory[0].id);
+    }
+  }, [itemsInInputCategory, newItemId]);
+
   const [newRate, setNewRate] = useState(1);
   
-  const [newTargetItemId, setNewTargetItemId] = useState(sortedItems[0]?.id || '');
+  const [newTargetItemId, setNewTargetItemId] = useState('');
+  useEffect(() => {
+    if (itemsInOutputCategory.length > 0 && !itemsInOutputCategory.find(i => i.id === newTargetItemId)) {
+      setNewTargetItemId(itemsInOutputCategory[0].id);
+    }
+  }, [itemsInOutputCategory, newTargetItemId]);
+
   const [newTargetRate, setNewTargetRate] = useState(1);
 
   const availableRecipes = useMemo(() => {
@@ -329,31 +393,42 @@ export const Simulator = () => {
               </h2>
             </div>
             <div className="p-6 space-y-4 flex-grow">
-              <div className="flex gap-2">
-                <select 
-                  value={newItemId} 
-                  onChange={(e) => setNewItemId(e.target.value)}
-                  className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
-                >
-                  {sortedItems.map(item => (
-                    <option key={item.id} value={item.id}>{getItemName(item)}</option>
-                  ))}
-                </select>
-                <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
-                  <input 
-                    type="number" 
-                    value={newRate}
-                    onChange={(e) => setNewRate(Math.max(0, parseFloat(e.target.value) || 0))}
-                    className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
-                  />
-                  <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <select 
+                    value={inputCategory} 
+                    onChange={(e) => setInputCategory(e.target.value)}
+                    className="w-1/3 bg-slate-200/50 border-none rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 focus:ring-2 focus:ring-blue-500 transition-all"
+                  >
+                    {allCategories.map(([cat]) => (
+                      <option key={cat} value={cat}>{t(`categories.${cat}`)}</option>
+                    ))}
+                  </select>
+                  <select 
+                    value={newItemId} 
+                    onChange={(e) => setNewItemId(e.target.value)}
+                    className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
+                  >
+                    {itemsInInputCategory.map(item => (
+                      <option key={item.id} value={item.id}>{getItemName(item)}</option>
+                    ))}
+                  </select>
+                  <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
+                    <input 
+                      type="number" 
+                      value={newRate}
+                      onChange={(e) => setNewRate(Math.max(0, parseFloat(e.target.value) || 0))}
+                      className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
+                    />
+                    <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
+                  </div>
+                  <button 
+                    onClick={addInput}
+                    className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
+                  >
+                    <Plus size={18} />
+                  </button>
                 </div>
-                <button 
-                  onClick={addInput}
-                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
-                >
-                  <Plus size={18} />
-                </button>
               </div>
 
               <div className="space-y-2">
@@ -399,35 +474,45 @@ export const Simulator = () => {
               </h2>
             </div>
             <div className="p-6 space-y-4 flex-grow">
-              <div className="flex gap-2">
-                <select 
-                  value={newTargetItemId} 
-                  onChange={(e) => setNewTargetItemId(e.target.value)}
-                  className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
-                >
-                  {sortedItems.map(item => (
-                    <option key={item.id} value={item.id}>{getItemName(item)}</option>
-                  ))}
-                </select>
-                <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
-                  <input 
-                    type="number" 
-                    value={newTargetRate}
-                    onChange={(e) => setNewTargetRate(Math.max(0, parseFloat(e.target.value) || 0))}
-                    className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
-                  />
-                  <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <select 
+                    value={outputCategory} 
+                    onChange={(e) => setOutputCategory(e.target.value)}
+                    className="w-1/3 bg-slate-200/50 border-none rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 focus:ring-2 focus:ring-blue-500 transition-all"
+                  >
+                    {allCategories.map(([cat]) => (
+                      <option key={cat} value={cat}>{t(`categories.${cat}`)}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={newTargetItemId}
+                    onChange={(e) => setNewTargetItemId(e.target.value)}
+                    className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
+                  >
+                    {itemsInOutputCategory.map(item => (
+                      <option key={item.id} value={item.id}>{getItemName(item)}</option>
+                    ))}
+                  </select>
+                  <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
+                    <input
+                      type="number"
+                      value={newTargetRate}
+                      onChange={(e) => setNewTargetRate(Math.max(0, parseFloat(e.target.value) || 0))}
+                      className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
+                    />
+                    <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
+                  </div>
+                  <button
+                    onClick={addOutput}
+                    className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
+                  >
+                    <Plus size={18} />
+                  </button>
                 </div>
-                <button 
-                  onClick={addOutput}
-                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
-                >
-                  <Plus size={18} />
-                </button>
               </div>
 
-              <div className="space-y-2">
-                {outputs.map((output, idx) => {
+              <div className="space-y-2">                {outputs.map((output, idx) => {
                   const item = Object.values(ITEMS).find(i => i.id === output.itemId);
                   return (
                     <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
