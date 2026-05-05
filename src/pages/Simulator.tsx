@@ -319,329 +319,140 @@ export const Simulator = () => {
         </button>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Column: Config */}
-        <div className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Inputs Section */}
-            <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-              <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <Package size={16} />
-                  {t('simulator.inputs')}
-                </h2>
-              </div>
-              <div className="p-6 space-y-4 flex-grow">
-                <div className="flex gap-2">
-                  <select 
-                    value={newItemId} 
-                    onChange={(e) => setNewItemId(e.target.value)}
-                    className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
-                  >
-                    {sortedItems.map(item => (
-                      <option key={item.id} value={item.id}>{getItemName(item)}</option>
-                    ))}
-                  </select>
-                  <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
-                    <input 
-                      type="number" 
-                      value={newRate}
-                      onChange={(e) => setNewRate(Math.max(0, parseFloat(e.target.value) || 0))}
-                      className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
-                    />
-                    <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
-                  </div>
-                  <button 
-                    onClick={addInput}
-                    className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
-                  >
-                    <Plus size={18} />
-                  </button>
-                </div>
-
-                <div className="space-y-2">
-                  {inputs.map((input, idx) => {
-                    const item = Object.values(ITEMS).find(i => i.id === input.itemId);
-                    return (
-                      <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <img src={item?.iconPath} alt="" className="w-6 h-6 object-contain shrink-0" />
-                          <span className="text-xs font-bold text-slate-700 truncate">{getItemName(item)}</span>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <div className="flex items-center bg-white border border-slate-200 rounded-lg px-2 py-1">
-                            <input 
-                              type="number" 
-                              value={input.rate}
-                              step="0.1"
-                              onChange={(e) => updateInputRate(idx, parseFloat(e.target.value) || 0)}
-                              className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-xs p-0"
-                            />
-                            <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
-                          </div>
-                          <button 
-                            onClick={() => removeInput(idx)}
-                            className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-
-            {/* Outputs (Sinks) Section */}
-            <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-              <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <ArrowDownToLine size={16} />
-                  {t('simulator.externalOutput')}
-                </h2>
-              </div>
-              <div className="p-6 space-y-4 flex-grow">
-                <div className="flex gap-2">
-                  <select 
-                    value={newTargetItemId} 
-                    onChange={(e) => setNewTargetItemId(e.target.value)}
-                    className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
-                  >
-                    {sortedItems.map(item => (
-                      <option key={item.id} value={item.id}>{getItemName(item)}</option>
-                    ))}
-                  </select>
-                  <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
-                    <input 
-                      type="number" 
-                      value={newTargetRate}
-                      onChange={(e) => setNewTargetRate(Math.max(0, parseFloat(e.target.value) || 0))}
-                      className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
-                    />
-                    <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
-                  </div>
-                  <button 
-                    onClick={addOutput}
-                    className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
-                  >
-                    <Plus size={18} />
-                  </button>
-                </div>
-
-                <div className="space-y-2">
-                  {outputs.map((output, idx) => {
-                    const item = Object.values(ITEMS).find(i => i.id === output.itemId);
-                    return (
-                      <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <img src={item?.iconPath} alt="" className="w-6 h-6 object-contain shrink-0" />
-                          <span className="text-xs font-bold text-slate-700 truncate">{getItemName(item)}</span>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <div className="flex items-center bg-white border border-slate-200 rounded-lg px-2 py-1">
-                            <input 
-                              type="number" 
-                              value={output.rate}
-                              step="0.1"
-                              onChange={(e) => updateOutputRate(idx, parseFloat(e.target.value) || 0)}
-                              className="w-12 bg-transparent border-none text-right font-mono font-black text-orange-600 focus:ring-0 text-xs p-0"
-                            />
-                            <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
-                          </div>
-                          <button 
-                            onClick={() => removeOutput(idx)}
-                            className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-          </div>
-
-          {/* Processors Section */}
-          <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="space-y-8">
+        {/* Config Sections */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Inputs Section */}
+          <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
             <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
               <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Factory size={16} />
-                {t('simulator.processors')}
+                <Package size={16} />
+                {t('simulator.inputs')}
               </h2>
             </div>
-            <div className="p-6 space-y-6">
-              <div className="space-y-3">
-                <div className="flex justify-between items-end px-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('simulator.item')}</label>
-                  {selectedProduceItemId && (
-                    <p className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100">
-                      {getItemName(Object.values(ITEMS).find(i => i.id === selectedProduceItemId))}
-                    </p>
-                  )}
-                </div>
-
-                {/* Item Category Tabs */}
-                <div className="flex flex-wrap gap-1 border-b border-slate-100 pb-2">
-                  {itemCategories.map(([cat]) => (
-                    <button
-                      key={cat}
-                      onClick={() => setSelectedItemCategory(cat)}
-                      className={`px-3 py-1 text-[10px] font-black uppercase tracking-tighter rounded-t-lg transition-all ${
-                        selectedItemCategory === cat
-                          ? 'bg-orange-600 text-white'
-                          : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600'
-                      }`}
-                    >
-                      {t(`categories.${cat}`)}
-                    </button>
+            <div className="p-6 space-y-4 flex-grow">
+              <div className="flex gap-2">
+                <select 
+                  value={newItemId} 
+                  onChange={(e) => setNewItemId(e.target.value)}
+                  className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
+                >
+                  {sortedItems.map(item => (
+                    <option key={item.id} value={item.id}>{getItemName(item)}</option>
                   ))}
-                </div>
-
-                <div className="flex flex-wrap gap-1 max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-slate-200 bg-slate-50 rounded-lg">
-                  {itemsInCategory.map(item => (
-                    <button
-                      key={item.id}
-                      onClick={() => setSelectedProduceItemId(item.id)}
-                      className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
-                        selectedProduceItemId === item.id 
-                          ? 'border-orange-500 bg-orange-50 shadow-sm z-10' 
-                          : 'border-slate-200 bg-white hover:border-slate-400 hover:bg-slate-50'
-                      }`}
-                      title={getItemName(item)}
-                    >
-                      <img 
-                        src={item.iconPath} 
-                        alt={getItemName(item)} 
-                        className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedProduceItemId === item.id ? 'scale-110' : ''}`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex justify-between items-end px-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('itemDetail.facility')}</label>
-                  {selectedFacilityId && (
-                    <p className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                      {getItemName(Object.values(ITEMS).find(i => i.id === selectedFacilityId))}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {availableFacilities.map(item => (
-                    <button
-                      key={item.id}
-                      onClick={() => setSelectedFacilityId(item.id)}
-                      className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
-                        selectedFacilityId === item.id 
-                          ? 'border-blue-500 bg-blue-50 shadow-sm z-10' 
-                          : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
-                      }`}
-                      title={getItemName(item)}
-                    >
-                      <img 
-                        src={item.iconPath} 
-                        alt={getItemName(item)} 
-                        className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedFacilityId === item.id ? 'scale-110' : ''}`}
-                      />
-                      {selectedFacilityId === item.id && (
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {availableRecipes.length > 1 && (
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.productionRecipe')}</label>
-                  <select 
-                    value={newRecipeId} 
-                    onChange={(e) => setNewRecipeId(e.target.value)}
-                    className="w-full bg-slate-100 border-none rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    {availableRecipes.map(recipe => (
-                      <option key={recipe.id} value={recipe.id}>
-                        {recipe.ingredients.map(ing => getItemName(Object.values(ITEMS).find(item => item.id === ing.itemId))).join(' + ')} 
-                        {' -> '} 
-                        {recipe.outputCount}x {getItemName(Object.values(ITEMS).find(item => item.id === recipe.outputItemId))}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              
-              <div className="flex gap-4 pt-2">
-                <div className="flex-grow flex items-center bg-slate-100 rounded-2xl px-4 py-3">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-4">{t('simulator.count')}</label>
+                </select>
+                <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
                   <input 
                     type="number" 
-                    value={newCount}
-                    onChange={(e) => setNewCount(Math.max(0, parseInt(e.target.value) || 0))}
-                    className="flex-grow bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-lg"
+                    value={newRate}
+                    onChange={(e) => setNewRate(Math.max(0, parseFloat(e.target.value) || 0))}
+                    className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
                   />
-                  <span className="text-slate-400 font-bold ml-2">台</span>
+                  <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
                 </div>
                 <button 
-                  onClick={addProcessor}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-95 font-bold flex items-center gap-2"
+                  onClick={addInput}
+                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
                 >
-                  <Plus size={20} />
-                  {t('simulator.addRecipe')}
+                  <Plus size={18} />
                 </button>
               </div>
 
-              <div className="space-y-3 pt-4 border-t border-slate-100">
-                {processors.map((proc, idx) => {
-                  const recipe = RECIPES.find(r => r.id === proc.recipeId);
-                  const facilityItem = Object.values(ITEMS).find(i => i.id === (proc as any).facilityId);
-                  const item = Object.values(ITEMS).find(i => i.id === recipe?.outputItemId);
-                  const speed = facilityItem?.productionSpeed || 1;
-                  const rate = recipe ? (recipe.outputCount * proc.count * speed) / recipe.time : 0;
+              <div className="space-y-2">
+                {inputs.map((input, idx) => {
+                  const item = Object.values(ITEMS).find(i => i.id === input.itemId);
                   return (
-                    <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-md">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-sm border border-slate-100">
-                          <img src={item?.iconPath} alt="" className="w-full h-full object-contain" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-slate-700">{getItemName(item)}</p>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight bg-slate-100 px-1.5 py-0.5 rounded border border-slate-100">
-                              {getItemName(facilityItem)}
-                            </span>
-                          </div>
-                        </div>
+                    <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <img src={item?.iconPath} alt="" className="w-6 h-6 object-contain shrink-0" />
+                        <span className="text-xs font-bold text-slate-700 truncate">{getItemName(item)}</span>
                       </div>
-                      
-                      <div className="flex items-center gap-6">
-                        <div className="flex flex-col items-end">
-                          <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3 py-1 shadow-inner">
-                            <input 
-                              type="number" 
-                              value={proc.count}
-                              onChange={(e) => updateProcessorCount(idx, parseInt(e.target.value) || 0)}
-                              className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-lg p-0"
-                            />
-                            <span className="text-[10px] font-black text-slate-400 ml-2 uppercase tracking-tighter">台</span>
-                          </div>
-                          <div className="mt-1 text-right">
-                            <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
-                              +{rate.toFixed(2)}/s
-                            </p>
-                          </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="flex items-center bg-white border border-slate-200 rounded-lg px-2 py-1">
+                          <input 
+                            type="number" 
+                            value={input.rate}
+                            step="0.1"
+                            onChange={(e) => updateInputRate(idx, parseFloat(e.target.value) || 0)}
+                            className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-xs p-0"
+                          />
+                          <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
                         </div>
-                        
                         <button 
-                          onClick={() => removeProcessor(idx)}
-                          className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-2"
+                          onClick={() => removeInput(idx)}
+                          className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
                         >
-                          <Trash2 size={20} />
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Outputs (Sinks) Section */}
+          <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+              <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                <ArrowDownToLine size={16} />
+                {t('simulator.externalOutput')}
+              </h2>
+            </div>
+            <div className="p-6 space-y-4 flex-grow">
+              <div className="flex gap-2">
+                <select 
+                  value={newTargetItemId} 
+                  onChange={(e) => setNewTargetItemId(e.target.value)}
+                  className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
+                >
+                  {sortedItems.map(item => (
+                    <option key={item.id} value={item.id}>{getItemName(item)}</option>
+                  ))}
+                </select>
+                <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
+                  <input 
+                    type="number" 
+                    value={newTargetRate}
+                    onChange={(e) => setNewTargetRate(Math.max(0, parseFloat(e.target.value) || 0))}
+                    className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
+                  />
+                  <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
+                </div>
+                <button 
+                  onClick={addOutput}
+                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
+                >
+                  <Plus size={18} />
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {outputs.map((output, idx) => {
+                  const item = Object.values(ITEMS).find(i => i.id === output.itemId);
+                  return (
+                    <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <img src={item?.iconPath} alt="" className="w-6 h-6 object-contain shrink-0" />
+                        <span className="text-xs font-bold text-slate-700 truncate">{getItemName(item)}</span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="flex items-center bg-white border border-slate-200 rounded-lg px-2 py-1">
+                          <input 
+                            type="number" 
+                            value={output.rate}
+                            step="0.1"
+                            onChange={(e) => updateOutputRate(idx, parseFloat(e.target.value) || 0)}
+                            className="w-12 bg-transparent border-none text-right font-mono font-black text-orange-600 focus:ring-0 text-xs p-0"
+                          />
+                          <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
+                        </div>
+                        <button 
+                          onClick={() => removeOutput(idx)}
+                          className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
+                        >
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </div>
@@ -652,76 +463,261 @@ export const Simulator = () => {
           </section>
         </div>
 
-        {/* Right Column: Results */}
-        <div className="space-y-8">
-          <section className="bg-slate-900 rounded-3xl text-white shadow-xl overflow-hidden flex flex-col h-full sticky top-24">
-            <div className="px-8 py-6 border-b border-white/10 bg-white/5 flex justify-between items-center">
-              <h2 className="text-sm font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
-                <TrendingUp size={16} />
-                {t('simulator.results')}
-              </h2>
-            </div>
-            <div className="p-8 flex-grow">
-              {sortedResults.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-4 py-20">
-                  <Calculator size={48} className="opacity-20" />
-                  <p className="text-sm font-bold text-center max-w-xs">{t('simulator.empty')}</p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {sortedResults.map((res) => {
-                    const item = Object.values(ITEMS).find(i => i.id === res.id);
-                    const isPositive = res.netRate > 0.0001;
-                    const isNegative = res.netRate < -0.0001;
-                    
-                    return (
-                      <div key={res.id} className="bg-white/5 rounded-2xl p-5 border border-white/5 hover:bg-white/10 transition-colors">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center p-2">
-                              <img src={item?.iconPath} alt="" className="w-full h-full object-contain" />
-                            </div>
-                            <div>
-                              <span className="font-bold text-slate-100 block">{getItemName(item)}</span>
-                              <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest">
-                                {(res.netRate * 60).toFixed(1)}/min
-                              </span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className={`text-2xl font-mono font-black leading-none ${isPositive ? 'text-green-400' : isNegative ? 'text-red-400' : 'text-slate-400'}`}>
-                              {res.netRate > 0 ? '+' : ''}{res.netRate.toFixed(2)}
-                              <span className="text-xs ml-1 font-bold opacity-50 uppercase">/s</span>
-                            </p>
-                          </div>
-                        </div>
+        {/* Processors Section */}
+        <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+            <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+              <Factory size={16} />
+              {t('simulator.processors')}
+            </h2>
+          </div>
+          <div className="p-6 space-y-6">
+            <div className="space-y-3">
+              <div className="flex justify-between items-end px-1">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('simulator.item')}</label>
+                {selectedProduceItemId && (
+                  <p className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100">
+                    {getItemName(Object.values(ITEMS).find(i => i.id === selectedProduceItemId))}
+                  </p>
+                )}
+              </div>
 
-                        <div className="grid grid-cols-4 gap-2 text-center">
-                          <div className="bg-white/5 rounded-lg py-2">
-                            <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.inputRate')}</p>
-                            <p className="text-xs font-mono font-bold text-slate-300">{res.input > 0 ? `+${res.input.toFixed(1)}` : '0'}</p>
-                          </div>
-                          <div className="bg-white/5 rounded-lg py-2">
-                            <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.production')}</p>
-                            <p className="text-xs font-mono font-bold text-green-400/70">{res.production > 0 ? `+${res.production.toFixed(1)}` : '0'}</p>
-                          </div>
-                          <div className="bg-white/5 rounded-lg py-2">
-                            <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.consumption')}</p>
-                            <p className="text-xs font-mono font-bold text-red-400/70">{res.consumption > 0 ? `-${res.consumption.toFixed(1)}` : '0'}</p>
-                          </div>
-                          <div className="bg-white/5 rounded-lg py-2">
-                            <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.externalOutput')}</p>
-                            <p className="text-xs font-mono font-bold text-orange-400/70">{res.sink > 0 ? `-${res.sink.toFixed(1)}` : '0'}</p>
-                          </div>
+              {/* Item Category Tabs */}
+              <div className="flex flex-wrap gap-1 border-b border-slate-100 pb-2">
+                {itemCategories.map(([cat]) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedItemCategory(cat)}
+                    className={`px-3 py-1 text-[10px] font-black uppercase tracking-tighter rounded-t-lg transition-all ${
+                      selectedItemCategory === cat
+                        ? 'bg-orange-600 text-white'
+                        : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600'
+                    }`}
+                  >
+                    {t(`categories.${cat}`)}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-1 max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-slate-200 bg-slate-50 rounded-lg">
+                {itemsInCategory.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setSelectedProduceItemId(item.id)}
+                    className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
+                      selectedProduceItemId === item.id 
+                        ? 'border-orange-500 bg-orange-50 shadow-sm z-10' 
+                        : 'border-slate-200 bg-white hover:border-slate-400 hover:bg-slate-50'
+                    }`}
+                    title={getItemName(item)}
+                  >
+                    <img 
+                      src={item.iconPath} 
+                      alt={getItemName(item)} 
+                      className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedProduceItemId === item.id ? 'scale-110' : ''}`}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex justify-between items-end px-1">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('itemDetail.facility')}</label>
+                {selectedFacilityId && (
+                  <p className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                    {getItemName(Object.values(ITEMS).find(i => i.id === selectedFacilityId))}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {availableFacilities.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setSelectedFacilityId(item.id)}
+                    className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
+                      selectedFacilityId === item.id 
+                        ? 'border-blue-500 bg-blue-50 shadow-sm z-10' 
+                        : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                    }`}
+                    title={getItemName(item)}
+                  >
+                    <img 
+                      src={item.iconPath} 
+                      alt={getItemName(item)} 
+                      className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedFacilityId === item.id ? 'scale-110' : ''}`}
+                    />
+                    {selectedFacilityId === item.id && (
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {availableRecipes.length > 1 && (
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.productionRecipe')}</label>
+                <select 
+                  value={newRecipeId} 
+                  onChange={(e) => setNewRecipeId(e.target.value)}
+                  className="w-full bg-slate-100 border-none rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-blue-500 transition-all"
+                >
+                  {availableRecipes.map(recipe => (
+                    <option key={recipe.id} value={recipe.id}>
+                      {recipe.ingredients.map(ing => getItemName(Object.values(ITEMS).find(item => item.id === ing.itemId))).join(' + ')} 
+                      {' -> '} 
+                      {recipe.outputCount}x {getItemName(Object.values(ITEMS).find(item => item.id === recipe.outputItemId))}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            
+            <div className="flex gap-4 pt-2">
+              <div className="flex-grow flex items-center bg-slate-100 rounded-2xl px-4 py-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-4">{t('simulator.count')}</label>
+                <input 
+                  type="number" 
+                  value={newCount}
+                  onChange={(e) => setNewCount(Math.max(0, parseInt(e.target.value) || 0))}
+                  className="flex-grow bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-lg"
+                />
+                <span className="text-slate-400 font-bold ml-2">台</span>
+              </div>
+              <button 
+                onClick={addProcessor}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-95 font-bold flex items-center gap-2"
+              >
+                <Plus size={20} />
+                {t('simulator.addRecipe')}
+              </button>
+            </div>
+
+            <div className="space-y-3 pt-4 border-t border-slate-100">
+              {processors.map((proc, idx) => {
+                const recipe = RECIPES.find(r => r.id === proc.recipeId);
+                const facilityItem = Object.values(ITEMS).find(i => i.id === (proc as any).facilityId);
+                const item = Object.values(ITEMS).find(i => i.id === recipe?.outputItemId);
+                const speed = facilityItem?.productionSpeed || 1;
+                const rate = recipe ? (recipe.outputCount * proc.count * speed) / recipe.time : 0;
+                return (
+                  <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-md">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-sm border border-slate-100">
+                        <img src={item?.iconPath} alt="" className="w-full h-full object-contain" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-700">{getItemName(item)}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight bg-slate-100 px-1.5 py-0.5 rounded border border-slate-100">
+                            {getItemName(facilityItem)}
+                          </span>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+                    </div>
+                    
+                    <div className="flex items-center gap-6">
+                      <div className="flex flex-col items-end">
+                        <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3 py-1 shadow-inner">
+                          <input 
+                            type="number" 
+                            value={proc.count}
+                            onChange={(e) => updateProcessorCount(idx, parseInt(e.target.value) || 0)}
+                            className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-lg p-0"
+                          />
+                          <span className="text-[10px] font-black text-slate-400 ml-2 uppercase tracking-tighter">台</span>
+                        </div>
+                        <div className="mt-1 text-right">
+                          <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+                            +{rate.toFixed(2)}/s
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        onClick={() => removeProcessor(idx)}
+                        className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-2"
+                      >
+                        <Trash2 size={20} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
+
+        {/* Results Section */}
+        <section className="bg-slate-900 rounded-3xl text-white shadow-xl overflow-hidden flex flex-col">
+          <div className="px-8 py-6 border-b border-white/10 bg-white/5 flex justify-between items-center">
+            <h2 className="text-sm font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
+              <TrendingUp size={16} />
+              {t('simulator.results')}
+            </h2>
+          </div>
+          <div className="p-8">
+            {sortedResults.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-4 py-20">
+                <Calculator size={48} className="opacity-20" />
+                <p className="text-sm font-bold text-center max-w-xs">{t('simulator.empty')}</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {sortedResults.map((res) => {
+                  const item = Object.values(ITEMS).find(i => i.id === res.id);
+                  const isPositive = res.netRate > 0.0001;
+                  const isNegative = res.netRate < -0.0001;
+                  
+                  return (
+                    <div key={res.id} className="bg-white/5 rounded-2xl p-5 border border-white/5 hover:bg-white/10 transition-colors">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center p-2">
+                            <img src={item?.iconPath} alt="" className="w-full h-full object-contain" />
+                          </div>
+                          <div>
+                            <span className="font-bold text-slate-100 block">{getItemName(item)}</span>
+                            <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest">
+                              {(res.netRate * 60).toFixed(1)}/min
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-2xl font-mono font-black leading-none ${isPositive ? 'text-green-400' : isNegative ? 'text-red-400' : 'text-slate-400'}`}>
+                            {res.netRate > 0 ? '+' : ''}{res.netRate.toFixed(2)}
+                            <span className="text-xs ml-1 font-bold opacity-50 uppercase">/s</span>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-4 gap-2 text-center">
+                        <div className="bg-white/5 rounded-lg py-2">
+                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.inputRate')}</p>
+                          <p className="text-xs font-mono font-bold text-slate-300">{res.input > 0 ? `+${res.input.toFixed(1)}` : '0'}</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg py-2">
+                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.production')}</p>
+                          <p className="text-xs font-mono font-bold text-green-400/70">{res.production > 0 ? `+${res.production.toFixed(1)}` : '0'}</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg py-2">
+                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.consumption')}</p>
+                          <p className="text-xs font-mono font-bold text-red-400/70">{res.consumption > 0 ? `-${res.consumption.toFixed(1)}` : '0'}</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg py-2">
+                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.externalOutput')}</p>
+                          <p className="text-xs font-mono font-bold text-orange-400/70">{res.sink > 0 ? `-${res.sink.toFixed(1)}` : '0'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );
