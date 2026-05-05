@@ -19,13 +19,15 @@
     "Logistics Ships": "Logistics Ships",
     "Combat Units": "Combat Units",
     "Dyson Sphere": "Dyson Sphere",
-    "Mining": "Mining",
-    "Power Generation": "Power Generation",
-    "Power Transmission & Storage": "Power Transmission & Storage",
+    "Power": "Power",
+    "Collection": "Collection",
+    "Logistics": "Logistics",
+    "Storage": "Storage",
     "Production": "Production",
-    "Science": "Science",
-    "Logistics & Storage": "Logistics & Storage",
-    "Combat Buildings": "Combat Buildings"
+    "Transport": "Transport",
+    "Defense": "Defense",
+    "COSMO": "COSMO",
+    "Environment": "Environment"
   },
   "facilities": {
     "Smelter": "Smelter",

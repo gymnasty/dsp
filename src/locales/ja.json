@@ -19,13 +19,15 @@
     "Logistics Ships": "物流船",
     "Combat Units": "戦闘ユニット",
     "Dyson Sphere": "ダイソンスフィア",
-    "Mining": "採掘",
-    "Power Generation": "発電",
-    "Power Transmission & Storage": "送電・蓄電",
+    "Power": "電力",
+    "Collection": "採集",
+    "Logistics": "物流",
+    "Storage": "貯蔵",
     "Production": "生産",
-    "Science": "研究",
-    "Logistics & Storage": "物流・保管",
-    "Combat Buildings": "戦闘施設"
+    "Transport": "輸送",
+    "Defense": "防衛",
+    "COSMO": "COSMO",
+    "Environment": "環境"
   },
   "facilities": {
     "Smelter": "溶鉱炉",

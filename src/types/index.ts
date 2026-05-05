@@ -15,16 +15,17 @@ export const CATEGORIES = {
   LOGISTICS_SHIPS: 'Logistics Ships',
   COMBAT_UNITS: 'Combat Units',
   DYSON_SPHERE: 'Dyson Sphere',
-  // Facility categories
-  MINING: 'Mining',
-  POWER_GENERATION: 'Power Generation',
-  POWER_TRANSMISSION_STORAGE: 'Power Transmission & Storage',
-  PRODUCTION: 'Production',
-  SCIENCE: 'Science',
-  LOGISTICS_STORAGE: 'Logistics & Storage',
-  COMBAT_BUILDINGS: 'Combat Buildings',
+  // New Building Categories
+  POWER: 'Power',
+  COLLECTION: 'Collection',
+  LOGISTICS: 'Logistics',
+  STORAGE: 'Storage',
+  PRODUCTION_BUILDING: 'Production',
+  TRANSPORT: 'Transport',
+  DEFENSE: 'Defense',
+  COSMO: 'COSMO',
+  ENVIRONMENT: 'Environment',
   } as const;
-
 export type Category = typeof CATEGORIES[keyof typeof CATEGORIES];
 
 export const FACILITIES = {
@@ -50,6 +51,8 @@ export interface Item {
   category: Category;
   description?: string;
   iconPath?: string;
+  facilityType?: Facility; // For buildings, which facility type it is
+  productionSpeed?: number; // For buildings, its base production speed (e.g. 0.75, 1, 2)
 }
 
 export interface Ingredient {

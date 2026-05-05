@@ -2,7 +2,8 @@ import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
-import { ITEM_TYPES } from '../types';
+import { BUILDING_ORDER } from '../data/buildingOrder';
+import { ITEM_TYPES, CATEGORIES } from '../types';
 import { getItemName } from '../utils/i18n';
 import { Plus, Trash2, Calculator, Package, Factory, TrendingUp, ArrowDownToLine } from 'lucide-react';
 
@@ -30,17 +31,140 @@ export const Simulator = () => {
   // Local state for adding new items
   const sortedItems = useMemo(() => Object.values(ITEMS).sort((a, b) => getItemName(a).localeCompare(getItemName(b))), []);
   
-  // Items that can be produced (have at least one recipe)
-  const producibleItems = useMemo(() => {
-    const ids = new Set(RECIPES.map(r => r.outputItemId));
-    return sortedItems.filter(item => ids.has(item.id));
-  }, [sortedItems]);
+  // Items that can be produced (have at least one recipe), grouped by category
+  const itemCategories = useMemo(() => {
+    const categories: Record<string, string[]> = {};
+    const producibleIds = new Set(RECIPES.map(r => r.outputItemId));
+    
+    producibleIds.forEach(id => {
+      const item = Object.values(ITEMS).find(i => i.id === id);
+      if (item) {
+        const category = item.category;
+        if (!categories[category]) categories[category] = [];
+        categories[category].push(id);
+      }
+    });
 
-  // Facilities that can produce something
+    // Define a standard order for all categories
+    const order = [
+      CATEGORIES.NATURAL_RESOURCES,
+      CATEGORIES.INTERMEDIATE_PRODUCTS,
+      CATEGORIES.ENERGY_SOURCES,
+      CATEGORIES.AMMUNITION,
+      CATEGORIES.LOGISTICS_SHIPS,
+      CATEGORIES.COMBAT_UNITS,
+      CATEGORIES.DYSON_SPHERE,
+      CATEGORIES.SCIENCE,
+      CATEGORIES.DARK_FOG_COMPONENTS,
+      CATEGORIES.OTHER_CONSUMABLES,
+      CATEGORIES.POWER,
+      CATEGORIES.COLLECTION,
+      CATEGORIES.LOGISTICS,
+      CATEGORIES.STORAGE,
+      CATEGORIES.PRODUCTION_BUILDING,
+      CATEGORIES.TRANSPORT,
+      CATEGORIES.DEFENSE,
+      CATEGORIES.COSMO,
+      CATEGORIES.ENVIRONMENT
+    ];
+
+    return Object.entries(categories).sort((a, b) => {
+      const indexA = order.indexOf(a[0] as any);
+      const indexB = order.indexOf(b[0] as any);
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      return a[0].localeCompare(b[0]);
+    });
+  }, []);
+
+  const [selectedItemCategory, setSelectedItemCategory] = useState<string>(itemCategories[0]?.[0] || '');
+  
+  // Ensure selectedItemCategory is valid
+  useEffect(() => {
+    if (itemCategories.length > 0 && !itemCategories.find(c => c[0] === selectedItemCategory)) {
+      setSelectedItemCategory(itemCategories[0][0]);
+    }
+  }, [itemCategories, selectedItemCategory]);
+
+  const itemsInCategory = useMemo(() => {
+    const cat = itemCategories.find(c => c[0] === selectedItemCategory);
+    if (!cat) return [];
+    
+    const unsortedItems = sortedItems.filter(item => cat[1].includes(item.id));
+    const order = BUILDING_ORDER[selectedItemCategory] || [];
+    
+    if (order.length > 0) {
+      return [...unsortedItems].sort((a, b) => {
+        const indexA = order.indexOf(a.id);
+        const indexB = order.indexOf(b.id);
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        return a.id.localeCompare(b.id);
+      });
+    }
+    
+    return unsortedItems;
+  }, [selectedItemCategory, itemCategories, sortedItems]);
+
+  const [selectedProduceItemId, setSelectedProduceItemId] = useState('');
+  
+  // Update selectedProduceItemId when itemsInCategory changes
+  useEffect(() => {
+    if (itemsInCategory.length > 0) {
+      if (!itemsInCategory.find(i => i.id === selectedProduceItemId)) {
+        setSelectedProduceItemId(itemsInCategory[0].id);
+      }
+    } else {
+      setSelectedProduceItemId('');
+    }
+  }, [itemsInCategory, selectedProduceItemId]);
+
   const availableFacilities = useMemo(() => {
-    const facilities = new Set(RECIPES.map(r => r.producedIn));
-    return Array.from(facilities).sort((a, b) => t(`facilities.${a}`).localeCompare(t(`facilities.${b}`)));
-  }, [t]);
+    if (!selectedProduceItemId) return [];
+    const recipes = RECIPES.filter(r => r.outputItemId === selectedProduceItemId);
+    const facilityTypes = new Set(recipes.map(r => r.producedIn));
+    
+    // Find all building items that match any of these facility types
+    const matchingItems = Object.values(ITEMS).filter(item => 
+      item.type === ITEM_TYPES.BUILDING && 
+      item.facilityType && 
+      facilityTypes.has(item.facilityType)
+    );
+
+    return matchingItems.sort((a, b) => {
+      // Sort by category first, then by the predefined order if available, else by speed
+      const catOrder = [
+        CATEGORIES.PRODUCTION_BUILDING,
+        CATEGORIES.COSMO,
+        CATEGORIES.COLLECTION
+      ];
+      const indexA = catOrder.indexOf(a.category as any);
+      const indexB = catOrder.indexOf(b.category as any);
+      if (indexA !== indexB) return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
+      
+      const order = BUILDING_ORDER[a.category] || [];
+      const idxA = order.indexOf(a.id);
+      const idxB = order.indexOf(b.id);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      
+      return (a.productionSpeed || 0) - (b.productionSpeed || 0);
+    });
+  }, [selectedProduceItemId]);
+
+  const [selectedFacilityId, setSelectedFacilityId] = useState('');
+
+  // Update selectedFacilityId when availableFacilities changes
+  useEffect(() => {
+    if (availableFacilities.length > 0) {
+      if (!availableFacilities.find(i => i.id === selectedFacilityId)) {
+        setSelectedFacilityId(availableFacilities[0].id);
+      }
+    } else {
+      setSelectedFacilityId('');
+    }
+  }, [availableFacilities, selectedFacilityId]);
 
   const [newItemId, setNewItemId] = useState(sortedItems[0]?.id || '');
   const [newRate, setNewRate] = useState(1);
@@ -48,30 +172,16 @@ export const Simulator = () => {
   const [newTargetItemId, setNewTargetItemId] = useState(sortedItems[0]?.id || '');
   const [newTargetRate, setNewTargetRate] = useState(1);
 
-  const [selectedFacility, setSelectedFacility] = useState(availableFacilities[0] || '');
-
-  const itemsForFacility = useMemo(() => {
-    const recipes = RECIPES.filter(r => r.producedIn === selectedFacility);
-    const itemIds = new Set(recipes.map(r => r.outputItemId));
-    return sortedItems.filter(item => itemIds.has(item.id));
-  }, [selectedFacility, sortedItems]);
-
-  const [selectedProduceItemId, setSelectedProduceItemId] = useState('');
-  
-  // Update selectedProduceItemId when itemsForFacility changes
-  useEffect(() => {
-    if (itemsForFacility.length > 0) {
-      if (!itemsForFacility.find(i => i.id === selectedProduceItemId)) {
-        setSelectedProduceItemId(itemsForFacility[0].id);
-      }
-    } else {
-      setSelectedProduceItemId('');
-    }
-  }, [itemsForFacility, selectedProduceItemId]);
-
-  const availableRecipes = useMemo(() => 
-    RECIPES.filter(r => r.outputItemId === selectedProduceItemId && r.producedIn === selectedFacility),
-  [selectedProduceItemId, selectedFacility]);
+  const availableRecipes = useMemo(() => {
+    if (!selectedProduceItemId || !selectedFacilityId) return [];
+    const facilityItem = ITEMS[selectedFacilityId];
+    if (!facilityItem?.facilityType) return [];
+    
+    return RECIPES.filter(r => 
+      r.outputItemId === selectedProduceItemId && 
+      r.producedIn === facilityItem.facilityType
+    );
+  }, [selectedProduceItemId, selectedFacilityId]);
   
   const [newRecipeId, setNewRecipeId] = useState('');
   useEffect(() => {
@@ -115,8 +225,8 @@ export const Simulator = () => {
   };
 
   const addProcessor = () => {
-    if (!newRecipeId) return;
-    setProcessors([...processors, { recipeId: newRecipeId, count: newCount }]);
+    if (!newRecipeId || !selectedFacilityId) return;
+    setProcessors([...processors, { recipeId: newRecipeId, count: newCount, facilityId: selectedFacilityId }]);
   };
 
   const updateProcessorCount = (index: number, count: number) => {
@@ -153,8 +263,11 @@ export const Simulator = () => {
     // Processors
     processors.forEach(proc => {
       const recipe = RECIPES.find(r => r.id === proc.recipeId);
+      const facilityItem = Object.values(ITEMS).find(i => i.id === (proc as any).facilityId);
+      
       if (recipe) {
-        const multiplier = proc.count / recipe.time;
+        const speed = facilityItem?.productionSpeed || 1;
+        const multiplier = (proc.count * speed) / recipe.time;
         
         // Output
         getStat(recipe.outputItemId).production += recipe.outputCount * multiplier;
@@ -362,45 +475,6 @@ export const Simulator = () => {
             <div className="p-6 space-y-6">
               <div className="space-y-3">
                 <div className="flex justify-between items-end px-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('itemDetail.facility')}</label>
-                  <p className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">{t(`facilities.${selectedFacility}`)}</p>
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {availableFacilities.map(f => {
-                    // Try to find a building item that matches this facility type for the icon
-                    const facilityItem = Object.values(ITEMS).find(item => 
-                      item.type === ITEM_TYPES.BUILDING && 
-                      item.id.toLowerCase().replace(/_/g, '') === f.toLowerCase().replace(/ /g, '')
-                    ) || Object.values(ITEMS).find(item => item.id.includes(f.toLowerCase().split(' ')[0]));
-
-                    return (
-                      <button
-                        key={f}
-                        onClick={() => setSelectedFacility(f)}
-                        className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
-                          selectedFacility === f 
-                            ? 'border-blue-500 bg-blue-50 shadow-sm z-10' 
-                            : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
-                        }`}
-                        title={t(`facilities.${f}`)}
-                      >
-                        <img 
-                          src={facilityItem?.iconPath} 
-                          alt={t(`facilities.${f}`)} 
-                          className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedFacility === f ? 'scale-110' : ''}`}
-                        />
-                        {selectedFacility === f && (
-                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex justify-between items-end px-1">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('simulator.item')}</label>
                   {selectedProduceItemId && (
                     <p className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100">
@@ -408,14 +482,32 @@ export const Simulator = () => {
                     </p>
                   )}
                 </div>
+
+                {/* Item Category Tabs */}
+                <div className="flex flex-wrap gap-1 border-b border-slate-100 pb-2">
+                  {itemCategories.map(([cat]) => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedItemCategory(cat)}
+                      className={`px-3 py-1 text-[10px] font-black uppercase tracking-tighter rounded-t-lg transition-all ${
+                        selectedItemCategory === cat
+                          ? 'bg-orange-600 text-white'
+                          : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600'
+                      }`}
+                    >
+                      {t(`categories.${cat}`)}
+                    </button>
+                  ))}
+                </div>
+
                 <div className="flex flex-wrap gap-1 max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-slate-200 bg-slate-50 rounded-lg">
-                  {itemsForFacility.map(item => (
+                  {itemsInCategory.map(item => (
                     <button
                       key={item.id}
                       onClick={() => setSelectedProduceItemId(item.id)}
                       className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
                         selectedProduceItemId === item.id 
-                          ? 'border-blue-500 bg-blue-50 shadow-sm z-10' 
+                          ? 'border-orange-500 bg-orange-50 shadow-sm z-10' 
                           : 'border-slate-200 bg-white hover:border-slate-400 hover:bg-slate-50'
                       }`}
                       title={getItemName(item)}
@@ -425,6 +517,41 @@ export const Simulator = () => {
                         alt={getItemName(item)} 
                         className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedProduceItemId === item.id ? 'scale-110' : ''}`}
                       />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between items-end px-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('itemDetail.facility')}</label>
+                  {selectedFacilityId && (
+                    <p className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                      {getItemName(ITEMS[selectedFacilityId])} (Speed: {ITEMS[selectedFacilityId]?.productionSpeed})
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {availableFacilities.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => setSelectedFacilityId(item.id)}
+                      className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
+                        selectedFacilityId === item.id 
+                          ? 'border-blue-500 bg-blue-50 shadow-sm z-10' 
+                          : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                      }`}
+                      title={getItemName(item)}
+                    >
+                      <img 
+                        src={item.iconPath} 
+                        alt={getItemName(item)} 
+                        className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedFacilityId === item.id ? 'scale-110' : ''}`}
+                      />
+                      {selectedFacilityId === item.id && (
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -472,8 +599,10 @@ export const Simulator = () => {
               <div className="space-y-3 pt-4 border-t border-slate-100">
                 {processors.map((proc, idx) => {
                   const recipe = RECIPES.find(r => r.id === proc.recipeId);
+                  const facilityItem = Object.values(ITEMS).find(i => i.id === (proc as any).facilityId);
                   const item = Object.values(ITEMS).find(i => i.id === recipe?.outputItemId);
-                  const rate = recipe ? (recipe.outputCount * proc.count) / recipe.time : 0;
+                  const speed = facilityItem?.productionSpeed || 1;
+                  const rate = recipe ? (recipe.outputCount * proc.count * speed) / recipe.time : 0;
                   return (
                     <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-md">
                       <div className="flex items-center gap-4">
@@ -484,7 +613,7 @@ export const Simulator = () => {
                           <p className="text-sm font-bold text-slate-700">{getItemName(item)}</p>
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight bg-slate-100 px-1.5 py-0.5 rounded border border-slate-100">
-                              {t(`facilities.${recipe?.producedIn}`)}
+                              {getItemName(facilityItem)} (x{speed})
                             </span>
                           </div>
                         </div>
