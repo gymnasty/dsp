@@ -527,7 +527,7 @@ export const Simulator = () => {
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('itemDetail.facility')}</label>
                   {selectedFacilityId && (
                     <p className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                      {getItemName(ITEMS[selectedFacilityId])} (Speed: {ITEMS[selectedFacilityId]?.productionSpeed})
+                      {getItemName(Object.values(ITEMS).find(i => i.id === selectedFacilityId))}
                     </p>
                   )}
                 </div>
@@ -613,7 +613,7 @@ export const Simulator = () => {
                           <p className="text-sm font-bold text-slate-700">{getItemName(item)}</p>
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight bg-slate-100 px-1.5 py-0.5 rounded border border-slate-100">
-                              {getItemName(facilityItem)} (x{speed})
+                              {getItemName(facilityItem)}
                             </span>
                           </div>
                         </div>
