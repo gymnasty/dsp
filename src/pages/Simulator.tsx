@@ -1,11 +1,11 @@
-import { useState, useMemo, useEffect } from 'react';
+import { ArrowDownToLine, ArrowRight, Calculator, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BUILDING_ORDER } from '../data/buildingOrder';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
-import { BUILDING_ORDER } from '../data/buildingOrder';
-import { ITEM_TYPES, CATEGORIES } from '../types';
+import { CATEGORIES, ITEM_TYPES } from '../types';
 import { getItemName } from '../utils/i18n';
-import { Plus, Trash2, Calculator, Package, Factory, TrendingUp, ArrowDownToLine, ArrowRight } from 'lucide-react';
 
 interface InputState {
   itemId: string;
@@ -30,7 +30,7 @@ export const Simulator = () => {
   const [processors, setProcessors] = useState<ProcessorState[]>([]);
 
   // Local state for adding new items
-  const sortedItems = useMemo(() => Object.values(ITEMS).sort((a, b) => getItemName(a).localeCompare(getItemName(b))), []);
+  const sortedItems = useMemo(() => Object.values(ITEMS), []);
   
   // Items that can be produced (have at least one recipe), grouped by category
   const itemCategories = useMemo(() => {
@@ -51,8 +51,6 @@ export const Simulator = () => {
       CATEGORIES.NATURAL_RESOURCES,
       CATEGORIES.INTERMEDIATE_PRODUCTS,
       CATEGORIES.ENERGY_SOURCES,
-      CATEGORIES.AMMUNITION,
-      CATEGORIES.LOGISTICS_SHIPS,
       CATEGORIES.COMBAT_UNITS,
       CATEGORIES.DYSON_SPHERE,
       CATEGORIES.SCIENCE,
