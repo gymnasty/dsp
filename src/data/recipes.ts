@@ -1,4 +1,4 @@
-import { Recipe, FACILITIES } from '../types';
+import { FACILITIES, Recipe } from '../types';
 import { ITEMS } from './items';
 
 export const RECIPES: Recipe[] = [
@@ -117,7 +117,7 @@ export const RECIPES: Recipe[] = [
     producedIn: FACILITIES.ASSEMBLER
   },
   {
-    id: 'microcrystalline_component',
+    id: 'microcrystalline_component', // ?
     outputItemId: ITEMS.MICROCRYSTALLINE_COMPONENT.id,
     outputCount: 1,
     time: 2,
@@ -208,7 +208,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 12,
     ingredients: [
-      { itemId: ITEMS.TITANIUM_GLASS.id, count: 1 },
+      { itemId: ITEMS.TITANIUM_GLASS.id, count: 2 },
       { itemId: ITEMS.CASIMIR_CRYSTAL.id, count: 1 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -231,6 +231,7 @@ export const RECIPES: Recipe[] = [
     time: 8,
     ingredients: [
       { itemId: ITEMS.PARTICLE_CONTAINER.id, count: 2 },
+      { itemId: ITEMS.IRON_INGOT.id, count: 2 },
       { itemId: ITEMS.DEUTERIUM.id, count: 10 }
     ],
     producedIn: FACILITIES.PARTICLE_COLLIDER
@@ -346,7 +347,7 @@ export const RECIPES: Recipe[] = [
     outputItemId: ITEMS.DIAMOND.id,
     outputCount: 1,
     time: 2,
-    ingredients: [{ itemId: ITEMS.ENERGETIC_GRAPHITE.id, count: 2 }],
+    ingredients: [{ itemId: ITEMS.ENERGETIC_GRAPHITE.id, count: 1 }],
     producedIn: FACILITIES.SMELTER
   },
   {
@@ -604,8 +605,8 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 3,
     ingredients: [
-      { itemId: ITEMS.IRON_INGOT.id, count: 10 },
-      { itemId: ITEMS.MAGNETIC_COIL.id, count: 4 },
+      { itemId: ITEMS.IRON_INGOT.id, count: 4 },
+      { itemId: ITEMS.MAGNETIC_COIL.id, count: 2 },
       { itemId: ITEMS.CIRCUIT_BOARD.id, count: 2 },
       { itemId: ITEMS.GEAR.id, count: 2 }
     ],
@@ -630,9 +631,9 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 8,
     ingredients: [
-      { itemId: ITEMS.IRON_INGOT.id, count: 12 },
-      { itemId: ITEMS.STONE_BRICK.id, count: 8 },
-      { itemId: ITEMS.CIRCUIT_BOARD.id, count: 4 },
+      { itemId: ITEMS.STEEL.id, count: 12 },
+      { itemId: ITEMS.STONE_BRICK.id, count: 12 },
+      { itemId: ITEMS.CIRCUIT_BOARD.id, count: 6 },
       { itemId: ITEMS.PLASMA_EXCITER.id, count: 4 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -797,7 +798,7 @@ export const RECIPES: Recipe[] = [
     time: 2,
     ingredients: [
       { itemId: ITEMS.IRON_INGOT.id, count: 4 },
-      { itemId: ITEMS.STONE.id, count: 4 }
+      { itemId: ITEMS.STONE_BRICK.id, count: 4 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -808,7 +809,7 @@ export const RECIPES: Recipe[] = [
     time: 4,
     ingredients: [
       { itemId: ITEMS.STEEL.id, count: 8 },
-      { itemId: ITEMS.STONE.id, count: 8 }
+      { itemId: ITEMS.STONE_BRICK.id, count: 8 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -819,7 +820,7 @@ export const RECIPES: Recipe[] = [
     time: 2,
     ingredients: [
       { itemId: ITEMS.IRON_INGOT.id, count: 8 },
-      { itemId: ITEMS.STONE.id, count: 4 },
+      { itemId: ITEMS.STONE_BRICK.id, count: 4 },
       { itemId: ITEMS.GLASS.id, count: 4 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -879,9 +880,8 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 2,
     ingredients: [
-      { itemId: ITEMS.IRON_INGOT.id, count: 2 },
-      { itemId: ITEMS.STEEL.id, count: 2 },
-      { itemId: ITEMS.GEAR.id, count: 1 }
+      { itemId: ITEMS.COPPER_INGOT.id, count: 2 },
+      { itemId: ITEMS.MAGNETIC_COIL.id, count: 1 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1070,8 +1070,9 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 3,
     ingredients: [
-      { itemId: ITEMS.COPPER_INGOT.id, count: 2 },
-      { itemId: ITEMS.STEEL.id, count: 2 },
+      { itemId: ITEMS.COPPER_INGOT.id, count: 6 },
+      { itemId: ITEMS.CIRCUIT_BOARD.id, count: 3 },
+      { itemId: ITEMS.COMBUSTIBLE_UNIT.id, count: 2 },
       { itemId: ITEMS.ENGINE.id, count: 1 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -1103,8 +1104,8 @@ export const RECIPES: Recipe[] = [
     time: 6,
     ingredients: [
       { itemId: ITEMS.COMBUSTIBLE_UNIT.id, count: 2 },
-      { itemId: ITEMS.SULFURIC_ACID.id, count: 2 },
-      { itemId: ITEMS.ENERGETIC_GRAPHITE.id, count: 1 }
+      { itemId: ITEMS.PLASTIC.id, count: 2 },
+      { itemId: ITEMS.SULFURIC_ACID.id, count: 1 }
     ],
     producedIn: FACILITIES.CHEMICAL_PLANT
   },
@@ -1116,7 +1117,7 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { itemId: ITEMS.EXPLOSIVE_UNIT.id, count: 8 },
       { itemId: ITEMS.CASIMIR_CRYSTAL.id, count: 1 },
-      { itemId: ITEMS.TITANIUM_CRYSTAL.id, count: 8 }
+      { itemId: ITEMS.CRYSTAL_SILICON.id, count: 8 }
     ],
     producedIn: FACILITIES.CHEMICAL_PLANT
   },
@@ -1208,8 +1209,8 @@ export const RECIPES: Recipe[] = [
     time: 4,
     ingredients: [
       { itemId: ITEMS.MISSILE_SET.id, count: 2 },
-      { itemId: ITEMS.EXPLOSIVE_UNIT.id, count: 4 },
-      { itemId: ITEMS.ENGINE.id, count: 2 },
+      { itemId: ITEMS.EXPLOSIVE_UNIT.id, count: 2 },
+      { itemId: ITEMS.PROCESSOR.id, count: 4 },
       { itemId: ITEMS.REINFORCED_THRUSTER.id, count: 2 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -1221,7 +1222,7 @@ export const RECIPES: Recipe[] = [
     time: 6,
     ingredients: [
       { itemId: ITEMS.SUPERSONIC_MISSILE_SET.id, count: 3 },
-      { itemId: ITEMS.EXPLOSIVE_UNIT.id, count: 6 },
+      { itemId: ITEMS.CRYSTAL_EXPLOSIVE_UNIT.id, count: 6 },
       { itemId: ITEMS.STRANGE_MATTER.id, count: 3 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -1232,7 +1233,7 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 1.5,
     ingredients: [
-      { itemId: ITEMS.IRON_INGOT.id, count: 9 },
+      { itemId: ITEMS.COPPER_INGOT.id, count: 9 },
       { itemId: ITEMS.COMBUSTIBLE_UNIT.id, count: 2 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -1244,8 +1245,8 @@ export const RECIPES: Recipe[] = [
     time: 3,
     ingredients: [
       { itemId: ITEMS.SHELL_SET.id, count: 1 },
-      { itemId: ITEMS.EXPLOSIVE_UNIT.id, count: 6 },
-      { itemId: ITEMS.STEEL.id, count: 2 }
+      { itemId: ITEMS.TITANIUM_INGOT.id, count: 6 },
+      { itemId: ITEMS.EXPLOSIVE_UNIT.id, count: 2 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1256,8 +1257,8 @@ export const RECIPES: Recipe[] = [
     time: 6,
     ingredients: [
       { itemId: ITEMS.HIGH_EXPLOSIVE_SHELL_SET.id, count: 1 },
-      { itemId: ITEMS.CRYSTAL_EXPLOSIVE_UNIT.id, count: 3 },
-      { itemId: ITEMS.TITANIUM_ALLOY.id, count: 2 }
+      { itemId: ITEMS.CRYSTAL_EXPLOSIVE_UNIT.id, count: 2 },
+      { itemId: ITEMS.TITANIUM_ALLOY.id, count: 3 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1267,8 +1268,8 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 2,
     ingredients: [
-      { itemId: ITEMS.MAGNETIC_COIL.id, count: 1 },
-      { itemId: ITEMS.STEEL.id, count: 2 },
+      { itemId: ITEMS.GRAPHENE.id, count: 1 },
+      { itemId: ITEMS.MAGNET.id, count: 2 },
       { itemId: ITEMS.DEUTERIUM.id, count: 10 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -1280,9 +1281,9 @@ export const RECIPES: Recipe[] = [
     time: 2,
     ingredients: [
       { itemId: ITEMS.PLASMA_CAPSULE.id, count: 1 },
-      { itemId: ITEMS.ANNIHILATION_CONSTRAINT_SPHERE.id, count: 1 },
+      { itemId: ITEMS.PARTICLE_CONTAINER.id, count: 1 },
       { itemId: ITEMS.ANTIMATTER.id, count: 10 },
-      { itemId: ITEMS.TITANIUM_ALLOY.id, count: 10 }
+      { itemId: ITEMS.HYDROGEN.id, count: 10 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1292,9 +1293,9 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 2,
     ingredients: [
-      { itemId: ITEMS.CIRCUIT_BOARD.id, count: 1 },
-      { itemId: ITEMS.ENGINE.id, count: 1 },
-      { itemId: ITEMS.ENERGETIC_GRAPHITE.id, count: 3 }
+      { itemId: ITEMS.ELECTROMAGNETIC_TURBINE.id, count: 1 },
+      { itemId: ITEMS.PLASMA_EXCITER.id, count: 1 },
+      { itemId: ITEMS.HYDROGEN.id, count: 3 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1305,8 +1306,8 @@ export const RECIPES: Recipe[] = [
     time: 8,
     ingredients: [
       { itemId: ITEMS.JAMMING_CAPSULE.id, count: 2 },
-      { itemId: ITEMS.PROCESSOR.id, count: 1 },
-      { itemId: ITEMS.GRAPHENE.id, count: 2 }
+      { itemId: ITEMS.SUPER_MAGNETIC_RING.id, count: 1 },
+      { itemId: ITEMS.TITANIUM_GLASS.id, count: 2 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1353,7 +1354,7 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { itemId: ITEMS.IRON_INGOT.id, count: 2 },
       { itemId: ITEMS.PROCESSOR.id, count: 1 },
-      { itemId: ITEMS.ELECTROMAGNETIC_TURBINE.id, count: 1 }
+      { itemId: ITEMS.ENGINE.id, count: 1 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1364,9 +1365,9 @@ export const RECIPES: Recipe[] = [
     time: 3,
     ingredients: [
       { itemId: ITEMS.IRON_INGOT.id, count: 3 },
-      { itemId: ITEMS.COPPER_INGOT.id, count: 1 },
+      { itemId: ITEMS.ENGINE.id, count: 1 },
       { itemId: ITEMS.CIRCUIT_BOARD.id, count: 2 },
-      { itemId: ITEMS.MICROCRYSTALLINE_COMPONENT.id, count: 1 }
+      { itemId: ITEMS.PLASMA_EXCITER.id, count: 1 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1377,9 +1378,9 @@ export const RECIPES: Recipe[] = [
     time: 4,
     ingredients: [
       { itemId: ITEMS.PROTOTYPE.id, count: 1 },
-      { itemId: ITEMS.PHOTON_COMBINER.id, count: 1 },
-      { itemId: ITEMS.MICROCRYSTALLINE_COMPONENT.id, count: 2 },
-      { itemId: ITEMS.IRON_INGOT.id, count: 2 }
+      { itemId: ITEMS.ELECTROMAGNETIC_TURBINE.id, count: 1 },
+      { itemId: ITEMS.CIRCUIT_BOARD.id, count: 2 },
+      { itemId: ITEMS.PHOTON_COMBINER.id, count: 2 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1402,10 +1403,10 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 5,
     ingredients: [
-      { itemId: ITEMS.STEEL.id, count: 5 },
-      { itemId: ITEMS.PROCESSOR.id, count: 1 },
-      { itemId: ITEMS.REINFORCED_THRUSTER.id, count: 2 },
-      { itemId: ITEMS.TITANIUM_ALLOY.id, count: 3 }
+      { itemId: ITEMS.TITANIUM_ALLOY.id, count: 5 },
+      { itemId: ITEMS.PROCESSOR.id, count: 2 },
+      { itemId: ITEMS.REINFORCED_THRUSTER.id, count: 1 },
+      { itemId: ITEMS.PARTICLE_CONTAINER.id, count: 3 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1415,9 +1416,9 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 8,
     ingredients: [
-      { itemId: ITEMS.TITANIUM_ALLOY.id, count: 20 },
-      { itemId: ITEMS.FRAME_MATERIAL.id, count: 4 },
-      { itemId: ITEMS.CORVETTE.id, count: 4 },
+      { itemId: ITEMS.FRAME_MATERIAL.id, count: 20 },
+      { itemId: ITEMS.REINFORCED_THRUSTER.id, count: 4 },
+      { itemId: ITEMS.PROCESSOR.id, count: 4 },
       { itemId: ITEMS.STRANGE_MATTER.id, count: 1 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -1530,7 +1531,8 @@ export const RECIPES: Recipe[] = [
     time: 5,
     ingredients: [
       { itemId: ITEMS.ARC_SMELTER.id, count: 1 },
-      { itemId: ITEMS.PLANE_FILTER.id, count: 5 },
+      { itemId: ITEMS.FRAME_MATERIAL.id, count: 5 },
+      { itemId: ITEMS.PLANE_FILTER.id, count: 4 },
       { itemId: ITEMS.UNIPOLAR_MAGNET.id, count: 15 }
     ],
     producedIn: FACILITIES.ASSEMBLER
@@ -1621,9 +1623,9 @@ export const RECIPES: Recipe[] = [
     time: 4,
     ingredients: [
       { itemId: ITEMS.STEEL.id, count: 3 },
-      { itemId: ITEMS.GEAR.id, count: 2 },
-      { itemId: ITEMS.MAGNETIC_COIL.id, count: 1 },
-      { itemId: ITEMS.PROCESSOR.id, count: 1 }
+      { itemId: ITEMS.GEAR.id, count: 4 },
+      { itemId: ITEMS.SUPER_MAGNETIC_RING.id, count: 1 },
+      { itemId: ITEMS.PROCESSOR.id, count: 2 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },
@@ -1633,8 +1635,9 @@ export const RECIPES: Recipe[] = [
     outputCount: 1,
     time: 1,
     ingredients: [
-      { itemId: ITEMS.SORTER_MKIII.id, count: 1 },
-      { itemId: ITEMS.PROCESSOR.id, count: 1 }
+      { itemId: ITEMS.SORTER_MKIII.id, count: 2 },
+      { itemId: ITEMS.PROCESSOR.id, count: 1 },
+      { itemId: ITEMS.SUPER_MAGNETIC_RING.id, count: 1 }
     ],
     producedIn: FACILITIES.ASSEMBLER
   },

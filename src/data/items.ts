@@ -1,4 +1,4 @@
-import { Item, ITEM_TYPES, CATEGORIES } from '../types';
+import { CATEGORIES, Item, ITEM_TYPES } from '../types';
 
 export const ITEMS: Record<string, Item> = {
   // --- Natural Resources ---
@@ -56,9 +56,9 @@ export const ITEMS: Record<string, Item> = {
   PLASTIC: { id: "plastic", name: "Plastic", nameJa: "プラスチック", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/plastic.png" },
   PRISM: { id: "prism", name: "Prism", nameJa: "プリズム", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/prism.png" },
   PROCESSOR: { id: "processor", name: "Processor", nameJa: "プロセッサ", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/processor.png" },
-  PROLIFERATOR_MKI: { id: "proliferator_mki", name: "Proliferator Mk.I", nameJa: "加速剤 Mk.I", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/proliferator_mki.png" },
-  PROLIFERATOR_MKII: { id: "proliferator_mkii", name: "Proliferator Mk.II", nameJa: "加速剤 Mk.II", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/proliferator_mkii.png" },
-  PROLIFERATOR_MKIII: { id: "proliferator_mkiii", name: "Proliferator Mk.III", nameJa: "加速剤 Mk.III", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/proliferator_mkiii.png" },
+  PROLIFERATOR_MKI: { id: "proliferator_mki", name: "Proliferator Mk.I", nameJa: "増産剤 Mk.I", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/proliferator_mki.png" },
+  PROLIFERATOR_MKII: { id: "proliferator_mkii", name: "Proliferator Mk.II", nameJa: "増産剤 Mk.II", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/proliferator_mkii.png" },
+  PROLIFERATOR_MKIII: { id: "proliferator_mkiii", name: "Proliferator Mk.III", nameJa: "増産剤 Mk.III", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/proliferator_mkiii.png" },
   QUANTUM_CHIP: { id: "quantum_chip", name: "Quantum Chip", nameJa: "量子チップ", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/quantum_chip.png" },
   REINFORCED_THRUSTER: { id: "reinforced_thruster", name: "Reinforced Thruster", nameJa: "強化スラスター", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/reinforced_thruster.png" },
   PARTICLE_BROADBAND: { id: "particle_broadband", name: "Particle Broadband", nameJa: "粒子ブロードバンド", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.INTERMEDIATE_PRODUCTS, iconPath: "/icons/particle_broadband.png" },
@@ -86,7 +86,7 @@ export const ITEMS: Record<string, Item> = {
   HYDROGEN_FUEL_ROD: { id: "hydrogen_fuel_rod", name: "Hydrogen Fuel Rod", nameJa: "水素燃料棒", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.ENERGY_SOURCES, iconPath: "/icons/hydrogen_fuel_rod.png" },
   DEUTERON_FUEL_ROD: { id: "deuteron_fuel_rod", name: "Deuteron Fuel Rod", nameJa: "重水素燃料棒", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.ENERGY_SOURCES, iconPath: "/icons/deuteron_fuel_rod.png" },
   ANTIMATTER_FUEL_ROD: { id: "antimatter_fuel_rod", name: "Antimatter Fuel Rod", nameJa: "反物質燃料棒", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.ENERGY_SOURCES, iconPath: "/icons/antimatter_fuel_rod.png" },
-  STRANGE_ANNIHILATION_FUEL_ROD: { id: "strange_annihilation_fuel_rod", name: "Strange Annihilation Fuel Rod", nameJa: "奇妙な湮滅燃料棒", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.ENERGY_SOURCES, iconPath: "/icons/strange_annihilation_fuel_rod.png" },
+  STRANGE_ANNIHILATION_FUEL_ROD: { id: "strange_annihilation_fuel_rod", name: "Strange Annihilation Fuel Rod", nameJa: "ストレンジ対消滅燃料棒", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.ENERGY_SOURCES, iconPath: "/icons/strange_annihilation_fuel_rod.png" },
 
   // --- Ammunition ---
   MAGNUM_AMMO_BOX: { id: "magnum_ammo_box", name: "Magnum Ammo Box", nameJa: "マグナム弾箱", type: ITEM_TYPES.COMPONENT, category: CATEGORIES.AMMUNITION, iconPath: "/icons/magnum_ammo_box.png" },
