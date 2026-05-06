@@ -48,10 +48,9 @@ export const ItemList = () => {
                         <Link
                           to={item ? `/item/${item.id}` : '#'}
                           className="group relative block w-12 h-12 hover:bg-blue-50 transition-colors flex items-center justify-center p-1"
-                          title={name || itemId}
                         >
                           {item?.iconPath ? (
-                            <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt={name} className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
+                            <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt="" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
                           ) : (
                             <div className="text-[8px] text-slate-300 text-center leading-tight overflow-hidden px-1">{name || itemId}</div>
                           )}
