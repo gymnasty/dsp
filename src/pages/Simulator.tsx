@@ -1,4 +1,4 @@
-import { ArrowDownToLine, ArrowRight, Calculator, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
+import { ArrowDownToLine, ArrowRight, Calculator, Factory, Package, Plus, Search, Trash2, TrendingUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ITEMS } from '../data/items';
@@ -42,7 +42,7 @@ export const Simulator = () => {
     return sortedItems.filter(item => producibleIds.has(item.id));
   }, [sortedItems]);
 
-  const [selectedProduceItemId, setSelectedProduceItemId] = useState(producibleItems[0]?.id || '');
+  const [selectedProduceItemId, setSelectedProduceItemId] = useState('');
 
   const availableFacilities = useMemo(() => {
     if (!selectedProduceItemId) return [];
@@ -71,9 +71,9 @@ export const Simulator = () => {
     }
   }, [availableFacilities, selectedFacilityId]);
 
-  const [newItemId, setNewItemId] = useState(sortedItems[0]?.id || '');
+  const [newItemId, setNewItemId] = useState('');
   const [newRate, setNewRate] = useState(1);
-  const [newTargetItemId, setNewTargetItemId] = useState(sortedItems[0]?.id || '');
+  const [newTargetItemId, setNewTargetItemId] = useState('');
   const [newTargetRate, setNewTargetRate] = useState(1);
 
   const openModal = (target: 'input' | 'output' | 'processor_item' | 'processor_facility') => {
@@ -230,7 +230,17 @@ export const Simulator = () => {
         </div>
         <div className="flex-grow"></div>
         <button 
-          onClick={() => { if(confirm(t('simulator.clearAll') + '?')) { setInputs([]); setOutputs([]); setProcessors([]); } }}
+          onClick={() => { 
+            if(confirm(t('simulator.clearAll') + '?')) { 
+              setInputs([]); 
+              setOutputs([]); 
+              setProcessors([]); 
+              setNewItemId('');
+              setNewTargetItemId('');
+              setSelectedProduceItemId('');
+              setSelectedFacilityId('');
+            } 
+          }}
           className="px-4 py-2 bg-slate-200 hover:bg-red-100 hover:text-red-600 text-slate-600 rounded-xl text-xs font-bold transition-all flex items-center gap-2"
         >
           <Trash2 size={14} />
@@ -255,10 +265,16 @@ export const Simulator = () => {
                   onClick={() => openModal('input')}
                   className="flex-grow flex items-center gap-3 bg-slate-100 hover:bg-slate-200 rounded-xl px-4 py-2 transition-all group"
                 >
-                  <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform">
-                    <img src={newItem?.iconPath} alt="" className="w-full h-full object-contain" />
+                  <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform flex items-center justify-center">
+                    {newItem ? (
+                      <img src={newItem.iconPath} alt="" className="w-full h-full object-contain" />
+                    ) : (
+                      <Package size={14} className="text-slate-300" />
+                    )}
                   </div>
-                  <span className="text-xs font-bold text-slate-700">{getItemName(newItem)}</span>
+                  <span className={`text-xs font-bold ${newItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
+                    {newItem ? getItemName(newItem) : '選択してください'}
+                  </span>
                 </button>
                 <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
                   <input 
@@ -271,7 +287,8 @@ export const Simulator = () => {
                 </div>
                 <button 
                   onClick={addInput}
-                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
+                  disabled={!newItemId}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
                 >
                   <Plus size={18} />
                 </button>
@@ -325,10 +342,16 @@ export const Simulator = () => {
                   onClick={() => openModal('output')}
                   className="flex-grow flex items-center gap-3 bg-slate-100 hover:bg-slate-200 rounded-xl px-4 py-2 transition-all group"
                 >
-                  <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform">
-                    <img src={newTargetItem?.iconPath} alt="" className="w-full h-full object-contain" />
+                  <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform flex items-center justify-center">
+                    {newTargetItem ? (
+                      <img src={newTargetItem.iconPath} alt="" className="w-full h-full object-contain" />
+                    ) : (
+                      <Package size={14} className="text-slate-300" />
+                    )}
                   </div>
-                  <span className="text-xs font-bold text-slate-700">{getItemName(newTargetItem)}</span>
+                  <span className={`text-xs font-bold ${newTargetItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
+                    {newTargetItem ? getItemName(newTargetItem) : '選択してください'}
+                  </span>
                 </button>
                 <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
                   <input
@@ -341,7 +364,8 @@ export const Simulator = () => {
                 </div>
                 <button
                   onClick={addOutput}
-                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
+                  disabled={!newTargetItemId}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
                 >
                   <Plus size={18} />
                 </button>
@@ -396,22 +420,27 @@ export const Simulator = () => {
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('simulator.item')}</label>
                 <button 
                   onClick={() => openModal('processor_item')}
-                  className="w-full flex items-center gap-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-4 transition-all group"
+                  className="w-full flex items-center gap-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-3 transition-all group min-h-[74px]"
                 >
-                  <div className="w-12 h-12 bg-white rounded-xl p-2 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform">
-                    <img src={selectedProduceItem?.iconPath} alt="" className="w-full h-full object-contain" />
+                  <div className="w-12 h-12 bg-white rounded-xl p-2 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center shrink-0">
+                    {selectedProduceItem ? (
+                      <img src={selectedProduceItem.iconPath} alt="" className="w-full h-full object-contain" />
+                    ) : (
+                      <Package size={20} className="text-slate-300" />
+                    )}
                   </div>
                   <div className="text-left">
-                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-tight">{t('menu.items')}</span>
-                    <span className="text-sm font-black text-slate-700">{getItemName(selectedProduceItem)}</span>
+                    <span className={`text-sm font-black ${selectedProduceItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
+                      {selectedProduceItem ? getItemName(selectedProduceItem) : '選択してください'}
+                    </span>
                   </div>
                 </button>
               </div>
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.facility')}</label>
-                <div className="flex flex-wrap gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                  {availableFacilities.map(item => (
+                <div className="flex flex-wrap gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 min-h-[74px] items-center">
+                  {availableFacilities.length > 0 ? availableFacilities.map(item => (
                     <button
                       key={item.id}
                       onClick={() => setSelectedFacilityId(item.id)}
@@ -431,9 +460,10 @@ export const Simulator = () => {
                         {getItemName(item)}
                       </div>
                     </button>
-                  ))}
-                  {availableFacilities.length === 0 && (
-                    <p className="text-[10px] font-bold text-slate-400 p-2 italic">{t('simulator.empty')}</p>
+                  )) : (
+                    <p className="text-[10px] font-bold text-slate-400 p-2 italic">
+                      {selectedProduceItemId ? t('simulator.empty') : t('simulator.item') + 'を選択してください'}
+                    </p>
                   )}
                 </div>
               </div>
@@ -598,69 +628,73 @@ export const Simulator = () => {
 
         {/* Results Section */}
         <section className="bg-slate-900 rounded-3xl text-white shadow-xl overflow-hidden flex flex-col">
-          <div className="px-8 py-6 border-b border-white/10 bg-white/5 flex justify-between items-center">
-            <h2 className="text-sm font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
-              <TrendingUp size={16} />
+          <div className="px-6 py-4 border-b border-white/10 bg-white/5 flex justify-between items-center shrink-0">
+            <h2 className="text-xs font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
+              <TrendingUp size={14} />
               {t('simulator.results')}
             </h2>
           </div>
-          <div className="p-8">
+          <div className="flex-grow overflow-x-auto">
             {sortedResults.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-4 py-20">
-                <Calculator size={48} className="opacity-20" />
-                <p className="text-sm font-bold text-center max-w-xs">{t('simulator.empty')}</p>
+              <div className="flex flex-col items-center justify-center text-slate-500 space-y-4 py-12">
+                <Calculator size={32} className="opacity-20" />
+                <p className="text-xs font-bold text-center max-w-xs">{t('simulator.empty')}</p>
               </div>
             ) : (
-              <div className="space-y-6">
-                {sortedResults.map((res) => {
-                  const item = Object.values(ITEMS).find(i => i.id === res.id);
-                  const isPositive = res.netRate > 0.0001;
-                  const isNegative = res.netRate < -0.0001;
-                  
-                  return (
-                    <div key={res.id} className="bg-white/5 rounded-2xl p-5 border border-white/5 hover:bg-white/10 transition-colors">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center p-2">
-                            <img src={item?.iconPath} alt="" className="w-full h-full object-contain" />
+              <table className="w-full border-collapse text-[10px]">
+                <thead className="bg-white/5 text-slate-400 font-black uppercase tracking-tighter text-center">
+                  <tr>
+                    <th className="px-4 py-2 text-left w-48 font-black">{t('simulator.item')}</th>
+                    <th className="px-2 py-2 font-black">{t('simulator.inputRate')}</th>
+                    <th className="px-2 py-2 font-black">{t('simulator.production')}</th>
+                    <th className="px-2 py-2 font-black">{t('simulator.consumption')}</th>
+                    <th className="px-2 py-2 font-black">{t('simulator.externalOutput')}</th>
+                    <th className="px-4 py-2 text-right font-black">{t('simulator.netRate')}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {sortedResults.map((res) => {
+                    const item = Object.values(ITEMS).find(i => i.id === res.id);
+                    const isPositive = res.netRate > 0.0001;
+                    const isNegative = res.netRate < -0.0001;
+                    
+                    return (
+                      <tr key={res.id} className="hover:bg-white/5 transition-colors">
+                        <td className="px-4 py-2">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center p-1 shrink-0">
+                              <img src={item?.iconPath} alt="" className="w-full h-full object-contain" />
+                            </div>
+                            <span className="font-bold text-slate-100 truncate">{getItemName(item)}</span>
                           </div>
-                          <div>
-                            <span className="font-bold text-slate-100 block">{getItemName(item)}</span>
-                            <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest">
+                        </td>
+                        <td className="px-2 py-2 text-center font-mono text-slate-300">
+                          {res.input > 0 ? `+${res.input.toFixed(2)}` : '-'}
+                        </td>
+                        <td className="px-2 py-2 text-center font-mono text-green-400/70">
+                          {res.production > 0 ? `+${res.production.toFixed(2)}` : '-'}
+                        </td>
+                        <td className="px-2 py-2 text-center font-mono text-red-400/70">
+                          {res.consumption > 0 ? `-${res.consumption.toFixed(2)}` : '-'}
+                        </td>
+                        <td className="px-2 py-2 text-center font-mono text-orange-400/70">
+                          {res.sink > 0 ? `-${res.sink.toFixed(2)}` : '-'}
+                        </td>
+                        <td className="px-4 py-2 text-right">
+                          <div className="flex flex-col items-end">
+                            <span className={`font-mono font-black text-xs ${isPositive ? 'text-green-400' : isNegative ? 'text-red-400' : 'text-slate-400'}`}>
+                              {res.netRate > 0 ? '+' : ''}{res.netRate.toFixed(2)}/s
+                            </span>
+                            <span className="text-[8px] font-bold text-slate-500 uppercase">
                               {(res.netRate * 60).toFixed(1)}/min
                             </span>
                           </div>
-                        </div>
-                        <div className="text-right">
-                          <p className={`text-2xl font-mono font-black leading-none ${isPositive ? 'text-green-400' : isNegative ? 'text-red-400' : 'text-slate-400'}`}>
-                            {res.netRate > 0 ? '+' : ''}{res.netRate.toFixed(2)}
-                            <span className="text-xs ml-1 font-bold opacity-50 uppercase">/s</span>
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-4 gap-2 text-center">
-                        <div className="bg-white/5 rounded-lg py-2">
-                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.inputRate')}</p>
-                          <p className="text-xs font-mono font-bold text-slate-300">{res.input > 0 ? `+${res.input.toFixed(1)}` : '0'}</p>
-                        </div>
-                        <div className="bg-white/5 rounded-lg py-2">
-                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.production')}</p>
-                          <p className="text-xs font-mono font-bold text-green-400/70">{res.production > 0 ? `+${res.production.toFixed(1)}` : '0'}</p>
-                        </div>
-                        <div className="bg-white/5 rounded-lg py-2">
-                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.consumption')}</p>
-                          <p className="text-xs font-mono font-bold text-red-400/70">{res.consumption > 0 ? `-${res.consumption.toFixed(1)}` : '0'}</p>
-                        </div>
-                        <div className="bg-white/5 rounded-lg py-2">
-                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">{t('simulator.externalOutput')}</p>
-                          <p className="text-xs font-mono font-bold text-orange-400/70">{res.sink > 0 ? `-${res.sink.toFixed(1)}` : '0'}</p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             )}
           </div>
         </section>
