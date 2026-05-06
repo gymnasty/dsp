@@ -81,7 +81,10 @@
     "perSecond": "/s",
     "perMinute": "/min",
     "select": "Select...",
-    "noFacility": "No Facility"
+    "noFacility": "No Facility",
+    "addToInputs": "Add to Required",
+    "addToExternalOutput": "Add to Supplied",
+    "addToProcessors": "Add to Produced"
   },
   "items": {
     "coal": "Coal",

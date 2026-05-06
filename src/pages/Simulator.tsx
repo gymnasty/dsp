@@ -81,6 +81,18 @@ export const Simulator = () => {
   const [newTargetItemId, setNewTargetItemId] = useState('');
   const [newTargetRate, setNewTargetRate] = useState(1);
 
+  // Menu State
+  const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number; itemId: string } | null>(null);
+
+  // Close menu when clicking elsewhere
+  useEffect(() => {
+    const handleWindowClick = () => setMenuAnchor(null);
+    if (menuAnchor) {
+      window.addEventListener('click', handleWindowClick);
+    }
+    return () => window.removeEventListener('click', handleWindowClick);
+  }, [menuAnchor]);
+
   const openModal = (target: 'input' | 'output' | 'processor_item' | 'processor_facility') => {
     setModalTarget(target);
     setIsModalOpen(true);
@@ -120,9 +132,10 @@ export const Simulator = () => {
     setProcessors(processors.filter((_, i) => i !== index));
   };
 
-  const addInput = () => {
-    if (!newItemId) return;
-    setInputs([...inputs, { itemId: newItemId, rate: newRate }]);
+  const addInput = (itemId?: string) => {
+    const id = itemId || newItemId;
+    if (!id) return;
+    setInputs([...inputs, { itemId: id, rate: itemId ? 1 : newRate }]);
   };
 
   const updateInputRate = (index: number, rate: number) => {
@@ -135,9 +148,10 @@ export const Simulator = () => {
     setInputs(inputs.filter((_, i) => i !== index));
   };
 
-  const addOutput = () => {
-    if (!newTargetItemId) return;
-    setOutputs([...outputs, { itemId: newTargetItemId, rate: newTargetRate }]);
+  const addOutput = (itemId?: string) => {
+    const id = itemId || newTargetItemId;
+    if (!id) return;
+    setOutputs([...outputs, { itemId: id, rate: itemId ? 1 : newTargetRate }]);
   };
 
   const updateOutputRate = (index: number, rate: number) => {
@@ -212,7 +226,13 @@ export const Simulator = () => {
 
   const producibleItemIds = useMemo(() => new Set(RECIPES.map(r => r.outputItemId)), []);
 
-  const handleResultItemClick = (itemId: string) => {
+  const handleResultItemClick = (e: React.MouseEvent, itemId: string) => {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMenuAnchor({ x: rect.left, y: rect.bottom, itemId });
+  };
+
+  const jumpToProcessor = (itemId: string) => {
     if (producibleItemIds.has(itemId)) {
       setSelectedProduceItemId(itemId);
       setIsProcessorsOpen(true);
@@ -297,7 +317,7 @@ export const Simulator = () => {
                     <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
                   </div>
                   <button 
-                    onClick={addInput}
+                    onClick={() => addInput()}
                     disabled={!newItemId}
                     className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white p-1.5 rounded-xl shadow-md shadow-blue-100 transition-all active:scale-95 shrink-0"
                   >
@@ -396,7 +416,7 @@ export const Simulator = () => {
                     <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
                   </div>
                   <button
-                    onClick={addOutput}
+                    onClick={() => addOutput()}
                     disabled={!newTargetItemId}
                     className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white p-1.5 rounded-xl shadow-md shadow-blue-100 transition-all active:scale-95 shrink-0"
                   >
@@ -697,18 +717,15 @@ export const Simulator = () => {
                       <tr key={res.id} className="hover:bg-white/5 transition-colors">
                         <td className="px-4 py-2">
                           <button 
-                            onClick={() => handleResultItemClick(res.id)}
-                            disabled={!producibleItemIds.has(res.id)}
-                            className={`flex items-center gap-2 group/item text-left ${producibleItemIds.has(res.id) ? 'cursor-pointer' : 'cursor-default opacity-80'}`}
+                            onClick={(e) => handleResultItemClick(e, res.id)}
+                            className="flex items-center gap-2 group/item text-left cursor-pointer"
                           >
-                            <div className={`w-6 h-6 bg-white/10 rounded flex items-center justify-center p-1 shrink-0 ${producibleItemIds.has(res.id) ? 'group-hover/item:scale-110 group-hover/item:bg-white/20 transition-all' : ''}`}>
+                            <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center p-1 shrink-0 group-hover/item:scale-110 group-hover/item:bg-white/20 transition-all">
                               <img src={`${import.meta.env.BASE_URL}${item?.iconPath}`} alt="" className="w-full h-full object-contain" />
                             </div>
-                            <span className={`font-bold truncate ${producibleItemIds.has(res.id) ? 'text-slate-100 group-hover/item:text-blue-400 transition-colors' : 'text-slate-400'}`}>
+                            <span className="font-bold truncate text-slate-100 group-hover/item:text-blue-400 transition-colors">
                               {getItemName(item)}
-                              {producibleItemIds.has(res.id) && (
-                                <Plus size={8} className="inline ml-1 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                              )}
+                              <Plus size={8} className="inline ml-1 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                             </span>
                           </button>
                         </td>
@@ -760,6 +777,38 @@ export const Simulator = () => {
           undefined
         }
       />
+
+      {menuAnchor && (
+        <div 
+          className="fixed z-50 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden min-w-[140px] py-1"
+          style={{ top: menuAnchor.y, left: menuAnchor.x }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button 
+            onClick={() => { addInput(menuAnchor.itemId); setMenuAnchor(null); }}
+            className="w-full text-left px-4 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 flex items-center gap-2 transition-colors"
+          >
+            <Package size={12} className="text-blue-500" />
+            {t('simulator.addToInputs')}
+          </button>
+          <button 
+            onClick={() => { addOutput(menuAnchor.itemId); setMenuAnchor(null); }}
+            className="w-full text-left px-4 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 flex items-center gap-2 transition-colors"
+          >
+            <ArrowDownToLine size={12} className="text-orange-500" />
+            {t('simulator.addToExternalOutput')}
+          </button>
+          {producibleItemIds.has(menuAnchor.itemId) && (
+            <button 
+              onClick={() => { jumpToProcessor(menuAnchor.itemId); setMenuAnchor(null); }}
+              className="w-full text-left px-4 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 flex items-center gap-2 transition-colors border-t border-slate-100"
+            >
+              <Factory size={12} className="text-green-500" />
+              {t('simulator.addToProcessors')}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

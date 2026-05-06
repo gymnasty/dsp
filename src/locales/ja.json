@@ -81,7 +81,10 @@
     "perSecond": "/秒",
     "perMinute": "/分",
     "select": "選択...",
-    "noFacility": "施設がありません"
+    "noFacility": "施設がありません",
+    "addToInputs": "要求に追加",
+    "addToExternalOutput": "供給に追加",
+    "addToProcessors": "生産に追加"
   },
   "items": {
     "coal": "石炭",
