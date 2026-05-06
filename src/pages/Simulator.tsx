@@ -1,4 +1,4 @@
-import { ArrowDownToLine, ArrowRight, Calculator, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
+import { ArrowDownToLine, ArrowRight, Calculator, ChevronDown, ChevronUp, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
@@ -28,6 +28,11 @@ export const Simulator = () => {
   const [inputs, setInputs] = useState<InputState[]>([]);
   const [outputs, setOutputs] = useState<OutputState[]>([]);
   const [processors, setProcessors] = useState<ProcessorState[]>([]);
+
+  // Collapsible Sections State
+  const [isInputsOpen, setIsInputsOpen] = useState(true);
+  const [isOutputsOpen, setIsOutputsOpen] = useState(true);
+  const [isProcessorsOpen, setIsProcessorsOpen] = useState(true);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -252,377 +257,395 @@ export const Simulator = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Inputs Section */}
           <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+            <button 
+              onClick={() => setIsInputsOpen(!isInputsOpen)}
+              className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full hover:bg-slate-100 transition-colors"
+            >
               <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                 <Package size={16} />
                 {t('simulator.inputs')}
               </h2>
-            </div>
-            <div className="p-6 space-y-4 flex-grow">
-              <div className="flex gap-2">
-                <button 
-                  onClick={() => openModal('input')}
-                  className="flex-grow flex items-center gap-3 bg-slate-100 hover:bg-slate-200 rounded-xl px-4 py-2 transition-all group"
-                >
-                  <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform flex items-center justify-center">
-                    {newItem ? (
-                      <img src={newItem.iconPath} alt="" className="w-full h-full object-contain" />
-                    ) : (
-                      <Package size={14} className="text-slate-300" />
-                    )}
-                  </div>
-                  <span className={`text-xs font-bold ${newItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
-                    {newItem ? getItemName(newItem) : '選択してください'}
-                  </span>
-                </button>
-                <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
-                  <input 
-                    type="number" 
-                    value={newRate}
-                    onChange={(e) => setNewRate(Math.max(0, parseFloat(e.target.value) || 0))}
-                    className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
-                  />
-                  <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
-                </div>
-                <button 
-                  onClick={addInput}
-                  disabled={!newItemId}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
-                >
-                  <Plus size={18} />
-                </button>
-              </div>
-
-              <div className="space-y-2">
-                {inputs.map((input, idx) => {
-                  const item = Object.values(ITEMS).find(i => i.id === input.itemId);
-                  return (
-                    <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <img src={item?.iconPath} alt="" className="w-6 h-6 object-contain shrink-0" />
-                        <span className="text-xs font-bold text-slate-700 truncate">{getItemName(item)}</span>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <div className="flex items-center bg-white border border-slate-200 rounded-lg px-2 py-1">
-                          <input 
-                            type="number" 
-                            value={input.rate}
-                            step="0.1"
-                            onChange={(e) => updateInputRate(idx, parseFloat(e.target.value) || 0)}
-                            className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-xs p-0"
-                          />
-                          <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
-                        </div>
-                        <button 
-                          onClick={() => removeInput(idx)}
-                          className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-
-          {/* Outputs (Sinks) Section */}
-          <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-              <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <ArrowDownToLine size={16} />
-                {t('simulator.externalOutput')}
-              </h2>
-            </div>
-            <div className="p-6 space-y-4 flex-grow">
-              <div className="flex gap-2">
-                <button 
-                  onClick={() => openModal('output')}
-                  className="flex-grow flex items-center gap-3 bg-slate-100 hover:bg-slate-200 rounded-xl px-4 py-2 transition-all group"
-                >
-                  <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform flex items-center justify-center">
-                    {newTargetItem ? (
-                      <img src={newTargetItem.iconPath} alt="" className="w-full h-full object-contain" />
-                    ) : (
-                      <Package size={14} className="text-slate-300" />
-                    )}
-                  </div>
-                  <span className={`text-xs font-bold ${newTargetItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
-                    {newTargetItem ? getItemName(newTargetItem) : '選択してください'}
-                  </span>
-                </button>
-                <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
-                  <input
-                    type="number"
-                    value={newTargetRate}
-                    onChange={(e) => setNewTargetRate(Math.max(0, parseFloat(e.target.value) || 0))}
-                    className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
-                  />
-                  <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
-                </div>
-                <button
-                  onClick={addOutput}
-                  disabled={!newTargetItemId}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
-                >
-                  <Plus size={18} />
-                </button>
-              </div>
-
-              <div className="space-y-2">
-                {outputs.map((output, idx) => {
-                  const item = Object.values(ITEMS).find(i => i.id === output.itemId);
-                  return (
-                    <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <img src={item?.iconPath} alt="" className="w-6 h-6 object-contain shrink-0" />
-                        <span className="text-xs font-bold text-slate-700 truncate">{getItemName(item)}</span>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <div className="flex items-center bg-white border border-slate-200 rounded-lg px-2 py-1">
-                          <input 
-                            type="number" 
-                            value={output.rate}
-                            step="0.1"
-                            onChange={(e) => updateOutputRate(idx, parseFloat(e.target.value) || 0)}
-                            className="w-12 bg-transparent border-none text-right font-mono font-black text-orange-600 focus:ring-0 text-xs p-0"
-                          />
-                          <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
-                        </div>
-                        <button 
-                          onClick={() => removeOutput(idx)}
-                          className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-        </div>
-
-        {/* Processors Section */}
-        <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-            <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-              <Factory size={16} />
-              {t('simulator.processors')}
-            </h2>
-          </div>
-          <div className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('simulator.item')}</label>
-                <button 
-                  onClick={() => openModal('processor_item')}
-                  className="w-full flex items-center gap-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-3 transition-all group min-h-[74px]"
-                >
-                  <div className="w-12 h-12 bg-white rounded-xl p-2 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center shrink-0">
-                    {selectedProduceItem ? (
-                      <img src={selectedProduceItem.iconPath} alt="" className="w-full h-full object-contain" />
-                    ) : (
-                      <Package size={20} className="text-slate-300" />
-                    )}
-                  </div>
-                  <div className="text-left">
-                    <span className={`text-sm font-black ${selectedProduceItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
-                      {selectedProduceItem ? getItemName(selectedProduceItem) : '選択してください'}
-                    </span>
-                  </div>
-                </button>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.facility')}</label>
-                <div className="flex flex-wrap gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 min-h-[74px] items-center">
-                  {availableFacilities.length > 0 ? availableFacilities.map(item => (
-                    <button
-                      key={item.id}
-                      onClick={() => setSelectedFacilityId(item.id)}
-                      className={`group relative w-12 h-12 flex items-center justify-center rounded-xl transition-all ${
-                        selectedFacilityId === item.id 
-                          ? 'bg-white border-2 border-blue-600 shadow-md ring-2 ring-blue-600/10 scale-105' 
-                          : 'bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50'
-                      }`}
-                      title={getItemName(item)}
-                    >
-                      <img src={item.iconPath} alt="" className="w-9 h-9 object-contain group-hover:scale-110 transition-transform" />
-                      {selectedFacilityId === item.id && (
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 rounded-full border-2 border-white shadow-sm">
-                        </div>
+              {isInputsOpen ? <ChevronUp size={16} className="text-slate-400" /> : <ChevronDown size={16} className="text-slate-400" />}
+            </button>
+            {isInputsOpen && (
+              <div className="p-6 space-y-4 flex-grow">
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => openModal('input')}
+                    className="flex-grow flex items-center gap-3 bg-slate-100 hover:bg-slate-200 rounded-xl px-4 py-2 transition-all group"
+                  >
+                    <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform flex items-center justify-center">
+                      {newItem ? (
+                        <img src={newItem.iconPath} alt="" className="w-full h-full object-contain" />
+                      ) : (
+                        <Package size={14} className="text-slate-300" />
                       )}
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
-                        {getItemName(item)}
-                      </div>
-                    </button>
-                  )) : (
-                    <p className="text-[10px] font-bold text-slate-400 p-2 italic">
-                      {selectedProduceItemId ? t('simulator.empty') : t('simulator.item') + 'を選択してください'}
-                    </p>
-                  )}
+                    </div>
+                    <span className={`text-xs font-bold ${newItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
+                      {newItem ? getItemName(newItem) : '選択してください'}
+                    </span>
+                  </button>
+                  <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
+                    <input 
+                      type="number" 
+                      value={newRate}
+                      onChange={(e) => setNewRate(Math.max(0, parseFloat(e.target.value) || 0))}
+                      className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
+                    />
+                    <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
+                  </div>
+                  <button 
+                    onClick={addInput}
+                    disabled={!newItemId}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
+                  >
+                    <Plus size={18} />
+                  </button>
                 </div>
-              </div>
-            </div>
 
-            {availableRecipes.length > 0 && (
-              <div className="space-y-3">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
-                  {availableRecipes.length > 1 ? t('itemDetail.productionRecipe') : t('itemDetail.productionRecipe')}
-                </label>
-                
-                <div className="grid grid-cols-1 gap-2">
-                  {availableRecipes.map(recipe => {
-                    const isSelected = newRecipeId === recipe.id;
+                <div className="space-y-2">
+                  {inputs.map((input, idx) => {
+                    const item = Object.values(ITEMS).find(i => i.id === input.itemId);
                     return (
-                      <button
-                        key={recipe.id}
-                        onClick={() => setNewRecipeId(recipe.id)}
-                        className={`flex items-center gap-4 p-3 rounded-2xl border transition-all text-left ${
-                          isSelected 
-                            ? 'bg-blue-50 border-blue-200 ring-2 ring-blue-600/10' 
-                            : 'bg-white border-slate-100 hover:border-blue-200 hover:bg-slate-50'
-                        }`}
-                      >
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                          isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200'
-                        }`}>
-                          {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                      <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img src={item?.iconPath} alt="" className="w-6 h-6 object-contain shrink-0" />
+                          <span className="text-xs font-bold text-slate-700 truncate">{getItemName(item)}</span>
                         </div>
-
-                        <div className="flex-grow flex items-center gap-3">
-                          <div className="flex items-center gap-1">
-                            {recipe.ingredients.map(ing => {
-                              const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
-                              return (
-                                <div key={ing.itemId} className="relative">
-                                  <img src={ingItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(ingItem)} />
-                                  <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/90 px-0.5 rounded leading-none border border-slate-100">{ing.count}</span>
-                                </div>
-                              );
-                            })}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex items-center bg-white border border-slate-200 rounded-lg px-2 py-1">
+                            <input 
+                              type="number" 
+                              value={input.rate}
+                              step="0.1"
+                              onChange={(e) => updateInputRate(idx, parseFloat(e.target.value) || 0)}
+                              className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-xs p-0"
+                            />
+                            <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
                           </div>
-                          <ArrowRight size={14} className="text-slate-300" />
-                          <div className="flex items-center gap-1">
-                            {[
-                              { itemId: recipe.outputItemId, count: recipe.outputCount },
-                              ...(recipe.extraOutputs || []).map(e => ({ itemId: e.itemId, count: e.count }))
-                            ].map((out, i) => {
-                              const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
-                              return (
-                                <div key={`${out.itemId}-${i}`} className="relative">
-                                  <img src={outItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(outItem)} />
-                                  <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/90 px-0.5 rounded leading-none border border-slate-100">{out.count}</span>
-                                </div>
-                              );
-                            })}
-                          </div>
+                          <button 
+                            onClick={() => removeInput(idx)}
+                            className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
+                          >
+                            <Trash2 size={14} />
+                          </button>
                         </div>
-
-                        <div className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">
-                          {recipe.time}s
-                        </div>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>
               </div>
             )}
-            
-            <div className="flex justify-end pt-2">
-              <button 
-                onClick={addProcessor}
-                disabled={!newRecipeId || !selectedFacilityId}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-8 py-3 rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-95 font-bold flex items-center gap-2"
-              >
-                <Plus size={20} />
-                {t('simulator.addRecipe')}
-              </button>
-            </div>
+          </section>
 
-            <div className="space-y-3 pt-4 border-t border-slate-100">
-              {processors.map((proc, idx) => {
-                const recipe = RECIPES.find(r => r.id === proc.recipeId);
-                const facilityItem = Object.values(ITEMS).find(i => i.id === proc.facilityId);
-                const speed = facilityItem?.productionSpeed || 1;
-                const rate = recipe ? (recipe.outputCount * proc.count * speed) / recipe.time : 0;
-                
-                return (
-                  <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-md">
-                    <div className="flex items-center gap-4 min-w-[200px]">
-                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-sm border border-slate-100">
-                        <img src={facilityItem?.iconPath} alt="" className="w-full h-full object-contain" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-slate-700">{getItemName(facilityItem)}</p>
-                      </div>
+          {/* Outputs (Sinks) Section */}
+          <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <button 
+              onClick={() => setIsOutputsOpen(!isOutputsOpen)}
+              className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full hover:bg-slate-100 transition-colors"
+            >
+              <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                <ArrowDownToLine size={16} />
+                {t('simulator.externalOutput')}
+              </h2>
+              {isOutputsOpen ? <ChevronUp size={16} className="text-slate-400" /> : <ChevronDown size={16} className="text-slate-400" />}
+            </button>
+            {isOutputsOpen && (
+              <div className="p-6 space-y-4 flex-grow">
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => openModal('output')}
+                    className="flex-grow flex items-center gap-3 bg-slate-100 hover:bg-slate-200 rounded-xl px-4 py-2 transition-all group"
+                  >
+                    <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform flex items-center justify-center">
+                      {newTargetItem ? (
+                        <img src={newTargetItem.iconPath} alt="" className="w-full h-full object-contain" />
+                      ) : (
+                        <Package size={14} className="text-slate-300" />
+                      )}
                     </div>
+                    <span className={`text-xs font-bold ${newTargetItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
+                      {newTargetItem ? getItemName(newTargetItem) : '選択してください'}
+                    </span>
+                  </button>
+                  <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
+                    <input
+                      type="number"
+                      value={newTargetRate}
+                      onChange={(e) => setNewTargetRate(Math.max(0, parseFloat(e.target.value) || 0))}
+                      className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
+                    />
+                    <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
+                  </div>
+                  <button
+                    onClick={addOutput}
+                    disabled={!newTargetItemId}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
+                  >
+                    <Plus size={18} />
+                  </button>
+                </div>
 
-                    <div className="flex-grow flex items-center justify-center gap-3">
-                      <div className="flex items-center gap-1">
-                        {recipe?.ingredients.map(ing => {
-                          const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
-                          return (
-                            <div key={ing.itemId} className="relative group/ing">
-                              <img src={ingItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(ingItem)} />
-                              <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/80 px-0.5 rounded leading-none border border-slate-200">{ing.count}</span>
-                            </div>
-                          );
-                        })}
+                <div className="space-y-2">
+                  {outputs.map((output, idx) => {
+                    const item = Object.values(ITEMS).find(i => i.id === output.itemId);
+                    return (
+                      <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img src={item?.iconPath} alt="" className="w-6 h-6 object-contain shrink-0" />
+                          <span className="text-xs font-bold text-slate-700 truncate">{getItemName(item)}</span>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex items-center bg-white border border-slate-200 rounded-lg px-2 py-1">
+                            <input 
+                              type="number" 
+                              value={output.rate}
+                              step="0.1"
+                              onChange={(e) => updateOutputRate(idx, parseFloat(e.target.value) || 0)}
+                              className="w-12 bg-transparent border-none text-right font-mono font-black text-orange-600 focus:ring-0 text-xs p-0"
+                            />
+                            <span className="text-[8px] font-black text-slate-400 ml-1 uppercase">/s</span>
+                          </div>
+                          <button 
+                            onClick={() => removeOutput(idx)}
+                            className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                       </div>
-                      <div className="text-slate-300">
-                        <ArrowRight size={16} />
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {[
-                          { itemId: recipe?.outputItemId, count: recipe?.outputCount },
-                          ...(recipe?.extraOutputs || []).map(e => ({ itemId: e.itemId, count: e.count }))
-                        ].map((out, i) => {
-                          const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
-                          return (
-                            <div key={`${out.itemId}-${i}`} className="relative group/out">
-                              <img src={outItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(outItem)} />
-                              <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/80 px-0.5 rounded leading-none border border-slate-200">{out.count}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* Processors Section */}
+        <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <button 
+            onClick={() => setIsProcessorsOpen(!isProcessorsOpen)}
+            className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full hover:bg-slate-100 transition-colors"
+          >
+            <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+              <Factory size={16} />
+              {t('simulator.processors')}
+            </h2>
+            {isProcessorsOpen ? <ChevronUp size={16} className="text-slate-400" /> : <ChevronDown size={16} className="text-slate-400" />}
+          </button>
+          {isProcessorsOpen && (
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('simulator.item')}</label>
+                  <button 
+                    onClick={() => openModal('processor_item')}
+                    className="w-full flex items-center gap-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-3 transition-all group min-h-[74px]"
+                  >
+                    <div className="w-12 h-12 bg-white rounded-xl p-2 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center shrink-0">
+                      {selectedProduceItem ? (
+                        <img src={selectedProduceItem.iconPath} alt="" className="w-full h-full object-contain" />
+                      ) : (
+                        <Package size={20} className="text-slate-300" />
+                      )}
                     </div>
-                    
-                    <div className="flex items-center gap-4 shrink-0">
-                      <div className="text-right">
-                        <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
-                          +{rate.toFixed(2)}/s
-                        </p>
+                    <div className="text-left">
+                      <span className={`text-sm font-black ${selectedProduceItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
+                        {selectedProduceItem ? getItemName(selectedProduceItem) : '選択してください'}
+                      </span>
+                    </div>
+                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.facility')}</label>
+                  <div className="flex flex-wrap gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 min-h-[74px] items-center">
+                    {availableFacilities.length > 0 ? availableFacilities.map(item => (
+                      <button
+                        key={item.id}
+                        onClick={() => setSelectedFacilityId(item.id)}
+                        className={`group relative w-12 h-12 flex items-center justify-center rounded-xl transition-all ${
+                          selectedFacilityId === item.id 
+                            ? 'bg-white border-2 border-blue-600 shadow-md ring-2 ring-blue-600/10 scale-105' 
+                            : 'bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50'
+                        }`}
+                        title={getItemName(item)}
+                      >
+                        <img src={item.iconPath} alt="" className="w-9 h-9 object-contain group-hover:scale-110 transition-transform" />
+                        {selectedFacilityId === item.id && (
+                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 rounded-full border-2 border-white shadow-sm">
+                          </div>
+                        )}
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
+                          {getItemName(item)}
+                        </div>
+                      </button>
+                    )) : (
+                      <p className="text-[10px] font-bold text-slate-400 p-2 italic">
+                        {selectedProduceItemId ? t('simulator.empty') : t('simulator.item') + 'を選択してください'}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {availableRecipes.length > 0 && (
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
+                    {availableRecipes.length > 1 ? t('itemDetail.productionRecipe') : t('itemDetail.productionRecipe')}
+                  </label>
+                  
+                  <div className="grid grid-cols-1 gap-2">
+                    {availableRecipes.map(recipe => {
+                      const isSelected = newRecipeId === recipe.id;
+                      return (
+                        <button
+                          key={recipe.id}
+                          onClick={() => setNewRecipeId(recipe.id)}
+                          className={`flex items-center gap-4 p-3 rounded-2xl border transition-all text-left ${
+                            isSelected 
+                              ? 'bg-blue-50 border-blue-200 ring-2 ring-blue-600/10' 
+                              : 'bg-white border-slate-100 hover:border-blue-200 hover:bg-slate-50'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                            isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200'
+                          }`}>
+                            {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                          </div>
+
+                          <div className="flex-grow flex items-center gap-3">
+                            <div className="flex items-center gap-1">
+                              {recipe.ingredients.map(ing => {
+                                const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
+                                return (
+                                  <div key={ing.itemId} className="relative">
+                                    <img src={ingItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(ingItem)} />
+                                    <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/90 px-0.5 rounded leading-none border border-slate-100">{ing.count}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            <ArrowRight size={14} className="text-slate-300" />
+                            <div className="flex items-center gap-1">
+                              {[
+                                { itemId: recipe.outputItemId, count: recipe.outputCount },
+                                ...(recipe.extraOutputs || []).map(e => ({ itemId: e.itemId, count: e.count }))
+                              ].map((out, i) => {
+                                const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
+                                return (
+                                  <div key={`${out.itemId}-${i}`} className="relative">
+                                    <img src={outItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(outItem)} />
+                                    <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/90 px-0.5 rounded leading-none border border-slate-100">{out.count}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">
+                            {recipe.time}s
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex justify-end pt-2">
+                <button 
+                  onClick={addProcessor}
+                  disabled={!newRecipeId || !selectedFacilityId}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-8 py-3 rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-95 font-bold flex items-center gap-2"
+                >
+                  <Plus size={20} />
+                  {t('simulator.addRecipe')}
+                </button>
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-slate-100">
+                {processors.map((proc, idx) => {
+                  const recipe = RECIPES.find(r => r.id === proc.recipeId);
+                  const facilityItem = Object.values(ITEMS).find(i => i.id === proc.facilityId);
+                  const speed = facilityItem?.productionSpeed || 1;
+                  const rate = recipe ? (recipe.outputCount * proc.count * speed) / recipe.time : 0;
+                  
+                  return (
+                    <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-md">
+                      <div className="flex items-center gap-4 min-w-[200px]">
+                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-sm border border-slate-100">
+                          <img src={facilityItem?.iconPath} alt="" className="w-full h-full object-contain" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-slate-700">{getItemName(facilityItem)}</p>
+                        </div>
                       </div>
 
-                      <div className="flex flex-col items-end">
-                        <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3 py-1 shadow-inner">
-                          <input 
-                            type="number" 
-                            value={proc.count}
-                            onChange={(e) => updateProcessorCount(idx, parseInt(e.target.value) || 0)}
-                            className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-lg p-0"
-                          />
-                          <span className="text-[10px] font-black text-slate-400 ml-2 uppercase tracking-tighter">台</span>
+                      <div className="flex-grow flex items-center justify-center gap-3">
+                        <div className="flex items-center gap-1">
+                          {recipe?.ingredients.map(ing => {
+                            const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
+                            return (
+                              <div key={ing.itemId} className="relative group/ing">
+                                <img src={ingItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(ingItem)} />
+                                <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/80 px-0.5 rounded leading-none border border-slate-200">{ing.count}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="text-slate-300">
+                          <ArrowRight size={16} />
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {[
+                            { itemId: recipe?.outputItemId, count: recipe?.outputCount },
+                            ...(recipe?.extraOutputs || []).map(e => ({ itemId: e.itemId, count: e.count }))
+                          ].map((out, i) => {
+                            const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
+                            return (
+                              <div key={`${out.itemId}-${i}`} className="relative group/out">
+                                <img src={outItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(outItem)} />
+                                <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/80 px-0.5 rounded leading-none border border-slate-200">{out.count}</span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                       
-                      <button 
-                        onClick={() => removeProcessor(idx)}
-                        className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-2"
-                      >
-                        <Trash2 size={20} />
-                      </button>
+                      <div className="flex items-center gap-4 shrink-0">
+                        <div className="text-right">
+                          <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+                            +{rate.toFixed(2)}/s
+                          </p>
+                        </div>
+
+                        <div className="flex flex-col items-end">
+                          <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3 py-1 shadow-inner">
+                            <input 
+                              type="number" 
+                              value={proc.count}
+                              onChange={(e) => updateProcessorCount(idx, parseInt(e.target.value) || 0)}
+                              className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-lg p-0"
+                            />
+                            <span className="text-[10px] font-black text-slate-400 ml-2 uppercase tracking-tighter">台</span>
+                          </div>
+                        </div>
+                        
+                        <button 
+                          onClick={() => removeProcessor(idx)}
+                          className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-2"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </section>
 
         {/* Results Section */}
