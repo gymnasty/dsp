@@ -71,7 +71,7 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
         }`}
         title={getItemName(itemObj)}
       >
-        <img src={itemObj.iconPath} alt="" className="w-8 h-8 object-contain transition-transform group-hover:scale-110" />
+        <img src={`${import.meta.env.BASE_URL}${itemObj.iconPath}`} alt="" className="w-8 h-8 object-contain transition-transform group-hover:scale-110" />
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl">
           {getItemName(itemObj)}
         </div>

@@ -136,7 +136,7 @@ export const ItemDetail = () => {
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col items-center text-center">
             <div className="w-32 h-32 bg-slate-50 rounded-3xl flex items-center justify-center shadow-inner mb-6 border border-slate-100 overflow-hidden">
-              <img src={item.iconPath} alt={itemName} className="w-20 h-20 object-contain" />
+              <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt={itemName} className="w-20 h-20 object-contain" />
             </div>
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{itemName}</h1>
             <div className="mt-2 px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest rounded-full border border-slate-200">
@@ -159,7 +159,7 @@ export const ItemDetail = () => {
                     <div key={materialId} className="flex items-center justify-between group">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center p-1 overflow-hidden">
-                          <img src={materialItem?.iconPath} alt={materialName} className="w-6 h-6 object-contain" />
+                          <img src={`${import.meta.env.BASE_URL}${materialItem?.iconPath}`} alt={materialName} className="w-6 h-6 object-contain" />
                         </div>
                         <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
                           {materialName || materialId}
@@ -241,7 +241,7 @@ export const ItemDetail = () => {
                           className="flex items-center gap-4 p-4 bg-white border border-slate-100 rounded-2xl hover:border-blue-300 hover:shadow-md transition-all group"
                         >
                           <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-50 group-hover:scale-110 transition-transform overflow-hidden">
-                            <img src={ingItem?.iconPath} alt={ingName} className="w-8 h-8 object-contain" />
+                            <img src={`${import.meta.env.BASE_URL}${ingItem?.iconPath}`} alt={ingName} className="w-8 h-8 object-contain" />
                           </div>
                           <div className="flex-grow">
                             <div className="text-sm font-bold text-slate-700">{ingName || ing.itemId}</div>
@@ -281,7 +281,7 @@ export const ItemDetail = () => {
                             <div key={extra.itemId} className="flex justify-between items-center">
                               <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center p-0.5">
-                                  <img src={extraItem?.iconPath} alt={extraName} className="w-5 h-5 object-contain" />
+                                  <img src={`${import.meta.env.BASE_URL}${extraItem?.iconPath}`} alt={extraName} className="w-5 h-5 object-contain" />
                                 </div>
                                 <span className="text-xs font-medium text-slate-300">{extraName}</span>
                               </div>
@@ -327,7 +327,7 @@ export const ItemDetail = () => {
                         className="flex items-center gap-4 p-4 bg-white border border-slate-100 rounded-2xl hover:border-indigo-300 hover:shadow-md transition-all group"
                       >
                         <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-50 group-hover:scale-110 transition-transform overflow-hidden">
-                          <img src={outputItem?.iconPath} alt={outputName} className="w-8 h-8 object-contain" />
+                          <img src={`${import.meta.env.BASE_URL}${outputItem?.iconPath}`} alt={outputName} className="w-8 h-8 object-contain" />
                         </div>
                         <div className="flex-grow">
                           <div className="text-sm font-bold text-slate-700">{outputName}</div>

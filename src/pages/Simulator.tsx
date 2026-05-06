@@ -281,7 +281,7 @@ export const Simulator = () => {
                   >
                     <div className="w-6 h-6 bg-white rounded p-1 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center">
                       {newItem ? (
-                        <img src={newItem.iconPath} alt="" className="w-full h-full object-contain" />
+                        <img src={`${import.meta.env.BASE_URL}${newItem.iconPath}`} alt="" className="w-full h-full object-contain" />
                       ) : (
                         <Package size={12} className="text-slate-300" />
                       )}
@@ -324,7 +324,7 @@ export const Simulator = () => {
                           <tr key={idx} className="group hover:bg-slate-50 transition-colors">
                             <td className="px-2 py-1.5">
                               <div className="flex items-center gap-2">
-                                <img src={item?.iconPath} alt="" className="w-5 h-5 object-contain shrink-0" />
+                                <img src={`${import.meta.env.BASE_URL}${item?.iconPath}`} alt="" className="w-5 h-5 object-contain shrink-0" />
                                 <span className="font-bold text-slate-700 truncate">{getItemName(item)}</span>
                               </div>
                             </td>
@@ -380,7 +380,7 @@ export const Simulator = () => {
                   >
                     <div className="w-6 h-6 bg-white rounded p-1 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center">
                       {newTargetItem ? (
-                        <img src={newTargetItem.iconPath} alt="" className="w-full h-full object-contain" />
+                        <img src={`${import.meta.env.BASE_URL}${newTargetItem.iconPath}`} alt="" className="w-full h-full object-contain" />
                       ) : (
                         <Package size={12} className="text-slate-300" />
                       )}
@@ -423,7 +423,7 @@ export const Simulator = () => {
                           <tr key={idx} className="group hover:bg-slate-50 transition-colors">
                             <td className="px-2 py-1.5">
                               <div className="flex items-center gap-2">
-                                <img src={item?.iconPath} alt="" className="w-5 h-5 object-contain shrink-0" />
+                                <img src={`${import.meta.env.BASE_URL}${item?.iconPath}`} alt="" className="w-5 h-5 object-contain shrink-0" />
                                 <span className="font-bold text-slate-700 truncate">{getItemName(item)}</span>
                               </div>
                             </td>
@@ -483,7 +483,7 @@ export const Simulator = () => {
                     >
                       <div className="w-8 h-8 bg-slate-50 rounded-lg p-1.5 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center shrink-0">
                         {selectedProduceItem ? (
-                          <img src={selectedProduceItem.iconPath} alt="" className="w-full h-full object-contain" />
+                          <img src={`${import.meta.env.BASE_URL}${selectedProduceItem.iconPath}`} alt="" className="w-full h-full object-contain" />
                         ) : (
                           <Package size={14} className="text-slate-300" />
                         )}
@@ -510,7 +510,7 @@ export const Simulator = () => {
                           }`}
                           title={getItemName(item)}
                         >
-                          <img src={item.iconPath} alt="" className="w-6 h-6 object-contain group-hover:scale-110 transition-transform" />
+                          <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt="" className="w-6 h-6 object-contain group-hover:scale-110 transition-transform" />
                         </button>
                       )) : (
                         <p className="text-[8px] font-bold text-slate-400 p-2 italic">
@@ -540,7 +540,7 @@ export const Simulator = () => {
                                   const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
                                   return (
                                     <div key={ing.itemId} className="relative">
-                                      <img src={ingItem?.iconPath} alt="" className="w-4 h-4 object-contain" title={getItemName(ingItem)} />
+                                      <img src={`${import.meta.env.BASE_URL}${ingItem?.iconPath}`} alt="" className="w-4 h-4 object-contain" title={getItemName(ingItem)} />
                                       <span className="absolute -bottom-1 -right-1 text-[6px] font-black bg-white/90 text-slate-700 px-0.5 rounded leading-none border border-slate-100">{ing.count}</span>
                                     </div>
                                   );
@@ -555,7 +555,7 @@ export const Simulator = () => {
                                   const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
                                   return (
                                     <div key={`${out.itemId}-${i}`} className="relative">
-                                      <img src={outItem?.iconPath} alt="" className="w-4 h-4 object-contain" title={getItemName(outItem)} />
+                                      <img src={`${import.meta.env.BASE_URL}${outItem?.iconPath}`} alt="" className="w-4 h-4 object-contain" title={getItemName(outItem)} />
                                       <span className="absolute -bottom-1 -right-1 text-[6px] font-black bg-white/90 text-slate-700 px-0.5 rounded leading-none border border-slate-100">{out.count}</span>
                                     </div>
                                   );
@@ -604,7 +604,7 @@ export const Simulator = () => {
                         <tr key={idx} className="group hover:bg-slate-50 transition-colors">
                           <td className="px-2 py-2">
                             <div className="flex items-center gap-2">
-                              <img src={facilityItem?.iconPath} alt="" className="w-5 h-5 object-contain" />
+                              <img src={`${import.meta.env.BASE_URL}${facilityItem?.iconPath}`} alt="" className="w-5 h-5 object-contain" />
                               <span className="font-bold text-slate-700 truncate max-w-[100px]">{getItemName(facilityItem)}</span>
                             </div>
                           </td>
@@ -614,7 +614,7 @@ export const Simulator = () => {
                                 {recipe?.ingredients.map(ing => {
                                   const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
                                   return (
-                                    <img key={ing.itemId} src={ingItem?.iconPath} alt="" className="w-4 h-4 object-contain opacity-50" title={getItemName(ingItem)} />
+                                    <img key={ing.itemId} src={`${import.meta.env.BASE_URL}${ingItem?.iconPath}`} alt="" className="w-4 h-4 object-contain opacity-50" title={getItemName(ingItem)} />
                                   );
                                 })}
                               </div>
@@ -626,7 +626,7 @@ export const Simulator = () => {
                                 ].map((out, i) => {
                                   const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
                                   return (
-                                    <img key={`${out.itemId}-${i}`} src={outItem?.iconPath} alt="" className="w-4 h-4 object-contain" title={getItemName(outItem)} />
+                                    <img key={`${out.itemId}-${i}`} src={`${import.meta.env.BASE_URL}${outItem?.iconPath}`} alt="" className="w-4 h-4 object-contain" title={getItemName(outItem)} />
                                   );
                                 })}
                               </div>
@@ -705,7 +705,7 @@ export const Simulator = () => {
                             className={`flex items-center gap-2 group/item text-left ${producibleItemIds.has(res.id) ? 'cursor-pointer' : 'cursor-default opacity-80'}`}
                           >
                             <div className={`w-6 h-6 bg-white/10 rounded flex items-center justify-center p-1 shrink-0 ${producibleItemIds.has(res.id) ? 'group-hover/item:scale-110 group-hover/item:bg-white/20 transition-all' : ''}`}>
-                              <img src={item?.iconPath} alt="" className="w-full h-full object-contain" />
+                              <img src={`${import.meta.env.BASE_URL}${item?.iconPath}`} alt="" className="w-full h-full object-contain" />
                             </div>
                             <span className={`font-bold truncate ${producibleItemIds.has(res.id) ? 'text-slate-100 group-hover/item:text-blue-400 transition-colors' : 'text-slate-400'}`}>
                               {getItemName(item)}
