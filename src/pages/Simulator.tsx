@@ -209,6 +209,20 @@ export const Simulator = () => {
 
   const sortedResults = useMemo(() => [...results].sort((a, b) => b.netRate - a.netRate), [results]);
 
+  const producibleItemIds = useMemo(() => new Set(RECIPES.map(r => r.outputItemId)), []);
+
+  const handleResultItemClick = (itemId: string) => {
+    if (producibleItemIds.has(itemId)) {
+      setSelectedProduceItemId(itemId);
+      setIsProcessorsOpen(true);
+      // Scroll to processors section for better UX
+      const section = document.getElementById('processors-section');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
   const newItem = Object.values(ITEMS).find(i => i.id === newItemId);
   const newTargetItem = Object.values(ITEMS).find(i => i.id === newTargetItemId);
   const selectedProduceItem = Object.values(ITEMS).find(i => i.id === selectedProduceItemId);
@@ -445,7 +459,7 @@ export const Simulator = () => {
         </div>
 
         {/* Processors Section */}
-        <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <section id="processors-section" className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
           <button 
             onClick={() => setIsProcessorsOpen(!isProcessorsOpen)}
             className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full hover:bg-slate-100 transition-colors"
@@ -685,12 +699,21 @@ export const Simulator = () => {
                     return (
                       <tr key={res.id} className="hover:bg-white/5 transition-colors">
                         <td className="px-4 py-2">
-                          <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center p-1 shrink-0">
+                          <button 
+                            onClick={() => handleResultItemClick(res.id)}
+                            disabled={!producibleItemIds.has(res.id)}
+                            className={`flex items-center gap-2 group/item text-left ${producibleItemIds.has(res.id) ? 'cursor-pointer' : 'cursor-default opacity-80'}`}
+                          >
+                            <div className={`w-6 h-6 bg-white/10 rounded flex items-center justify-center p-1 shrink-0 ${producibleItemIds.has(res.id) ? 'group-hover/item:scale-110 group-hover/item:bg-white/20 transition-all' : ''}`}>
                               <img src={item?.iconPath} alt="" className="w-full h-full object-contain" />
                             </div>
-                            <span className="font-bold text-slate-100 truncate">{getItemName(item)}</span>
-                          </div>
+                            <span className={`font-bold truncate ${producibleItemIds.has(res.id) ? 'text-slate-100 group-hover/item:text-blue-400 transition-colors' : 'text-slate-400'}`}>
+                              {getItemName(item)}
+                              {producibleItemIds.has(res.id) && (
+                                <Plus size={8} className="inline ml-1 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                              )}
+                            </span>
+                          </button>
                         </td>
                         <td className="px-2 py-2 text-center font-mono text-slate-300">
                           {res.input > 0 ? `+${res.input.toFixed(2)}` : '-'}
