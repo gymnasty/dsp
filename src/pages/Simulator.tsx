@@ -1,6 +1,7 @@
 import { ArrowDownToLine, ArrowRight, Calculator, ChevronDown, ChevronUp, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
@@ -229,14 +230,18 @@ export const Simulator = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      <header className="flex items-center gap-4 mb-8">
-        <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-          <Calculator size={24} />
+      <nav className="flex items-center justify-between gap-2 text-sm font-bold">
+        <div className="flex items-center gap-2">
+          <Link 
+            to="/" 
+            className="text-blue-600 hover:text-blue-700 transition-colors bg-white border border-slate-200 px-3 py-1 rounded-lg shadow-sm"
+          >
+            {t('menu.mainMenu')}
+          </Link>
+          <span className="text-slate-300">/</span>
+          <span className="text-slate-500 px-1">{t('menu.simulator')}</span>
         </div>
-        <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">{t('simulator.title')}</h1>
-        </div>
-        <div className="flex-grow"></div>
+
         <button 
           onClick={() => { 
             if(confirm(t('simulator.clearAll') + '?')) { 
@@ -249,12 +254,12 @@ export const Simulator = () => {
               setSelectedFacilityId('');
             } 
           }}
-          className="px-4 py-2 bg-slate-200 hover:bg-red-100 hover:text-red-600 text-slate-600 rounded-xl text-xs font-bold transition-all flex items-center gap-2"
+          className="px-4 py-1.5 bg-white hover:bg-red-50 hover:text-red-600 text-slate-500 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
         >
           <Trash2 size={14} />
           {t('simulator.clearAll')}
         </button>
-      </header>
+      </nav>
 
       <div className="space-y-8">
         {/* Config Sections */}
