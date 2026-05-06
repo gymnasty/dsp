@@ -70,6 +70,7 @@
     "addRecipe": "レシピを追加",
     "rate": "入力率 (個/秒)",
     "count": "施設数",
+    "multiplier": "倍率",
     "item": "アイテム",
     "netRate": "純生産率",
     "inputRate": "要求",

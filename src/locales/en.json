@@ -70,6 +70,7 @@
     "addRecipe": "Add Recipe",
     "rate": "Rate (items/s)",
     "count": "Facility Count",
+    "multiplier": "Multiplier",
     "item": "Item",
     "netRate": "Net Rate",
     "inputRate": "Input",
