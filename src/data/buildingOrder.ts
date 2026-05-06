@@ -5,14 +5,14 @@ import { ITEMS } from './items';
 // 生産シミュレータの選択 UI の並び順を定義
 export const BUILDING_ORDER: Record<string, string[]> = {
   [CATEGORIES.POWER]: [
+    ITEMS.TESLA_TOWER.id,
+    ITEMS.WIRELESS_POWER_TOWER.id,
     ITEMS.WIND_TURBINE.id,
     ITEMS.SOLAR_PANEL.id,
     ITEMS.THERMAL_POWER_PLANT.id,
     ITEMS.MINI_FUSION_POWER_PLANT.id,
     ITEMS.GEOTHERMAL_POWER_STATION.id,
     ITEMS.ARTIFICIAL_STAR.id,
-    ITEMS.TESLA_TOWER.id,
-    ITEMS.WIRELESS_POWER_TOWER.id,
     ITEMS.SATELLITE_SUBSTATION.id,
     ITEMS.ACCUMULATOR.id,
     ITEMS.FULL_ACCUMULATOR.id,
@@ -37,7 +37,6 @@ export const BUILDING_ORDER: Record<string, string[]> = {
     ITEMS.AUTOMATIC_PILER.id,
     ITEMS.TRAFFIC_MONITOR.id,
     ITEMS.SPRAY_COATER.id,
-    ITEMS.HOLO_BEACON.id
   ],
   [CATEGORIES.STORAGE]: [
     ITEMS.STORAGE_MKI.id,
@@ -83,6 +82,7 @@ export const BUILDING_ORDER: Record<string, string[]> = {
     ITEMS.VERTICAL_LAUNCHING_SILO.id
   ],
   [CATEGORIES.ENVIRONMENT]: [
-    ITEMS.FOUNDATION.id
+    ITEMS.FOUNDATION.id,
+    ITEMS.HOLO_BEACON.id
   ]
 };

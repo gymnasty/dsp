@@ -6,16 +6,14 @@ export const ITEM_TYPES = {
 export type ItemType = typeof ITEM_TYPES[keyof typeof ITEM_TYPES];
 
 export const CATEGORIES = {
-  NATURAL_RESOURCES: 'Natural Resources',
-  INTERMEDIATE_PRODUCTS: 'Intermediate Products',
-  DARK_FOG_COMPONENTS: 'Dark Fog Components',
-  ENERGY_SOURCES: 'Energy Sources',
-  AMMUNITION: 'Ammunition',
+  NATURAL_RESOURCES: 'Natural Resources', // 天然資源
+  INTERMEDIATE_PRODUCTS: 'Intermediate Products', // 中間生成物
+  ENERGY_SOURCES: 'Energy Sources', // エネルギー源
   OTHER_CONSUMABLES: 'Other Consumables',
-  LOGISTICS_SHIPS: 'Logistics Ships',
   COMBAT_UNITS: 'Combat Units',
   DYSON_SPHERE: 'Dyson Sphere',
   SCIENCE: 'Science',
+  DARK_FOG_COMPONENTS: 'Dark Fog Components', // ダークフォグの構成要素
   // New Building Categories
   POWER: 'Power',
   COLLECTION: 'Collection',

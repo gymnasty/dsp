@@ -1,11 +1,11 @@
 import { ArrowDownToLine, ArrowRight, Calculator, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BUILDING_ORDER } from '../data/buildingOrder';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
-import { CATEGORIES, ITEM_TYPES } from '../types';
+import { ITEM_TYPES } from '../types';
 import { getItemName } from '../utils/i18n';
+import { ItemSelectorModal } from '../components/ItemSelectorModal';
 
 interface InputState {
   itemId: string;
@@ -29,96 +29,20 @@ export const Simulator = () => {
   const [outputs, setOutputs] = useState<OutputState[]>([]);
   const [processors, setProcessors] = useState<ProcessorState[]>([]);
 
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTarget, setModalTarget] = useState<'input' | 'output' | 'processor_item' | 'processor_facility' | null>(null);
+
   // Local state for adding new items
   const sortedItems = useMemo(() => Object.values(ITEMS), []);
   
-  // Items that can be produced (have at least one recipe), grouped by category
-  const itemCategories = useMemo(() => {
-    const categories: Record<string, string[]> = {};
+  // Producible items for processor selection
+  const producibleItems = useMemo(() => {
     const producibleIds = new Set(RECIPES.map(r => r.outputItemId));
-    
-    producibleIds.forEach(id => {
-      const item = Object.values(ITEMS).find(i => i.id === id);
-      if (item) {
-        const category = item.category;
-        if (!categories[category]) categories[category] = [];
-        categories[category].push(id);
-      }
-    });
+    return sortedItems.filter(item => producibleIds.has(item.id));
+  }, [sortedItems]);
 
-    // Define a standard order for all categories
-    const order = [
-      CATEGORIES.NATURAL_RESOURCES,
-      CATEGORIES.INTERMEDIATE_PRODUCTS,
-      CATEGORIES.ENERGY_SOURCES,
-      CATEGORIES.COMBAT_UNITS,
-      CATEGORIES.DYSON_SPHERE,
-      CATEGORIES.SCIENCE,
-      CATEGORIES.DARK_FOG_COMPONENTS,
-      CATEGORIES.OTHER_CONSUMABLES,
-      CATEGORIES.POWER,
-      CATEGORIES.COLLECTION,
-      CATEGORIES.LOGISTICS,
-      CATEGORIES.STORAGE,
-      CATEGORIES.PRODUCTION_BUILDING,
-      CATEGORIES.TRANSPORT,
-      CATEGORIES.DEFENSE,
-      CATEGORIES.COSMO,
-      CATEGORIES.ENVIRONMENT
-    ];
-
-    return Object.entries(categories).sort((a, b) => {
-      const indexA = order.indexOf(a[0] as any);
-      const indexB = order.indexOf(b[0] as any);
-      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-      if (indexA !== -1) return -1;
-      if (indexB !== -1) return 1;
-      return a[0].localeCompare(b[0]);
-    });
-  }, []);
-
-  const [selectedItemCategory, setSelectedItemCategory] = useState<string>(itemCategories[0]?.[0] || '');
-  
-  // Ensure selectedItemCategory is valid
-  useEffect(() => {
-    if (itemCategories.length > 0 && !itemCategories.find(c => c[0] === selectedItemCategory)) {
-      setSelectedItemCategory(itemCategories[0][0]);
-    }
-  }, [itemCategories, selectedItemCategory]);
-
-  const itemsInCategory = useMemo(() => {
-    const cat = itemCategories.find(c => c[0] === selectedItemCategory);
-    if (!cat) return [];
-    
-    const unsortedItems = sortedItems.filter(item => cat[1].includes(item.id));
-    const order = BUILDING_ORDER[selectedItemCategory] || [];
-    
-    if (order.length > 0) {
-      return [...unsortedItems].sort((a, b) => {
-        const indexA = order.indexOf(a.id);
-        const indexB = order.indexOf(b.id);
-        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-        if (indexA !== -1) return -1;
-        if (indexB !== -1) return 1;
-        return a.id.localeCompare(b.id);
-      });
-    }
-    
-    return unsortedItems;
-  }, [selectedItemCategory, itemCategories, sortedItems]);
-
-  const [selectedProduceItemId, setSelectedProduceItemId] = useState('');
-  
-  // Update selectedProduceItemId when itemsInCategory changes
-  useEffect(() => {
-    if (itemsInCategory.length > 0) {
-      if (!itemsInCategory.find(i => i.id === selectedProduceItemId)) {
-        setSelectedProduceItemId(itemsInCategory[0].id);
-      }
-    } else {
-      setSelectedProduceItemId('');
-    }
-  }, [itemsInCategory, selectedProduceItemId]);
+  const [selectedProduceItemId, setSelectedProduceItemId] = useState(producibleItems[0]?.id || '');
 
   const availableFacilities = useMemo(() => {
     if (!selectedProduceItemId) return [];
@@ -126,30 +50,11 @@ export const Simulator = () => {
     const facilityTypes = new Set(recipes.map(r => r.producedIn));
     
     // Find all building items that match any of these facility types
-    const matchingItems = Object.values(ITEMS).filter(item => 
+    return Object.values(ITEMS).filter(item => 
       item.type === ITEM_TYPES.BUILDING && 
       item.facilityType && 
       facilityTypes.has(item.facilityType)
     );
-
-    return matchingItems.sort((a, b) => {
-      // Sort by category first, then by the predefined order if available, else by speed
-      const catOrder = [
-        CATEGORIES.PRODUCTION_BUILDING,
-        CATEGORIES.COSMO,
-        CATEGORIES.COLLECTION
-      ];
-      const indexA = catOrder.indexOf(a.category as any);
-      const indexB = catOrder.indexOf(b.category as any);
-      if (indexA !== indexB) return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
-      
-      const order = BUILDING_ORDER[a.category] || [];
-      const idxA = order.indexOf(a.id);
-      const idxB = order.indexOf(b.id);
-      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-      
-      return (a.productionSpeed || 0) - (b.productionSpeed || 0);
-    });
   }, [selectedProduceItemId]);
 
   const [selectedFacilityId, setSelectedFacilityId] = useState('');
@@ -166,75 +71,23 @@ export const Simulator = () => {
     }
   }, [availableFacilities, selectedFacilityId]);
 
-  // All items grouped by category for generic selection
-  const allCategories = useMemo(() => {
-    const categories: Record<string, string[]> = {};
-    Object.values(ITEMS).forEach(item => {
-      const category = item.category;
-      if (!categories[category]) categories[category] = [];
-      categories[category].push(item.id);
-    });
-
-    const order = [
-      CATEGORIES.NATURAL_RESOURCES,
-      CATEGORIES.INTERMEDIATE_PRODUCTS,
-      CATEGORIES.ENERGY_SOURCES,
-      CATEGORIES.COMBAT_UNITS,
-      CATEGORIES.DYSON_SPHERE,
-      CATEGORIES.SCIENCE,
-      CATEGORIES.DARK_FOG_COMPONENTS,
-      CATEGORIES.OTHER_CONSUMABLES,
-      CATEGORIES.POWER,
-      CATEGORIES.COLLECTION,
-      CATEGORIES.LOGISTICS,
-      CATEGORIES.STORAGE,
-      CATEGORIES.PRODUCTION_BUILDING,
-      CATEGORIES.TRANSPORT,
-      CATEGORIES.DEFENSE,
-      CATEGORIES.COSMO,
-      CATEGORIES.ENVIRONMENT
-    ];
-
-    return Object.entries(categories).sort((a, b) => {
-      const indexA = order.indexOf(a[0] as any);
-      const indexB = order.indexOf(b[0] as any);
-      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-      if (indexA !== -1) return -1;
-      if (indexB !== -1) return 1;
-      return a[0].localeCompare(b[0]);
-    });
-  }, []);
-
-  const [inputCategory, setInputCategory] = useState<string>(allCategories[0]?.[0] || '');
-  const [outputCategory, setOutputCategory] = useState<string>(allCategories[0]?.[0] || '');
-
-  const itemsInInputCategory = useMemo(() => {
-    const cat = allCategories.find(c => c[0] === inputCategory);
-    return cat ? sortedItems.filter(item => cat[1].includes(item.id)) : [];
-  }, [inputCategory, allCategories, sortedItems]);
-
-  const itemsInOutputCategory = useMemo(() => {
-    const cat = allCategories.find(c => c[0] === outputCategory);
-    return cat ? sortedItems.filter(item => cat[1].includes(item.id)) : [];
-  }, [outputCategory, allCategories, sortedItems]);
-
-  const [newItemId, setNewItemId] = useState('');
-  useEffect(() => {
-    if (itemsInInputCategory.length > 0 && !itemsInInputCategory.find(i => i.id === newItemId)) {
-      setNewItemId(itemsInInputCategory[0].id);
-    }
-  }, [itemsInInputCategory, newItemId]);
-
+  const [newItemId, setNewItemId] = useState(sortedItems[0]?.id || '');
   const [newRate, setNewRate] = useState(1);
-  
-  const [newTargetItemId, setNewTargetItemId] = useState('');
-  useEffect(() => {
-    if (itemsInOutputCategory.length > 0 && !itemsInOutputCategory.find(i => i.id === newTargetItemId)) {
-      setNewTargetItemId(itemsInOutputCategory[0].id);
-    }
-  }, [itemsInOutputCategory, newTargetItemId]);
-
+  const [newTargetItemId, setNewTargetItemId] = useState(sortedItems[0]?.id || '');
   const [newTargetRate, setNewTargetRate] = useState(1);
+
+  const openModal = (target: 'input' | 'output' | 'processor_item' | 'processor_facility') => {
+    setModalTarget(target);
+    setIsModalOpen(true);
+  };
+
+  const handleModalSelect = (itemId: string) => {
+    if (modalTarget === 'input') setNewItemId(itemId);
+    if (modalTarget === 'output') setNewTargetItemId(itemId);
+    if (modalTarget === 'processor_item') setSelectedProduceItemId(itemId);
+    if (modalTarget === 'processor_facility') setSelectedFacilityId(itemId);
+    setIsModalOpen(false);
+  };
 
   const availableRecipes = useMemo(() => {
     if (!selectedProduceItemId || !selectedFacilityId) return [];
@@ -361,6 +214,10 @@ export const Simulator = () => {
 
   const sortedResults = useMemo(() => [...results].sort((a, b) => b.netRate - a.netRate), [results]);
 
+  const newItem = Object.values(ITEMS).find(i => i.id === newItemId);
+  const newTargetItem = Object.values(ITEMS).find(i => i.id === newTargetItemId);
+  const selectedProduceItem = Object.values(ITEMS).find(i => i.id === selectedProduceItemId);
+
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       <header className="flex items-center gap-4 mb-8">
@@ -393,42 +250,31 @@ export const Simulator = () => {
               </h2>
             </div>
             <div className="p-6 space-y-4 flex-grow">
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <select 
-                    value={inputCategory} 
-                    onChange={(e) => setInputCategory(e.target.value)}
-                    className="w-1/3 bg-slate-200/50 border-none rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    {allCategories.map(([cat]) => (
-                      <option key={cat} value={cat}>{t(`categories.${cat}`)}</option>
-                    ))}
-                  </select>
-                  <select 
-                    value={newItemId} 
-                    onChange={(e) => setNewItemId(e.target.value)}
-                    className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
-                  >
-                    {itemsInInputCategory.map(item => (
-                      <option key={item.id} value={item.id}>{getItemName(item)}</option>
-                    ))}
-                  </select>
-                  <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
-                    <input 
-                      type="number" 
-                      value={newRate}
-                      onChange={(e) => setNewRate(Math.max(0, parseFloat(e.target.value) || 0))}
-                      className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
-                    />
-                    <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => openModal('input')}
+                  className="flex-grow flex items-center gap-3 bg-slate-100 hover:bg-slate-200 rounded-xl px-4 py-2 transition-all group"
+                >
+                  <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform">
+                    <img src={newItem?.iconPath} alt="" className="w-full h-full object-contain" />
                   </div>
-                  <button 
-                    onClick={addInput}
-                    className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
-                  >
-                    <Plus size={18} />
-                  </button>
+                  <span className="text-xs font-bold text-slate-700">{getItemName(newItem)}</span>
+                </button>
+                <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
+                  <input 
+                    type="number" 
+                    value={newRate}
+                    onChange={(e) => setNewRate(Math.max(0, parseFloat(e.target.value) || 0))}
+                    className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
+                  />
+                  <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
                 </div>
+                <button 
+                  onClick={addInput}
+                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
+                >
+                  <Plus size={18} />
+                </button>
               </div>
 
               <div className="space-y-2">
@@ -474,45 +320,35 @@ export const Simulator = () => {
               </h2>
             </div>
             <div className="p-6 space-y-4 flex-grow">
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <select 
-                    value={outputCategory} 
-                    onChange={(e) => setOutputCategory(e.target.value)}
-                    className="w-1/3 bg-slate-200/50 border-none rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    {allCategories.map(([cat]) => (
-                      <option key={cat} value={cat}>{t(`categories.${cat}`)}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={newTargetItemId}
-                    onChange={(e) => setNewTargetItemId(e.target.value)}
-                    className="flex-grow bg-slate-100 border-none rounded-xl px-4 py-2 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all min-w-0"
-                  >
-                    {itemsInOutputCategory.map(item => (
-                      <option key={item.id} value={item.id}>{getItemName(item)}</option>
-                    ))}
-                  </select>
-                  <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
-                    <input
-                      type="number"
-                      value={newTargetRate}
-                      onChange={(e) => setNewTargetRate(Math.max(0, parseFloat(e.target.value) || 0))}
-                      className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
-                    />
-                    <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => openModal('output')}
+                  className="flex-grow flex items-center gap-3 bg-slate-100 hover:bg-slate-200 rounded-xl px-4 py-2 transition-all group"
+                >
+                  <div className="w-8 h-8 bg-white rounded-lg p-1 shadow-sm border border-slate-200 group-hover:scale-110 transition-transform">
+                    <img src={newTargetItem?.iconPath} alt="" className="w-full h-full object-contain" />
                   </div>
-                  <button
-                    onClick={addOutput}
-                    className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
-                  >
-                    <Plus size={18} />
-                  </button>
+                  <span className="text-xs font-bold text-slate-700">{getItemName(newTargetItem)}</span>
+                </button>
+                <div className="flex items-center bg-slate-100 rounded-xl px-2 shrink-0">
+                  <input
+                    type="number"
+                    value={newTargetRate}
+                    onChange={(e) => setNewTargetRate(Math.max(0, parseFloat(e.target.value) || 0))}
+                    className="w-12 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-xs"
+                  />
+                  <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">/s</span>
                 </div>
+                <button
+                  onClick={addOutput}
+                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-200 transition-all active:scale-95 shrink-0"
+                >
+                  <Plus size={18} />
+                </button>
               </div>
 
-              <div className="space-y-2">                {outputs.map((output, idx) => {
+              <div className="space-y-2">
+                {outputs.map((output, idx) => {
                   const item = Object.values(ITEMS).find(i => i.id === output.itemId);
                   return (
                     <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-white hover:shadow-sm">
@@ -555,87 +391,51 @@ export const Simulator = () => {
             </h2>
           </div>
           <div className="p-6 space-y-6">
-            <div className="space-y-3">
-              <div className="flex justify-between items-end px-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('simulator.item')}</label>
-                {selectedProduceItemId && (
-                  <p className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100">
-                    {getItemName(Object.values(ITEMS).find(i => i.id === selectedProduceItemId))}
-                  </p>
-                )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('simulator.item')}</label>
+                <button 
+                  onClick={() => openModal('processor_item')}
+                  className="w-full flex items-center gap-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl p-4 transition-all group"
+                >
+                  <div className="w-12 h-12 bg-white rounded-xl p-2 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform">
+                    <img src={selectedProduceItem?.iconPath} alt="" className="w-full h-full object-contain" />
+                  </div>
+                  <div className="text-left">
+                    <span className="block text-[10px] font-black text-slate-400 uppercase tracking-tight">{t('menu.items')}</span>
+                    <span className="text-sm font-black text-slate-700">{getItemName(selectedProduceItem)}</span>
+                  </div>
+                </button>
               </div>
 
-              {/* Item Category Tabs */}
-              <div className="flex flex-wrap gap-1 border-b border-slate-100 pb-2">
-                {itemCategories.map(([cat]) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedItemCategory(cat)}
-                    className={`px-3 py-1 text-[10px] font-black uppercase tracking-tighter rounded-t-lg transition-all ${
-                      selectedItemCategory === cat
-                        ? 'bg-orange-600 text-white'
-                        : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600'
-                    }`}
-                  >
-                    {t(`categories.${cat}`)}
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-1 max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-slate-200 bg-slate-50 rounded-lg">
-                {itemsInCategory.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => setSelectedProduceItemId(item.id)}
-                    className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
-                      selectedProduceItemId === item.id 
-                        ? 'border-orange-500 bg-orange-50 shadow-sm z-10' 
-                        : 'border-slate-200 bg-white hover:border-slate-400 hover:bg-slate-50'
-                    }`}
-                    title={getItemName(item)}
-                  >
-                    <img 
-                      src={item.iconPath} 
-                      alt={getItemName(item)} 
-                      className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedProduceItemId === item.id ? 'scale-110' : ''}`}
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex justify-between items-end px-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('itemDetail.facility')}</label>
-                {selectedFacilityId && (
-                  <p className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                    {getItemName(Object.values(ITEMS).find(i => i.id === selectedFacilityId))}
-                  </p>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {availableFacilities.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => setSelectedFacilityId(item.id)}
-                    className={`group relative w-12 h-12 rounded border transition-all flex items-center justify-center p-1 ${
-                      selectedFacilityId === item.id 
-                        ? 'border-blue-500 bg-blue-50 shadow-sm z-10' 
-                        : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
-                    }`}
-                    title={getItemName(item)}
-                  >
-                    <img 
-                      src={item.iconPath} 
-                      alt={getItemName(item)} 
-                      className={`w-10 h-10 object-contain transition-transform group-hover:scale-110 ${selectedFacilityId === item.id ? 'scale-110' : ''}`}
-                    />
-                    {selectedFacilityId === item.id && (
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.facility')}</label>
+                <div className="flex flex-wrap gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                  {availableFacilities.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => setSelectedFacilityId(item.id)}
+                      className={`group relative w-12 h-12 flex items-center justify-center rounded-xl transition-all ${
+                        selectedFacilityId === item.id 
+                          ? 'bg-white border-2 border-blue-600 shadow-md ring-2 ring-blue-600/10 scale-105' 
+                          : 'bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50'
+                      }`}
+                      title={getItemName(item)}
+                    >
+                      <img src={item.iconPath} alt="" className="w-9 h-9 object-contain group-hover:scale-110 transition-transform" />
+                      {selectedFacilityId === item.id && (
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 rounded-full border-2 border-white shadow-sm">
+                        </div>
+                      )}
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
+                        {getItemName(item)}
                       </div>
-                    )}
-                  </button>
-                ))}
+                    </button>
+                  ))}
+                  {availableFacilities.length === 0 && (
+                    <p className="text-[10px] font-bold text-slate-400 p-2 italic">{t('simulator.empty')}</p>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -820,6 +620,23 @@ export const Simulator = () => {
           </div>
         </section>
       </div>
+
+      <ItemSelectorModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelect={handleModalSelect}
+        title={
+          modalTarget === 'input' ? t('simulator.inputs') :
+          modalTarget === 'output' ? t('simulator.externalOutput') :
+          modalTarget === 'processor_item' ? t('simulator.item') :
+          modalTarget === 'processor_facility' ? t('itemDetail.facility') : ''
+        }
+        items={
+          modalTarget === 'processor_item' ? producibleItems :
+          modalTarget === 'processor_facility' ? availableFacilities :
+          undefined
+        }
+      />
     </div>
   );
 };
