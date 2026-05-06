@@ -622,7 +622,7 @@ export const Simulator = () => {
                           <td className="px-2 py-2">
                             <div className="flex items-center gap-2">
                               <img src={`${import.meta.env.BASE_URL}${facilityItem?.iconPath}`} alt="" className="w-5 h-5 object-contain" />
-                              <span className="font-bold text-slate-700 truncate max-w-[100px]">{getItemName(facilityItem)}</span>
+                              <span className="font-bold text-slate-700">{getItemName(facilityItem)}</span>
                             </div>
                           </td>
                           <td className="px-2 py-2">
