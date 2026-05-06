@@ -274,7 +274,7 @@ export const Simulator = () => {
             {isIoOpen && (
               <div className="p-4 space-y-4 flex-grow">
                 {/* Compact Add Input */}
-                <div className="flex gap-2 items-center bg-slate-50 p-2 rounded-2xl border border-slate-200">
+                <div className="flex gap-2 items-center">
                   <button 
                     onClick={() => openModal('input')}
                     className="flex-grow flex items-center gap-2 bg-white hover:bg-slate-100 rounded-xl px-3 py-1.5 transition-all group border border-slate-200 shadow-sm"
@@ -287,7 +287,7 @@ export const Simulator = () => {
                       )}
                     </div>
                     <span className={`text-[10px] font-bold ${newItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
-                      {newItem ? getItemName(newItem) : '選択...'}
+                      {newItem ? getItemName(newItem) : t('simulator.select')}
                     </span>
                   </button>
                   <div className="flex items-center bg-white rounded-xl px-2 shrink-0 border border-slate-200 shadow-sm">
@@ -373,7 +373,7 @@ export const Simulator = () => {
             {isIoOpen && (
               <div className="p-4 space-y-4 flex-grow">
                 {/* Compact Add Output */}
-                <div className="flex gap-2 items-center bg-slate-50 p-2 rounded-2xl border border-slate-200">
+                <div className="flex gap-2 items-center">
                   <button 
                     onClick={() => openModal('output')}
                     className="flex-grow flex items-center gap-2 bg-white hover:bg-slate-100 rounded-xl px-3 py-1.5 transition-all group border border-slate-200 shadow-sm"
@@ -386,7 +386,7 @@ export const Simulator = () => {
                       )}
                     </div>
                     <span className={`text-[10px] font-bold ${newTargetItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
-                      {newTargetItem ? getItemName(newTargetItem) : '選択...'}
+                      {newTargetItem ? getItemName(newTargetItem) : t('simulator.select')}
                     </span>
                   </button>
                   <div className="flex items-center bg-white rounded-xl px-2 shrink-0 border border-slate-200 shadow-sm">
@@ -473,24 +473,24 @@ export const Simulator = () => {
           {isProcessorsOpen && (
             <div className="p-4 space-y-4">
               {/* Compact Add Processor UI */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-4">
+              <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1">{t('simulator.item')}</label>
                     <button 
                       onClick={() => openModal('processor_item')}
-                      className="w-full flex items-center gap-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl p-2 transition-all group shadow-sm"
+                      className="w-full flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5 transition-all group shadow-sm"
                     >
-                      <div className="w-8 h-8 bg-slate-50 rounded-lg p-1.5 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center shrink-0">
+                      <div className="w-6 h-6 bg-slate-50 rounded p-1 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center shrink-0">
                         {selectedProduceItem ? (
                           <img src={`${import.meta.env.BASE_URL}${selectedProduceItem.iconPath}`} alt="" className="w-full h-full object-contain" />
                         ) : (
-                          <Package size={14} className="text-slate-300" />
+                          <Package size={12} className="text-slate-300" />
                         )}
                       </div>
                       <div className="text-left">
-                        <span className={`text-[10px] font-black ${selectedProduceItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
-                          {selectedProduceItem ? getItemName(selectedProduceItem) : 'アイテムを選択...'}
+                        <span className={`text-[10px] font-bold ${selectedProduceItem ? 'text-slate-700' : 'text-slate-400 italic'}`}>
+                          {selectedProduceItem ? getItemName(selectedProduceItem) : t('simulator.select')}
                         </span>
                       </div>
                     </button>
@@ -498,25 +498,25 @@ export const Simulator = () => {
 
                   <div className="space-y-1.5">
                     <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.facility')}</label>
-                    <div className="flex flex-wrap gap-1.5 bg-white p-2 rounded-xl border border-slate-200 min-h-[48px] items-center shadow-inner">
+                    <div className="flex flex-wrap gap-1.5 items-center py-1.5">
                       {availableFacilities.length > 0 ? availableFacilities.map(item => (
                         <button
                           key={item.id}
                           onClick={() => setSelectedFacilityId(item.id)}
-                          className={`group relative w-8 h-8 flex items-center justify-center rounded-lg transition-all ${
+                          className={`group relative w-7 h-7 flex items-center justify-center rounded-lg transition-all ${
                             selectedFacilityId === item.id 
                               ? 'bg-blue-600 border-2 border-blue-400 shadow-md scale-110' 
-                              : 'bg-white border border-slate-100 hover:border-blue-400 hover:bg-blue-50'
+                              : 'bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50'
                           }`}
                           title={getItemName(item)}
                         >
-                          <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt="" className="w-6 h-6 object-contain group-hover:scale-110 transition-transform" />
+                          <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt="" className="w-5 h-5 object-contain group-hover:scale-110 transition-transform" />
                         </button>
-                      )) : (
+                      )) : selectedProduceItemId ? (
                         <p className="text-[8px] font-bold text-slate-400 p-2 italic">
-                          {selectedProduceItemId ? '施設がありません' : 'アイテムを先に選択'}
+                          {t('simulator.noFacility')}
                         </p>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </div>

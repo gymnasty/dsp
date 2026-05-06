@@ -79,7 +79,9 @@
     "empty": "No data. Add inputs or facilities to start simulation.",
     "clearAll": "Clear All",
     "perSecond": "/s",
-    "perMinute": "/min"
+    "perMinute": "/min",
+    "select": "Select...",
+    "noFacility": "No Facility"
   },
   "items": {
     "coal": "Coal",
