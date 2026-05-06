@@ -1,7 +1,7 @@
 import { ArrowDownToLine, ArrowRight, Calculator, ChevronDown, ChevronUp, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
@@ -230,36 +230,28 @@ export const Simulator = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      <nav className="flex items-center justify-between gap-2 text-sm font-bold">
-        <div className="flex items-center gap-2">
-          <Link 
-            to="/" 
-            className="text-blue-600 hover:text-blue-700 transition-colors bg-white border border-slate-200 px-3 py-1 rounded-lg shadow-sm"
+      <Breadcrumbs 
+        items={[{ label: t('menu.simulator') }]} 
+        extra={
+          <button 
+            onClick={() => { 
+              if(confirm(t('simulator.clearAll') + '?')) { 
+                setInputs([]); 
+                setOutputs([]); 
+                setProcessors([]); 
+                setNewItemId('');
+                setNewTargetItemId('');
+                setSelectedProduceItemId('');
+                setSelectedFacilityId('');
+              } 
+            }}
+            className="px-4 py-1.5 bg-white hover:bg-red-50 hover:text-red-600 text-slate-500 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
           >
-            {t('menu.mainMenu')}
-          </Link>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-500 px-1">{t('menu.simulator')}</span>
-        </div>
-
-        <button 
-          onClick={() => { 
-            if(confirm(t('simulator.clearAll') + '?')) { 
-              setInputs([]); 
-              setOutputs([]); 
-              setProcessors([]); 
-              setNewItemId('');
-              setNewTargetItemId('');
-              setSelectedProduceItemId('');
-              setSelectedFacilityId('');
-            } 
-          }}
-          className="px-4 py-1.5 bg-white hover:bg-red-50 hover:text-red-600 text-slate-500 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
-        >
-          <Trash2 size={14} />
-          {t('simulator.clearAll')}
-        </button>
-      </nav>
+            <Trash2 size={14} />
+            {t('simulator.clearAll')}
+          </button>
+        }
+      />
 
       <div className="space-y-8">
         {/* Config Sections */}

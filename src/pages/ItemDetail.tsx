@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
 import { ITEM_TYPES, FACILITIES } from '../types';
@@ -91,24 +92,14 @@ export const ItemDetail = () => {
   const itemName = getItemName(item);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      <nav className="flex justify-between items-center">
-        <div className="flex items-center gap-2 text-sm font-bold">
-          <Link 
-            to="/items" 
-            className="text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-lg"
-          >
-            {t('menu.items')}
-          </Link>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-400 px-1">
-            {item.type === ITEM_TYPES.COMPONENT ? t('categories.components') : t('categories.buildings')}
-          </span>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-900 px-1">{itemName}</span>
-        </div>
-
-        {!isRawMaterial && (
+    <div className="max-w-[1400px] mx-auto py-8 px-4 space-y-8">
+      <Breadcrumbs 
+        items={[
+          { label: t('menu.items'), to: '/items' },
+          { label: item.type === ITEM_TYPES.COMPONENT ? t('categories.components') : t('categories.buildings') },
+          { label: itemName }
+        ]}
+        extra={!isRawMaterial && (
           <div className="flex items-center gap-4 bg-white px-6 py-2 rounded-full border border-slate-200 shadow-sm">
             <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{t('itemDetail.targetQuantity')}</span>
             <div className="flex items-center gap-2">
@@ -129,7 +120,7 @@ export const ItemDetail = () => {
             </div>
           </div>
         )}
-      </nav>
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Info Header - Mobile/Side */}

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 import { BUILDING_ORDER } from '../data/buildingOrder';
 import { ITEMS } from '../data/items';
 import { COMPONENT_GRID } from '../data/layouts';
@@ -74,16 +75,7 @@ export const ItemList = () => {
 
   return (
     <div className="max-w-[1400px] mx-auto py-8 px-4 space-y-8">
-      <nav className="flex items-center gap-2 text-sm font-bold">
-        <Link 
-          to="/" 
-          className="text-blue-600 hover:text-blue-700 transition-colors bg-white border border-slate-200 px-3 py-1 rounded-lg shadow-sm"
-        >
-          {t('menu.mainMenu')}
-        </Link>
-        <span className="text-slate-300">/</span>
-        <span className="text-slate-500 px-1">{t('menu.items')}</span>
-      </nav>
+      <Breadcrumbs items={[{ label: t('menu.items') }]} />
 
       <div className="space-y-12">
         <GridTable 
