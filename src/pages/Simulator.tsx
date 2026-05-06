@@ -311,6 +311,7 @@ export const Simulator = () => {
                     <input 
                       type="number" 
                       value={newRate}
+                      step="1"
                       onChange={(e) => setNewRate(Math.max(0, parseFloat(e.target.value) || 0))}
                       className="w-10 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-[10px] p-1 text-blue-600"
                     />
@@ -350,7 +351,7 @@ export const Simulator = () => {
                                 <input 
                                   type="number" 
                                   value={input.rate}
-                                  step="0.1"
+                                  step="1"
                                   onChange={(e) => updateInputRate(idx, parseFloat(e.target.value) || 0)}
                                   className="w-12 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-[10px] p-0"
                                 />
@@ -410,6 +411,7 @@ export const Simulator = () => {
                     <input
                       type="number"
                       value={newTargetRate}
+                      step="1"
                       onChange={(e) => setNewTargetRate(Math.max(0, parseFloat(e.target.value) || 0))}
                       className="w-10 bg-transparent border-none text-right font-mono font-bold focus:ring-0 text-[10px] p-1 text-orange-600"
                     />
@@ -449,7 +451,7 @@ export const Simulator = () => {
                                 <input 
                                   type="number" 
                                   value={output.rate}
-                                  step="0.1"
+                                  step="1"
                                   onChange={(e) => updateOutputRate(idx, parseFloat(e.target.value) || 0)}
                                   className="w-12 bg-transparent border-none text-right font-mono font-black text-orange-600 focus:ring-0 text-[10px] p-0"
                                 />
