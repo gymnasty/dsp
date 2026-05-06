@@ -22,14 +22,14 @@ export const ItemList = () => {
   ];
 
   const GridTable = ({ grid, title, icon }: { grid: (string | null)[][], title: string, icon: string }) => (
-    <section className="space-y-4">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded text-xl">{icon}</span>
-        <h2 className="text-xl font-bold text-slate-800 uppercase tracking-tight">{title}</h2>
+    <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+        <span className="text-xl">{icon}</span>
+        <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">{title}</h2>
       </div>
 
-      <div className="inline-block border border-slate-300 rounded overflow-hidden shadow-sm">
-        <div className="bg-white p-1">
+      <div className="p-6 overflow-x-auto">
+        <div className="inline-block border border-slate-200 rounded-lg overflow-hidden shadow-sm bg-white">
           <table className="border-collapse">
             <tbody>
               {grid.map((row, rowIndex) => (
@@ -43,7 +43,7 @@ export const ItemList = () => {
                     const name = getItemName(item);
                     
                     return (
-                      <td key={`${rowIndex}-${colIndex}`} className="p-0 border border-slate-200">
+                      <td key={`${rowIndex}-${colIndex}`} className="p-0 border border-slate-100">
                         <Link
                           to={item ? `/item/${item.id}` : '#'}
                           className="group relative block w-12 h-12 hover:bg-blue-50 transition-colors flex items-center justify-center p-1"
@@ -73,36 +73,33 @@ export const ItemList = () => {
   );
 
   return (
-    <div className="max-w-[1400px] mx-auto py-8 px-4 bg-white min-h-screen">
-      <nav className="mb-8 flex items-center gap-2 text-sm font-bold">
+    <div className="max-w-[1400px] mx-auto py-8 px-4 space-y-8">
+      <nav className="flex items-center gap-2 text-sm font-bold">
         <Link 
           to="/" 
-          className="text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-3 py-1 rounded-lg"
+          className="text-blue-600 hover:text-blue-700 transition-colors bg-white border border-slate-200 px-3 py-1 rounded-lg shadow-sm"
         >
           {t('menu.mainMenu')}
         </Link>
         <span className="text-slate-300">/</span>
-        <span className="text-slate-900 px-1">{t('menu.items')}</span>
+        <span className="text-slate-500 px-1">{t('menu.items')}</span>
       </nav>
 
-      <div className="space-y-20">
+      <div className="space-y-12">
         <GridTable 
           grid={COMPONENT_GRID} 
           title={t('categories.components')} 
           icon="⚙️" 
         />
         
-        <section className="space-y-4">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded text-xl">🏭</span>
-            <h2 className="text-xl font-bold text-slate-800 uppercase tracking-tight">{t('categories.buildings')}</h2>
+        <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+            <span className="text-xl">🏭</span>
+            <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">{t('categories.buildings')}</h2>
           </div>
           
-          <div className="inline-block border border-slate-300 rounded overflow-hidden shadow-sm">
-            <div className="bg-slate-100 px-4 py-2 border-b border-slate-300">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{t('categories.logisticsAndProduction')}</span>
-            </div>
-            <div className="bg-white">
+          <div className="p-6 overflow-x-auto">
+            <div className="inline-block border border-slate-200 rounded-lg overflow-hidden shadow-sm bg-white">
               <table className="border-collapse">
                 <tbody>
                   {buildingCategories.map(cat => {
@@ -120,9 +117,9 @@ export const ItemList = () => {
                     });
 
                     return (
-                      <tr key={cat} className="border-b border-slate-200 last:border-0">
-                        <td className="bg-slate-50 px-4 py-2 border-r border-slate-200 min-w-[100px] align-middle">
-                          <span className="text-[10px] font-black text-slate-500 uppercase tracking-tighter whitespace-nowrap">
+                      <tr key={cat} className="border-b border-slate-100 last:border-0">
+                        <td className="bg-slate-50/50 px-4 py-2 border-r border-slate-100 min-w-[100px] align-middle">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter whitespace-nowrap">
                             {t(`categories.${cat}`)}
                           </span>
                         </td>
@@ -134,7 +131,7 @@ export const ItemList = () => {
                                 <Link
                                   key={item.id}
                                   to={`/item/${item.id}`}
-                                  className="group relative block w-12 h-12 hover:bg-blue-50 transition-colors flex items-center justify-center p-1 border border-transparent hover:border-slate-200"
+                                  className="group relative block w-12 h-12 hover:bg-blue-50 transition-colors flex items-center justify-center p-1 border border-transparent hover:border-slate-100 rounded-md"
                                   title={name}
                                 >
                                   <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt={name} className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
