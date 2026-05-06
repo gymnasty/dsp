@@ -255,7 +255,7 @@ export const Simulator = () => {
         extra={
           <button 
             onClick={() => { 
-              if(confirm(t('simulator.clearAll') + '?')) { 
+              if(confirm(t('simulator.clearConfirm'))) { 
                 setInputs([]); 
                 setOutputs([]); 
                 setProcessors([]); 

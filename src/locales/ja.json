@@ -79,6 +79,7 @@
     "production": "生産",
     "empty": "データがありません。入力物や施設を追加してシミュレーションを開始してください。",
     "clearAll": "全てクリア",
+    "clearConfirm": "全ての入力内容をクリアしてもよろしいですか？",
     "perSecond": "/秒",
     "perMinute": "/分",
     "select": "選択...",

@@ -79,6 +79,7 @@
     "production": "Production",
     "empty": "No data. Add inputs or facilities to start simulation.",
     "clearAll": "Clear All",
+    "clearConfirm": "Are you sure you want to clear all inputs?",
     "perSecond": "/s",
     "perMinute": "/min",
     "select": "Select...",
