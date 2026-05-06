@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 export const Home = () => {
   const { t } = useTranslation();
@@ -20,9 +20,6 @@ export const Home = () => {
           📦
         </div>
         <h2 className="text-4xl font-black text-slate-800 mb-3 tracking-tight">{t('menu.items')}</h2>
-        <p className="text-slate-500 text-sm leading-relaxed font-medium">
-          {t('home.subtitle')}
-        </p>
       </Link>
     </div>
   );

@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { BUILDING_ORDER } from '../data/buildingOrder';
 import { ITEMS } from '../data/items';
 import { COMPONENT_GRID } from '../data/layouts';
-import { BUILDING_ORDER } from '../data/buildingOrder';
-import { getItemName } from '../utils/i18n';
 import { CATEGORIES, ITEM_TYPES } from '../types';
+import { getItemName } from '../utils/i18n';
 
 export const ItemList = () => {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ export const ItemList = () => {
     CATEGORIES.ENVIRONMENT
   ];
 
-  const GridTable = ({ grid, title, icon, subtitle }: { grid: (string | null)[][], title: string, icon: string, subtitle: string }) => (
+  const GridTable = ({ grid, title, icon }: { grid: (string | null)[][], title: string, icon: string }) => (
     <section className="space-y-4">
       <div className="flex items-center gap-2 mb-4">
         <span className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded text-xl">{icon}</span>
@@ -29,9 +29,6 @@ export const ItemList = () => {
       </div>
 
       <div className="inline-block border border-slate-300 rounded overflow-hidden shadow-sm">
-        <div className="bg-slate-100 px-4 py-2 border-b border-slate-300 flex justify-between items-center">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{subtitle}</span>
-        </div>
         <div className="bg-white p-1">
           <table className="border-collapse">
             <tbody>
@@ -93,7 +90,6 @@ export const ItemList = () => {
           grid={COMPONENT_GRID} 
           title={t('categories.components')} 
           icon="⚙️" 
-          subtitle={t('categories.materialsAndResources')} 
         />
         
         <section className="space-y-4">

@@ -2,13 +2,12 @@
   "menu": {
     "home": "ホーム",
     "items": "アイテム一覧",
-    "simulator": "生成シミュレーター",
+    "simulator": "生産シミュレーター",
     "mainMenu": "メインメニュー"
   },
   "categories": {
     "components": "コンポーネント",
     "buildings": "施設",
-    "materialsAndResources": "材料・資源",
     "logisticsAndProduction": "物流・生産施設",
     "Natural Resources": "天然資源",
     "Intermediate Products": "中間製品",
@@ -63,7 +62,7 @@
     "recipe": "レシピ"
   },
   "simulator": {
-    "title": "生成シミュレーター",
+    "title": "生産シミュレーター",
     "inputs": "要求",
     "processors": "生産",
     "results": "シミュレーション結果",
@@ -81,9 +80,6 @@
     "clearAll": "全てクリア",
     "perSecond": "/秒",
     "perMinute": "/分"
-  },
-  "home": {
-    "subtitle": "コンポーネントと施設"
   },
   "items": {
     "coal": "石炭",

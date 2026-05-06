@@ -1,11 +1,11 @@
-import { ArrowDownToLine, ArrowRight, Calculator, Factory, Package, Plus, Search, Trash2, TrendingUp, ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowDownToLine, ArrowRight, Calculator, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
 import { ITEM_TYPES } from '../types';
 import { getItemName } from '../utils/i18n';
-import { ItemSelectorModal } from '../components/ItemSelectorModal';
 
 interface InputState {
   itemId: string;
@@ -226,7 +226,6 @@ export const Simulator = () => {
         </div>
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">{t('simulator.title')}</h1>
-          <p className="text-slate-500 font-medium">{t('home.subtitle')}</p>
         </div>
         <div className="flex-grow"></div>
         <button 

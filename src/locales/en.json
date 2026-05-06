@@ -8,7 +8,6 @@
   "categories": {
     "components": "Components",
     "buildings": "Buildings",
-    "materialsAndResources": "Materials & Resources",
     "logisticsAndProduction": "Logistics & Production Facilities",
     "Natural Resources": "Natural Resources",
     "Intermediate Products": "Intermediate Products",
@@ -81,9 +80,6 @@
     "clearAll": "Clear All",
     "perSecond": "/s",
     "perMinute": "/min"
-  },
-  "home": {
-    "subtitle": "Components and Buildings"
   },
   "items": {
     "coal": "Coal",
