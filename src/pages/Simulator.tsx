@@ -439,22 +439,67 @@ export const Simulator = () => {
               </div>
             </div>
 
-            {availableRecipes.length > 1 && (
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.productionRecipe')}</label>
-                <select 
-                  value={newRecipeId} 
-                  onChange={(e) => setNewRecipeId(e.target.value)}
-                  className="w-full bg-slate-100 border-none rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-blue-500 transition-all"
-                >
-                  {availableRecipes.map(recipe => (
-                    <option key={recipe.id} value={recipe.id}>
-                      {recipe.ingredients.map(ing => getItemName(Object.values(ITEMS).find(item => item.id === ing.itemId))).join(' + ')} 
-                      {' -> '} 
-                      {recipe.outputCount}x {getItemName(Object.values(ITEMS).find(item => item.id === recipe.outputItemId))}
-                    </option>
-                  ))}
-                </select>
+            {availableRecipes.length > 0 && (
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
+                  {availableRecipes.length > 1 ? t('itemDetail.productionRecipe') : t('itemDetail.productionRecipe')}
+                </label>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  {availableRecipes.map(recipe => {
+                    const isSelected = newRecipeId === recipe.id;
+                    return (
+                      <button
+                        key={recipe.id}
+                        onClick={() => setNewRecipeId(recipe.id)}
+                        className={`flex items-center gap-4 p-3 rounded-2xl border transition-all text-left ${
+                          isSelected 
+                            ? 'bg-blue-50 border-blue-200 ring-2 ring-blue-600/10' 
+                            : 'bg-white border-slate-100 hover:border-blue-200 hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                          isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200'
+                        }`}>
+                          {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                        </div>
+
+                        <div className="flex-grow flex items-center gap-3">
+                          <div className="flex items-center gap-1">
+                            {recipe.ingredients.map(ing => {
+                              const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
+                              return (
+                                <div key={ing.itemId} className="relative">
+                                  <img src={ingItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(ingItem)} />
+                                  <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/90 px-0.5 rounded leading-none border border-slate-100">{ing.count}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <ArrowRight size={14} className="text-slate-300" />
+                          <div className="flex items-center gap-1">
+                            {[
+                              { itemId: recipe.outputItemId, count: recipe.outputCount },
+                              ...(recipe.extraOutputs || []).map(e => ({ itemId: e.itemId, count: e.count }))
+                            ].map((out, i) => {
+                              const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
+                              return (
+                                <div key={`${out.itemId}-${i}`} className="relative">
+                                  <img src={outItem?.iconPath} alt="" className="w-6 h-6 object-contain" title={getItemName(outItem)} />
+                                  <span className="absolute -bottom-1 -right-1 text-[8px] font-black bg-white/90 px-0.5 rounded leading-none border border-slate-100">{out.count}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <div className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">
+                          {recipe.time}s
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             )}
             
