@@ -507,18 +507,18 @@ export const Simulator = () => {
             <div className="p-4 space-y-4">
               {/* Compact Add Processor UI */}
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                  <div className="space-y-1.5 flex flex-col">
                     <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1">{t('simulator.item')}</label>
                     <button 
                       onClick={() => openModal('processor_item')}
-                      className="w-full flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5 transition-all group shadow-sm"
+                      className="w-full flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl px-3 h-10 transition-all group shadow-sm"
                     >
-                      <div className="w-6 h-6 bg-slate-50 rounded p-1 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 bg-slate-50 rounded-lg p-1.5 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center shrink-0">
                         {selectedProduceItem ? (
                           <img src={`${import.meta.env.BASE_URL}${selectedProduceItem.iconPath}`} alt="" className="w-full h-full object-contain" />
                         ) : (
-                          <Package size={12} className="text-slate-300" />
+                          <Package size={16} className="text-slate-300" />
                         )}
                       </div>
                       <div className="text-left">
@@ -529,21 +529,21 @@ export const Simulator = () => {
                     </button>
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="space-y-1.5 flex flex-col">
                     <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.facility')}</label>
-                    <div className="flex flex-wrap gap-1.5 items-center py-1.5">
+                    <div className="flex flex-wrap gap-2 items-center min-h-10">
                       {availableFacilities.length > 0 ? availableFacilities.map(item => (
                         <button
                           key={item.id}
                           onClick={() => setSelectedFacilityId(item.id)}
-                          className={`group relative w-7 h-7 flex items-center justify-center rounded-lg transition-all ${
+                          className={`group relative w-10 h-10 flex items-center justify-center rounded-xl transition-all ${
                             selectedFacilityId === item.id 
                               ? 'bg-blue-600 border-2 border-blue-400 shadow-md scale-110' 
                               : 'bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50'
                           }`}
                           title={getItemName(item)}
                         >
-                          <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt="" className="w-5 h-5 object-contain group-hover:scale-110 transition-transform" />
+                          <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt="" className="w-7 h-7 object-contain group-hover:scale-110 transition-transform" />
                         </button>
                       )) : selectedProduceItemId ? (
                         <p className="text-[8px] font-bold text-slate-400 p-2 italic">
@@ -560,51 +560,74 @@ export const Simulator = () => {
                       {t('itemDetail.productionRecipe')}
                     </label>
                     
-                    <div className="grid grid-cols-1 gap-1.5">
+                    <div className="grid grid-cols-1 gap-2">
                       {availableRecipes.map(recipe => {
                         return (
                           <div
                             key={recipe.id}
-                            className="flex items-center gap-3 p-2 rounded-xl border border-slate-100 bg-white shadow-sm"
+                            className="flex items-center gap-4 p-3 rounded-2xl border border-slate-100 bg-white shadow-sm"
                           >
-                            <div className="flex-grow flex items-center gap-2">
-                              <div className="flex items-center gap-0.5">
-                                {recipe.ingredients.map(ing => {
-                                  const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
-                                  return (
-                                    <div key={ing.itemId} className="relative">
-                                      <img src={`${import.meta.env.BASE_URL}${ingItem?.iconPath}`} alt="" className="w-4 h-4 object-contain" title={getItemName(ingItem)} />
-                                      <span className="absolute -bottom-1 -right-1 text-[6px] font-black bg-white/90 text-slate-700 px-0.5 rounded leading-none border border-slate-100">{ing.count}</span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                              <ArrowRight size={10} className="text-slate-300" />
-                              <div className="flex items-center gap-0.5">
-                                {[
-                                  { itemId: recipe.outputItemId, count: recipe.outputCount },
-                                  ...(recipe.extraOutputs || []).map(e => ({ itemId: e.itemId, count: e.count }))
-                                ].map((out, i) => {
-                                  const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
-                                  return (
-                                    <div key={`${out.itemId}-${i}`} className="relative">
-                                      <img src={`${import.meta.env.BASE_URL}${outItem?.iconPath}`} alt="" className="w-4 h-4 object-contain" title={getItemName(outItem)} />
-                                      <span className="absolute -bottom-1 -right-1 text-[6px] font-black bg-white/90 text-slate-700 px-0.5 rounded leading-none border border-slate-100">{out.count}</span>
-                                    </div>
-                                  );
-                                })}
+                            <div className="flex-grow">
+                              {/* Recipe Horizontal View with wrapping */}
+                              <div className="flex items-center gap-3">
+                                <div className="flex flex-wrap items-center gap-1.5 justify-start">
+                                  {recipe.ingredients.map(ing => {
+                                    const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
+                                    return (
+                                      <div key={ing.itemId} className="relative">
+                                        <div className="w-10 h-10 bg-slate-50 rounded-xl p-1.5 border border-slate-100 flex items-center justify-center">
+                                          <img src={`${import.meta.env.BASE_URL}${ingItem?.iconPath}`} alt="" className="w-full h-full object-contain" title={getItemName(ingItem)} />
+                                        </div>
+                                        <span className="absolute -bottom-1 -right-1 text-[10px] font-black bg-white shadow-sm text-slate-700 px-1.5 rounded-lg leading-none border border-slate-200">{ing.count}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                                
+                                <ArrowRight size={14} className="text-slate-300 shrink-0" />
+                                
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  {[
+                                    { itemId: recipe.outputItemId, count: recipe.outputCount },
+                                    ...(recipe.extraOutputs || []).map(e => ({ itemId: e.itemId, count: e.count }))
+                                  ].map((out, i) => {
+                                    const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
+                                    return (
+                                      <div key={`${out.itemId}-${i}`} className="relative">
+                                        <div className="w-10 h-10 bg-blue-50/50 rounded-xl p-1.5 border border-blue-100 flex items-center justify-center">
+                                          <img src={`${import.meta.env.BASE_URL}${outItem?.iconPath}`} alt="" className="w-full h-full object-contain" title={getItemName(outItem)} />
+                                        </div>
+                                        <span className="absolute -bottom-1 -right-1 text-[10px] font-black bg-white shadow-sm text-blue-700 px-1.5 rounded-lg leading-none border border-blue-200">{out.count}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </div>
                             </div>
 
-                            <div className="text-[8px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">
-                              {recipe.time}s
+                            <div className="flex items-center gap-2">
+                              {(() => {
+                                const facilitySpeed = Object.values(ITEMS).find(i => i.id === selectedFacilityId)?.productionSpeed || 1;
+                                const actualTime = recipe.time / facilitySpeed;
+                                const rate = (recipe.outputCount * facilitySpeed) / recipe.time;
+                                return (
+                                  <>
+                                    <div className="text-[10px] font-mono font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg border border-green-100 whitespace-nowrap">
+                                      {rate.toFixed(2)}/s
+                                    </div>
+                                    <div className="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 whitespace-nowrap">
+                                      {actualTime.toFixed(2)}s
+                                    </div>
+                                  </>
+                                );
+                              })()}
                             </div>
 
                             <button 
                               onClick={() => addProcessor(recipe.id)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-lg shadow-md shadow-blue-100 transition-all active:scale-95 shrink-0"
+                              className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl shadow-md shadow-blue-100 transition-all active:scale-95 shrink-0"
                             >
-                              <Plus size={14} />
+                              <Plus size={18} />
                             </button>
                           </div>
                         );
@@ -620,7 +643,7 @@ export const Simulator = () => {
                   <thead className="text-slate-400 font-black uppercase tracking-tighter border-b border-slate-100">
                     <tr>
                       <th className="px-2 py-1 text-left">{t('itemDetail.facility')}</th>
-                      <th className="px-2 py-1 text-center">{t('itemDetail.productionRecipe')}</th>
+                      <th className="px-2 py-1 text-left">{t('itemDetail.productionRecipe')}</th>
                       <th className="px-2 py-1 text-right w-20">{t('simulator.production')}</th>
                       <th className="px-2 py-1 text-right w-24">{t('simulator.count')}</th>
                       <th className="px-2 py-1 text-right w-8"></th>
@@ -635,31 +658,47 @@ export const Simulator = () => {
                       
                       return (
                         <tr key={idx} className="group hover:bg-slate-50 transition-colors">
-                          <td className="px-2 py-2">
-                            <div className="flex items-center gap-2">
-                              <img src={`${import.meta.env.BASE_URL}${facilityItem?.iconPath}`} alt="" className="w-5 h-5 object-contain" />
-                              <span className="font-bold text-slate-700">{getItemName(facilityItem)}</span>
+                          <td className="px-2 py-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center p-1.5 shrink-0">
+                                <img src={`${import.meta.env.BASE_URL}${facilityItem?.iconPath}`} alt="" className="w-full h-full object-contain" />
+                              </div>
+                              <span className="font-bold text-slate-700 leading-tight">{getItemName(facilityItem)}</span>
                             </div>
                           </td>
-                          <td className="px-2 py-2">
-                            <div className="flex items-center justify-center gap-2">
-                              <div className="flex items-center gap-0.5">
+                          <td className="px-2 py-4">
+                            <div className="flex items-center justify-start gap-2">
+                              {/* Ingredients */}
+                              <div className="flex flex-wrap justify-start items-center gap-1.5 max-w-[120px]">
                                 {recipe?.ingredients.map(ing => {
                                   const ingItem = Object.values(ITEMS).find(i => i.id === ing.itemId);
                                   return (
-                                    <img key={ing.itemId} src={`${import.meta.env.BASE_URL}${ingItem?.iconPath}`} alt="" className="w-4 h-4 object-contain opacity-50" title={getItemName(ingItem)} />
+                                    <div key={ing.itemId} className="relative">
+                                      <div className="w-8 h-8 bg-slate-50/50 rounded-lg p-1 border border-slate-100 opacity-60 flex items-center justify-center">
+                                        <img src={`${import.meta.env.BASE_URL}${ingItem?.iconPath}`} alt="" className="w-full h-full object-contain" title={getItemName(ingItem)} />
+                                      </div>
+                                      <span className="absolute -bottom-1 -right-1 text-[7px] font-black bg-white shadow-sm text-slate-700 px-1 rounded-sm leading-none border border-slate-200">{ing.count}</span>
+                                    </div>
                                   );
                                 })}
                               </div>
-                              <ArrowRight size={8} className="text-slate-300" />
-                              <div className="flex items-center gap-0.5">
+                              
+                              <ArrowRight size={12} className="text-slate-200 shrink-0" />
+                              
+                              {/* Outputs */}
+                              <div className="flex flex-wrap justify-start items-center gap-1.5">
                                 {[
                                   { itemId: recipe?.outputItemId, count: recipe?.outputCount },
                                   ...(recipe?.extraOutputs || []).map(e => ({ itemId: e.itemId, count: e.count }))
                                 ].map((out, i) => {
                                   const outItem = Object.values(ITEMS).find(i => i.id === out.itemId);
                                   return (
-                                    <img key={`${out.itemId}-${i}`} src={`${import.meta.env.BASE_URL}${outItem?.iconPath}`} alt="" className="w-4 h-4 object-contain" title={getItemName(outItem)} />
+                                    <div key={`${out.itemId}-${i}`} className="relative">
+                                      <div className="w-8 h-8 bg-blue-50/30 rounded-lg p-1 border border-blue-50 flex items-center justify-center">
+                                        <img src={`${import.meta.env.BASE_URL}${outItem?.iconPath}`} alt="" className="w-full h-full object-contain" title={getItemName(outItem)} />
+                                      </div>
+                                      <span className="absolute -bottom-1 -right-1 text-[7px] font-black bg-white shadow-sm text-blue-700 px-1 rounded-sm leading-none border border-blue-100">{out.count}</span>
+                                    </div>
                                   );
                                 })}
                               </div>
