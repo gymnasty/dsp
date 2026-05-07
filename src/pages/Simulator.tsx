@@ -715,7 +715,6 @@ export const Simulator = () => {
                                 onChange={(e) => updateProcessorCount(idx, parseInt(e.target.value) || 0)}
                                 className="w-8 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-[10px] p-0"
                               />
-                              <span className="text-[8px] font-black text-slate-400 uppercase">台</span>
                             </div>
                           </td>
                           <td className="px-2 py-2 text-right">
