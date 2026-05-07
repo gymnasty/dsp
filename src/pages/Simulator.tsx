@@ -538,7 +538,7 @@ export const Simulator = () => {
                           onClick={() => setSelectedFacilityId(item.id)}
                           className={`group relative w-10 h-10 flex items-center justify-center rounded-xl transition-all ${
                             selectedFacilityId === item.id 
-                              ? 'bg-blue-600 border-2 border-blue-400 shadow-md scale-110' 
+                              ? 'bg-white border-2 border-blue-600 shadow-md scale-110' 
                               : 'bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50'
                           }`}
                           title={getItemName(item)}
