@@ -43,7 +43,11 @@ export const Simulator = () => {
   
   // Producible items for processor selection
   const producibleItems = useMemo(() => {
-    const producibleIds = new Set(RECIPES.map(r => r.outputItemId));
+    const producibleIds = new Set<string>();
+    RECIPES.forEach(r => {
+      producibleIds.add(r.outputItemId);
+      r.extraOutputs?.forEach(e => producibleIds.add(e.itemId));
+    });
     return sortedItems.filter(item => producibleIds.has(item.id));
   }, [sortedItems]);
 
@@ -51,7 +55,10 @@ export const Simulator = () => {
 
   const availableFacilities = useMemo(() => {
     if (!selectedProduceItemId) return [];
-    const recipes = RECIPES.filter(r => r.outputItemId === selectedProduceItemId);
+    const recipes = RECIPES.filter(r => 
+      r.outputItemId === selectedProduceItemId || 
+      r.extraOutputs?.some(e => e.itemId === selectedProduceItemId)
+    );
     const facilityTypes = new Set(recipes.map(r => r.producedIn));
     
     // Find all building items that match any of these facility types
@@ -112,7 +119,7 @@ export const Simulator = () => {
     if (!facilityItem?.facilityType) return [];
     
     return RECIPES.filter(r => 
-      r.outputItemId === selectedProduceItemId && 
+      (r.outputItemId === selectedProduceItemId || r.extraOutputs?.some(e => e.itemId === selectedProduceItemId)) && 
       r.producedIn === facilityItem.facilityType
     );
   }, [selectedProduceItemId, selectedFacilityId]);
@@ -224,7 +231,14 @@ export const Simulator = () => {
 
   const sortedResults = useMemo(() => [...results].sort((a, b) => b.netRate - a.netRate), [results]);
 
-  const producibleItemIds = useMemo(() => new Set(RECIPES.map(r => r.outputItemId)), []);
+  const producibleItemIds = useMemo(() => {
+    const ids = new Set<string>();
+    RECIPES.forEach(r => {
+      ids.add(r.outputItemId);
+      r.extraOutputs?.forEach(e => ids.add(e.itemId));
+    });
+    return ids;
+  }, []);
 
   const handleResultItemClick = (e: React.MouseEvent, itemId: string) => {
     e.stopPropagation();

@@ -46,9 +46,24 @@ export const ItemDetail = () => {
 
   // Find the current item using ID from the ITEMS object values
   const item = Object.values(ITEMS).find((i) => i.id === id);
-  const itemRecipes = RECIPES.filter((r) => r.outputItemId === id);
+  const itemRecipes = RECIPES.filter((r) => 
+    r.outputItemId === id || 
+    r.extraOutputs?.some(e => e.itemId === id)
+  );
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState(0);
   const recipe = itemRecipes[selectedRecipeIndex];
+
+  // Calculate multiplier based on viewed item
+  let itemOutputCount = 0;
+  if (recipe) {
+    if (recipe.outputItemId === id) {
+      itemOutputCount = recipe.outputCount;
+    } else {
+      const extra = recipe.extraOutputs?.find(e => e.itemId === id);
+      if (extra) itemOutputCount = extra.count;
+    }
+  }
+  const currentMultiplier = recipe && itemOutputCount > 0 ? Math.ceil(targetCount / itemOutputCount) : 1;
   
   // Find items that use this item as an ingredient
   const usedIn = RECIPES.filter((r) => 
@@ -57,7 +72,10 @@ export const ItemDetail = () => {
 
   // Calculate total raw materials
   const getRawMaterials = (itemId: string, count: number, recipeIndex: number = 0): Record<string, number> => {
-    const rList = RECIPES.filter((r) => r.outputItemId === itemId);
+    const rList = RECIPES.filter((r) => 
+      r.outputItemId === itemId || 
+      r.extraOutputs?.some(e => e.itemId === itemId)
+    );
     const r = rList[recipeIndex] || rList[0];
     
     if (!r) {
@@ -65,7 +83,19 @@ export const ItemDetail = () => {
     }
 
     const raw: Record<string, number> = {};
-    const multiplier = Math.ceil(count / r.outputCount);
+    
+    // Determine the output count for this specific item in this recipe
+    let itemOutputCount = 0;
+    if (r.outputItemId === itemId) {
+      itemOutputCount = r.outputCount;
+    } else {
+      const extra = r.extraOutputs?.find(e => e.itemId === itemId);
+      if (extra) itemOutputCount = extra.count;
+    }
+
+    if (itemOutputCount === 0) return { [itemId]: count };
+
+    const multiplier = Math.ceil(count / itemOutputCount);
 
     r.ingredients.forEach((ing) => {
       const ingRaw = getRawMaterials(ing.itemId, ing.count * multiplier);
@@ -210,7 +240,7 @@ export const ItemDetail = () => {
                   <div className="flex flex-col items-end">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{t('itemDetail.totalTime')}</span>
                     <span className="text-sm font-bold text-blue-600">
-                      {Math.ceil(targetCount / recipe.outputCount) * recipe.time}s
+                      {currentMultiplier * recipe.time}s
                     </span>
                   </div>
                 </div>
@@ -224,7 +254,7 @@ export const ItemDetail = () => {
                     {recipe.ingredients.map((ing) => {
                       const ingItem = Object.values(ITEMS).find((i) => i.id === ing.itemId);
                       const ingName = getItemName(ingItem);
-                      const multiplier = Math.ceil(targetCount / recipe.outputCount);
+                      const multiplier = currentMultiplier;
                       return (
                         <Link 
                           key={ing.itemId} 
@@ -250,14 +280,20 @@ export const ItemDetail = () => {
                   <div className="bg-slate-900 rounded-2xl p-6 flex flex-col gap-4 text-white">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-xl">✨</div>
+                        {recipe.outputItemId === item?.id ? (
+                          <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-xl">✨</div>
+                        ) : (
+                          <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center p-1.5 overflow-hidden">
+                            <img src={`${import.meta.env.BASE_URL}${Object.values(ITEMS).find(i => i.id === recipe.outputItemId)?.iconPath}`} alt="" className="w-full h-full object-contain" />
+                          </div>
+                        )}
                         <div>
                           <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{t('itemDetail.primaryYield')}</div>
-                          <div className="text-sm font-bold">{itemName}</div>
+                          <div className="text-sm font-bold">{getItemName(Object.values(ITEMS).find(i => i.id === recipe.outputItemId))}</div>
                         </div>
                       </div>
                       <div className="text-4xl font-black text-green-400">
-                        x{recipe.outputCount * Math.ceil(targetCount / recipe.outputCount)}
+                        x{recipe.outputCount * currentMultiplier}
                       </div>
                     </div>
 
@@ -267,7 +303,7 @@ export const ItemDetail = () => {
                         {recipe.extraOutputs.map((extra) => {
                           const extraItem = Object.values(ITEMS).find(i => i.id === extra.itemId);
                           const extraName = getItemName(extraItem);
-                          const multiplier = Math.ceil(targetCount / recipe.outputCount);
+                          const multiplier = currentMultiplier;
                           return (
                             <div key={extra.itemId} className="flex justify-between items-center">
                               <div className="flex items-center gap-2">
