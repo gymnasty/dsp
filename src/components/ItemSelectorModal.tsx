@@ -127,7 +127,7 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
           </div>
         </header>
 
-        <div className="flex-grow overflow-y-auto px-6 py-10 scrollbar-thin scrollbar-thumb-slate-200 bg-white">
+        <div className="flex-grow overflow-y-auto px-6 py-10 scrollbar-thin scrollbar-thumb-slate-200 bg-white rounded-b-3xl">
           {search ? (
             <div className="flex flex-wrap gap-1">
               {filteredItems?.map(item => renderItemButton(item))}
