@@ -30,7 +30,7 @@ export const ItemList = () => {
       </div>
 
       <div className="p-6">
-        <div className="inline-block border border-slate-200 rounded-lg shadow-sm bg-white">
+        <div className="mx-auto block w-fit border border-slate-200 rounded-lg shadow-sm bg-white">
           <table className="border-collapse">
             <tbody>
               {grid.map((row, rowIndex) => (
@@ -76,7 +76,7 @@ export const ItemList = () => {
     <div className="max-w-[1400px] mx-auto py-8 px-4 space-y-8">
       <Breadcrumbs items={[{ label: t('menu.items') }]} />
 
-      <div className="space-y-12">
+      <div className="space-y-12 max-w-4xl mx-auto">
         <GridTable 
           grid={COMPONENT_GRID} 
           title={t('categories.components')} 
@@ -90,7 +90,7 @@ export const ItemList = () => {
           </div>
           
           <div className="p-6">
-            <div className="inline-block border border-slate-200 rounded-lg shadow-sm bg-white">
+            <div className="mx-auto block w-fit border border-slate-200 rounded-lg shadow-sm bg-white">
               <table className="border-collapse">
                 <tbody>
                   {buildingCategories.map(cat => {
