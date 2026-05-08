@@ -1,5 +1,6 @@
 import { ArrowDownToLine, ArrowRight, Calculator, ChevronDown, ChevronUp, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Breadcrumbs } from '../components/Breadcrumbs';
@@ -939,9 +940,9 @@ export const Simulator = () => {
         }
       />
 
-      {menuAnchor && (
+      {menuAnchor && createPortal(
         <div 
-          className="fixed z-50 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden min-w-[140px] py-1"
+          className="fixed z-[100] bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden min-w-[140px] py-1"
           style={{ top: menuAnchor.y, left: menuAnchor.x }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -968,7 +969,8 @@ export const Simulator = () => {
               {t('simulator.addToProcessors')}
             </button>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { ITEMS } from '../data/items';
 import { COMPONENT_GRID } from '../data/layouts';
@@ -81,8 +82,8 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
       <div className="bg-white w-full max-w-[800px] max-h-[90vh] rounded-3xl shadow-2xl flex flex-col">
         <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 shrink-0 rounded-t-3xl">
           <div className="flex items-center gap-4">
@@ -191,6 +192,7 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
