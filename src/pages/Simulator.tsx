@@ -311,7 +311,27 @@ export const Simulator = () => {
   const handleResultItemClick = (e: React.MouseEvent, itemId: string) => {
     e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
-    setMenuAnchor({ x: rect.left, y: rect.bottom, itemId });
+    
+    const menuWidth = 180;
+    const menuHeight = 120;
+    
+    let x = rect.left;
+    let y = rect.bottom;
+    
+    // Adjust X if it would go off the right edge
+    if (x + menuWidth > window.innerWidth) {
+      x = window.innerWidth - menuWidth - 16;
+    }
+    
+    // Ensure X doesn't go off the left edge
+    if (x < 16) x = 16;
+    
+    // Adjust Y if it would go off the bottom edge
+    if (y + menuHeight > window.innerHeight) {
+      y = rect.top - menuHeight;
+    }
+    
+    setMenuAnchor({ x, y, itemId });
   };
 
   const jumpToProcessor = (itemId: string) => {
