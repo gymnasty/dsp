@@ -1,34 +1,102 @@
 import { ArrowDownToLine, ArrowRight, Calculator, ChevronDown, ChevronUp, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
-import { ITEM_TYPES } from '../types';
+import { CATEGORIES, ITEM_TYPES, InputState, OutputState, ProcessorState, SavedLayout } from '../types';
 import { getItemName } from '../utils/i18n';
-
-interface InputState {
-  itemId: string;
-  rate: number;
-}
-
-interface OutputState {
-  itemId: string;
-  rate: number;
-}
-
-interface ProcessorState {
-  recipeId: string;
-  count: number;
-  facilityId: string;
-}
 
 export const Simulator = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [inputs, setInputs] = useState<InputState[]>([]);
   const [outputs, setOutputs] = useState<OutputState[]>([]);
   const [processors, setProcessors] = useState<ProcessorState[]>([]);
+  const [loadedLayoutId, setLoadedLayoutId] = useState<string | null>(null);
+  const [savedLayouts, setSavedLayouts] = useState<SavedLayout[]>(() => {
+    const saved = localStorage.getItem('dsp_simulator_layouts');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved layouts', e);
+      }
+    }
+    return [];
+  });
+
+  // Load target layout if redirected from saved page
+  useEffect(() => {
+    const target = localStorage.getItem('dsp_simulator_load_target');
+    if (target) {
+      try {
+        const layout: SavedLayout = JSON.parse(target);
+        setInputs(layout.inputs);
+        setOutputs(layout.outputs);
+        setProcessors(layout.processors);
+        setLoadedLayoutId(layout.id);
+        // Clear it so it doesn't reload on next mount
+        localStorage.removeItem('dsp_simulator_load_target');
+      } catch (e) {
+        console.error('Failed to parse load target', e);
+      }
+    }
+  }, []);
+
+  // Save layouts to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem('dsp_simulator_layouts', JSON.stringify(savedLayouts));
+  }, [savedLayouts]);
+
+  const saveCurrentLayout = () => {
+    if (inputs.length === 0 && outputs.length === 0 && processors.length === 0) return;
+    
+    if (loadedLayoutId) {
+      const existingIndex = savedLayouts.findIndex(l => l.id === loadedLayoutId);
+      if (existingIndex !== -1) {
+        const existingLayout = savedLayouts[existingIndex];
+        const newName = prompt(t('simulator.savePrompt'), existingLayout.name);
+        if (newName === null) return; // User cancelled
+
+        const updatedLayouts = [...savedLayouts];
+        updatedLayouts[existingIndex] = {
+          ...existingLayout,
+          name: newName || '', // Can be empty
+          timestamp: Date.now(),
+          inputs,
+          outputs,
+          processors
+        };
+        setSavedLayouts(updatedLayouts);
+        localStorage.setItem('dsp_simulator_layouts', JSON.stringify(updatedLayouts));
+        navigate('/saved');
+        return;
+      }
+    }
+
+    const nameInput = prompt(t('simulator.savePrompt'), '');
+    if (nameInput === null) return; // User cancelled
+    const name = nameInput || '';
+
+    const newId = crypto.randomUUID();
+    const newLayout: SavedLayout = {
+      id: newId,
+      name,
+      timestamp: Date.now(),
+      inputs,
+      outputs,
+      processors
+    };
+
+    const updatedLayouts = [newLayout, ...savedLayouts];
+    setSavedLayouts(updatedLayouts);
+    setLoadedLayoutId(newId);
+    localStorage.setItem('dsp_simulator_layouts', JSON.stringify(updatedLayouts));
+    navigate('/saved');
+  };
 
   // Collapsible Sections State
   const [isIoOpen, setIsIoOpen] = useState(true);
@@ -267,23 +335,42 @@ export const Simulator = () => {
       <Breadcrumbs 
         items={[{ label: t('menu.simulator') }]} 
         extra={
-          <button 
-            onClick={() => { 
-              if(confirm(t('simulator.clearConfirm'))) { 
-                setInputs([]); 
-                setOutputs([]); 
-                setProcessors([]); 
-                setNewItemId('');
-                setNewTargetItemId('');
-                setSelectedProduceItemId('');
-                setSelectedFacilityId('');
-              } 
-            }}
-            className="px-4 py-1.5 bg-white hover:bg-red-50 hover:text-red-600 text-slate-500 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
-          >
-            <Trash2 size={14} />
-            {t('simulator.clearAll')}
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => { 
+                if(confirm(t('simulator.clearConfirm'))) { 
+                  setInputs([]); 
+                  setOutputs([]); 
+                  setProcessors([]); 
+                  setNewItemId('');
+                  setNewTargetItemId('');
+                  setSelectedProduceItemId('');
+                  setSelectedFacilityId('');
+                  setLoadedLayoutId(null);
+                } 
+              }}
+              className="px-4 py-1.5 bg-white hover:bg-red-50 hover:text-red-600 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm focus:ring-2 focus:ring-red-500 focus:outline-none"
+            >
+              <Trash2 size={14} />
+              {t('simulator.clear')}
+            </button>
+            <button 
+              onClick={saveCurrentLayout}
+              disabled={inputs.length === 0 && outputs.length === 0 && processors.length === 0}
+              className="px-4 py-1.5 bg-white hover:bg-blue-50 hover:text-blue-600 disabled:bg-slate-50 disabled:text-slate-300 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <TrendingUp size={14} className="rotate-90" />
+              {t('simulator.save')}
+            </button>
+            <button 
+              onClick={() => navigate('/saved')}
+              disabled={savedLayouts.length === 0}
+              className="px-4 py-1.5 bg-white hover:bg-slate-50 disabled:bg-slate-50 disabled:text-slate-300 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm focus:ring-2 focus:ring-slate-400 focus:outline-none"
+            >
+              <Calculator size={14} />
+              {t('simulator.saved')}
+            </button>
+          </div>
         }
       />
 

@@ -68,3 +68,28 @@ export interface Recipe {
   ingredients: Ingredient[];
   producedIn: Facility;
 }
+
+export interface InputState {
+  itemId: string;
+  rate: number;
+}
+
+export interface OutputState {
+  itemId: string;
+  rate: number;
+}
+
+export interface ProcessorState {
+  recipeId: string;
+  count: number;
+  facilityId: string;
+}
+
+export interface SavedLayout {
+  id: string;
+  name: string;
+  timestamp: number;
+  inputs: InputState[];
+  outputs: OutputState[];
+  processors: ProcessorState[];
+}

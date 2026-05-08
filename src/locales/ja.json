@@ -3,6 +3,7 @@
     "home": "ホーム",
     "items": "アイテム一覧",
     "simulator": "生産シミュレーター",
+    "savedCalculations": "保存済み",
     "search": "検索",
     "mainMenu": "メインメニュー"
   },
@@ -79,15 +80,20 @@
     "consumption": "消費",
     "production": "生産",
     "empty": "データがありません。要求アイテムや生産施設を追加してシミュレーションを開始してください。",
-    "clearAll": "全てクリア",
-    "clearConfirm": "全ての入力内容をクリアしてもよろしいですか？",
+    "clear": "クリア",
+    "clearConfirm": "入力内容をクリアしてもよろしいですか？",
     "perSecond": "/秒",
     "perMinute": "/分",
     "select": "選択...",
     "noFacility": "施設がありません",
     "addToInputs": "要求に追加",
     "addToExternalOutput": "供給に追加",
-    "addToProcessors": "生産に追加"
+    "addToProcessors": "生産に追加",
+    "save": "保存",
+    "saved": "保存済み",
+    "load": "読み込む",
+    "savePrompt": "生産名を入力してください",
+    "deleteConfirm": "この生産を削除してもよろしいですか？"
   },
   "items": {
     "coal": "石炭",

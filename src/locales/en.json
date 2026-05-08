@@ -3,6 +3,7 @@
     "home": "Home",
     "items": "Item Directory",
     "simulator": "Production Simulator",
+    "savedCalculations": "Saved Calculations",
     "search": "Search",
     "mainMenu": "Main Menu"
   },
@@ -79,7 +80,7 @@
     "consumption": "Consumption",
     "production": "Production",
     "empty": "No data. Add inputs or facilities to start simulation.",
-    "clearAll": "Clear All",
+    "clear": "Clear",
     "clearConfirm": "Are you sure you want to clear all data?",
     "perSecond": "/s",
     "perMinute": "/min",
@@ -87,7 +88,12 @@
     "noFacility": "No Facility",
     "addToInputs": "Add to Demand",
     "addToExternalOutput": "Add to Supply",
-    "addToProcessors": "Add to Production"
+    "addToProcessors": "Add to Production",
+    "save": "Save",
+    "saved": "Saved",
+    "load": "Load",
+    "savePrompt": "Enter a name for this production:",
+    "deleteConfirm": "Are you sure you want to delete this production?"
   },
   "items": {
     "coal": "Coal",

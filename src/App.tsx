@@ -4,6 +4,7 @@ import { Home } from './pages/Home'
 import { ItemList } from './pages/ItemList'
 import { ItemDetail } from './pages/ItemDetail'
 import { Simulator } from './pages/Simulator'
+import { SavedCalculations } from './pages/SavedCalculations'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="items" element={<ItemList />} />
         <Route path="item/:id" element={<ItemDetail />} />
         <Route path="simulator" element={<Simulator />} />
+        <Route path="saved" element={<SavedCalculations />} />
       </Route>
     </Routes>
   )
