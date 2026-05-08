@@ -7,7 +7,7 @@ import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { ITEMS } from '../data/items';
 import { RECIPES } from '../data/recipes';
-import { CATEGORIES, ITEM_TYPES, InputState, OutputState, ProcessorState, SavedLayout } from '../types';
+import { ITEM_TYPES, InputState, OutputState, ProcessorState, SavedLayout } from '../types';
 import { getItemName } from '../utils/i18n';
 
 export const Simulator = () => {

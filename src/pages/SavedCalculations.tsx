@@ -112,12 +112,12 @@ export const SavedCalculations = () => {
                         });
 
                         const calculatedDemand = Object.entries(stats)
-                          .filter(([_, rate]) => rate < -0.0001)
+                          .filter(([, rate]) => rate < -0.0001)
                           .sort((a, b) => a[1] - b[1])
                           .map(([id]) => id);
                         
                         const calculatedSupply = Object.entries(stats)
-                          .filter(([_, rate]) => rate > 0.0001)
+                          .filter(([, rate]) => rate > 0.0001)
                           .sort((a, b) => b[1] - a[1])
                           .map(([id]) => id);
 
