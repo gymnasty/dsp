@@ -83,8 +83,8 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-      <div className="bg-white w-full max-w-[800px] max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-        <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 shrink-0">
+      <div className="bg-white w-full max-w-[800px] max-h-[90vh] rounded-3xl shadow-2xl flex flex-col">
+        <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 shrink-0 rounded-t-3xl">
           <div className="flex items-center gap-4">
             <h3 className="text-lg font-black text-slate-800">{title}</h3>
             <div className="flex bg-slate-200 p-1 rounded-xl">
@@ -126,7 +126,7 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
           </div>
         </header>
 
-        <div className="flex-grow overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-slate-200 bg-white">
+        <div className="flex-grow overflow-y-auto px-6 py-10 scrollbar-thin scrollbar-thumb-slate-200 bg-white">
           {search ? (
             <div className="flex flex-wrap gap-1">
               {filteredItems?.map(item => renderItemButton(item))}
@@ -152,7 +152,7 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm max-w-fit mx-auto">
+              <div className="border border-slate-200 rounded-xl shadow-sm max-w-fit mx-auto">
                 <table className="border-collapse">
                   <tbody>
                     {buildingCategories.map(cat => {

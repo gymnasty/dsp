@@ -23,14 +23,14 @@ export const ItemList = () => {
   ];
 
   const GridTable = ({ grid, title, icon }: { grid: (string | null)[][], title: string, icon: string }) => (
-    <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-      <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+    <section className="bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col">
+      <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3 rounded-t-3xl">
         <span className="text-xl">{icon}</span>
         <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">{title}</h2>
       </div>
 
-      <div className="p-6 overflow-x-auto">
-        <div className="inline-block border border-slate-200 rounded-lg overflow-hidden shadow-sm bg-white">
+      <div className="p-6">
+        <div className="inline-block border border-slate-200 rounded-lg shadow-sm bg-white">
           <table className="border-collapse">
             <tbody>
               {grid.map((row, rowIndex) => (
@@ -83,14 +83,14 @@ export const ItemList = () => {
           icon="⚙️" 
         />
         
-        <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-          <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+        <section className="bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col">
+          <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3 rounded-t-3xl">
             <span className="text-xl">🏭</span>
             <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">{t('categories.buildings')}</h2>
           </div>
           
-          <div className="p-6 overflow-x-auto">
-            <div className="inline-block border border-slate-200 rounded-lg overflow-hidden shadow-sm bg-white">
+          <div className="p-6">
+            <div className="inline-block border border-slate-200 rounded-lg shadow-sm bg-white">
               <table className="border-collapse">
                 <tbody>
                   {buildingCategories.map(cat => {
