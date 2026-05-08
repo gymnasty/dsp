@@ -1,4 +1,4 @@
-import { ArrowDownToLine, ArrowRight, Calculator, ChevronDown, ChevronUp, Factory, Package, Plus, Trash2, TrendingUp } from 'lucide-react';
+import { ArrowDownToLine, ArrowRight, Calculator, ChevronDown, ChevronUp, Factory, Package, Plus, Save, Trash2, TrendingUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -380,7 +380,7 @@ export const Simulator = () => {
               disabled={inputs.length === 0 && outputs.length === 0 && processors.length === 0}
               className="px-4 py-1.5 bg-white hover:bg-blue-50 hover:text-blue-600 disabled:bg-slate-50 disabled:text-slate-300 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
-              <TrendingUp size={14} className="rotate-90" />
+              <Save size={14} />
               {t('simulator.save')}
             </button>
             <button 
