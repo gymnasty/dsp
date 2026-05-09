@@ -14,6 +14,8 @@ interface ItemSelectorModalProps {
   onSelect: (itemId: string) => void;
   title: string;
   items?: Item[]; // Optional: restrict items to this list
+  initialTab?: 'component' | 'building';
+  fixedTab?: 'component' | 'building';
 }
 
 export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({ 
@@ -21,11 +23,44 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
   onClose, 
   onSelect, 
   title,
-  items: restrictedItems 
+  items: restrictedItems,
+  initialTab,
+  fixedTab
 }) => {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
-  const [activeTab, setActiveTab] = useState<'component' | 'building'>('component');
+  
+  // Get remembered tab or use initialTab/default
+  const [activeTab, setActiveTab] = React.useState<'component' | 'building'>(() => {
+    if (fixedTab) return fixedTab;
+    const saved = localStorage.getItem('dsp_item_selector_tab');
+    if (saved === 'building' || saved === 'component') return saved;
+    return initialTab || 'component';
+  });
+
+  // Reset/Update activeTab when modal opens
+  React.useEffect(() => {
+    if (isOpen) {
+      setSearch('');
+      if (fixedTab) {
+        setActiveTab(fixedTab);
+      } else {
+        const saved = localStorage.getItem('dsp_item_selector_tab');
+        if (saved === 'building' || saved === 'component') {
+          setActiveTab(saved);
+        } else if (initialTab) {
+          setActiveTab(initialTab);
+        }
+      }
+    }
+  }, [isOpen, initialTab, fixedTab]);
+
+  // Save activeTab when it changes (unless hidden)
+  const handleTabChange = (tab: 'component' | 'building') => {
+    if (fixedTab) return;
+    setActiveTab(tab);
+    localStorage.setItem('dsp_item_selector_tab', tab);
+  };
 
   const allItems = useMemo(() => restrictedItems || Object.values(ITEMS), [restrictedItems]);
 
@@ -89,24 +124,30 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <h3 className="text-lg font-black text-slate-800 whitespace-nowrap">{title}</h3>
             <div className="flex bg-slate-200 p-1 rounded-xl w-full sm:w-auto">
-              <button
-                onClick={() => setActiveTab('component')}
-                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  activeTab === 'component' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                <Settings2 size={14} />
-                <span className="truncate">{t('categories.components')}</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('building')}
-                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  activeTab === 'building' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                <Construction size={14} />
-                <span className="truncate">{t('categories.buildings')}</span>
-              </button>
+                <button
+                  onClick={() => handleTabChange('component')}
+                  disabled={fixedTab !== undefined}
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    fixedTab !== undefined && activeTab !== 'component' ? 'opacity-50 cursor-not-allowed' : ''
+                  } ${
+                    activeTab === 'component' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  <Settings2 size={14} />
+                  <span className="truncate">{t('categories.components')}</span>
+                </button>
+                <button
+                  onClick={() => handleTabChange('building')}
+                  disabled={fixedTab !== undefined}
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    fixedTab !== undefined && activeTab !== 'building' ? 'opacity-50 cursor-not-allowed' : ''
+                  } ${
+                    activeTab === 'building' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  <Construction size={14} />
+                  <span className="truncate">{t('categories.buildings')}</span>
+                </button>
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">

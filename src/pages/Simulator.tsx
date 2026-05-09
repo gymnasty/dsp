@@ -996,11 +996,24 @@ export const Simulator = () => {
                             {item ? getItemName(item) : '-'}
                           </div>
                         </button>
-                      )) : (
+                      )) : selectedPowerFacilityId ? (
                         <div className="text-[10px] font-bold text-slate-400 italic bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 w-full">
                           {t('simulator.select')}
                         </div>
-                      )}
+                      ) : null}
+
+                      {(() => {
+                        const recipe = POWER_RECIPES.find(r => 
+                          r.facilityId === selectedPowerFacilityId && 
+                          (r.fuelItemId === (selectedPowerFuelId || undefined))
+                        );
+                        if (!recipe) return null;
+                        return (
+                          <div className="text-[10px] font-mono font-bold text-yellow-600 bg-yellow-50 px-2 py-1 rounded-lg border border-yellow-100 whitespace-nowrap ml-auto">
+                            {formatPower(recipe.powerGeneration)}
+                          </div>
+                        );
+                      })()}
 
                       {/* Add Button moved here */}
                       <button
@@ -1012,7 +1025,7 @@ export const Simulator = () => {
                           if (recipe) addPowerGenerator(recipe.id);
                         }}
                         disabled={!selectedPowerFacilityId || (availablePowerFuels.length > 0 && selectedPowerFuelId === undefined)}
-                        className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white p-2 rounded-xl shadow-lg shadow-blue-100 transition-all active:scale-95 shrink-0 ml-auto"
+                        className={`bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white p-2 rounded-xl shadow-lg shadow-blue-100 transition-all active:scale-95 shrink-0 ${!selectedPowerFacilityId || (availablePowerFuels.length > 0 && selectedPowerFuelId === undefined) ? 'ml-auto' : 'ml-0'}`}
                       >
                         <Plus size={20} />
                       </button>
@@ -1236,6 +1249,16 @@ export const Simulator = () => {
           modalTarget === 'power_facility' ? powerPlantFacilities :
           modalTarget === 'power_fuel' ? (availablePowerFuels.filter(f => f !== null) as any) :
           undefined
+        }
+        initialTab={
+          modalTarget === 'processor_facility' || modalTarget === 'power_facility' 
+            ? 'building' 
+            : 'component'
+        }
+        fixedTab={
+          modalTarget === 'power_facility' || modalTarget === 'processor_facility' 
+            ? 'building' 
+            : undefined
         }
       />
 
