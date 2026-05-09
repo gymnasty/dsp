@@ -1,6 +1,7 @@
 import { PowerRecipe } from '../types';
 import { ITEMS } from './items';
 
+// 電力レシピのマスターデータ
 export const POWER_RECIPES: PowerRecipe[] = [
   // Wind Turbine
   {
@@ -43,14 +44,21 @@ export const POWER_RECIPES: PowerRecipe[] = [
     facilityId: ITEMS.THERMAL_POWER_PLANT.id,
     fuelItemId: ITEMS.HYDROGEN.id,
     powerGeneration: 2160,
-    fuelConsumption: 0.3375
+    fuelConsumption: 0.3
   },
   {
     id: 'thermal_refined_oil',
     facilityId: ITEMS.THERMAL_POWER_PLANT.id,
     fuelItemId: ITEMS.REFINED_OIL.id,
     powerGeneration: 2160,
-    fuelConsumption: 0.6136
+    fuelConsumption: 0.6
+  },
+  {
+    id: 'thermal_crude_oil',
+    facilityId: ITEMS.THERMAL_POWER_PLANT.id,
+    fuelItemId: ITEMS.CRUDE_OIL.id,
+    powerGeneration: 2160,
+    fuelConsumption: 0.6667
   },
   {
     id: 'thermal_hydrogen_rod',
@@ -74,5 +82,12 @@ export const POWER_RECIPES: PowerRecipe[] = [
     fuelItemId: ITEMS.ANTIMATTER_FUEL_ROD.id,
     powerGeneration: 72000,
     fuelConsumption: 0.01
+  },
+  {
+    id: 'artificial_star_strange_rod',
+    facilityId: ITEMS.ARTIFICIAL_STAR.id,
+    fuelItemId: ITEMS.STRANGE_ANNIHILATION_FUEL_ROD.id,
+    powerGeneration: 144000,
+    fuelConsumption: 0.002
   }
 ];

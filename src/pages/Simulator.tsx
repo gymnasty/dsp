@@ -321,11 +321,7 @@ export const Simulator = () => {
       
       // Power Calculation
       if (facilityItem?.powerConsumption) {
-        if (facilityItem.powerConsumption > 0) {
-          totalPowerConsumption += facilityItem.powerConsumption * proc.count;
-        } else {
-          totalPowerGeneration += Math.abs(facilityItem.powerConsumption) * proc.count;
-        }
+        totalPowerConsumption += facilityItem.powerConsumption * proc.count;
       }
 
       if (recipe) {

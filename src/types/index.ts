@@ -52,7 +52,7 @@ export interface Item {
   iconPath?: string;
   facilityType?: Facility; // For buildings, which facility type it is
   productionSpeed?: number; // For buildings, its base production speed (e.g. 0.75, 1, 2)
-  powerConsumption?: number; // For buildings, its power consumption in kW (negative for generation)
+  powerConsumption?: number; // For buildings, its power consumption in kW
 }
 
 export interface Ingredient {
