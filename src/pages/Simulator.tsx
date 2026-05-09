@@ -1,4 +1,4 @@
-import { ArrowDownToLine, ArrowRight, Calculator, ChevronDown, ChevronUp, Factory, Package, Plus, Save, Trash2, TrendingUp } from 'lucide-react';
+import { ArrowDownToLine, ArrowRight, Calculator, ChevronDown, ChevronUp, Factory, Package, Plus, Save, Trash2, TrendingUp, Zap } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,8 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ItemSelectorModal } from '../components/ItemSelectorModal';
 import { ITEMS } from '../data/items';
+import { POWER_RECIPES } from '../data/powerRecipes';
 import { RECIPES } from '../data/recipes';
-import { ITEM_TYPES, InputState, OutputState, ProcessorState, SavedLayout } from '../types';
+import { ITEM_TYPES, InputState, OutputState, PowerGeneratorState, ProcessorState, SavedLayout } from '../types';
 import { getItemName } from '../utils/i18n';
 
 export const Simulator = () => {
@@ -16,6 +17,7 @@ export const Simulator = () => {
   const [inputs, setInputs] = useState<InputState[]>([]);
   const [outputs, setOutputs] = useState<OutputState[]>([]);
   const [processors, setProcessors] = useState<ProcessorState[]>([]);
+  const [powerGenerators, setPowerGenerators] = useState<PowerGeneratorState[]>([]);
   const [loadedLayoutId, setLoadedLayoutId] = useState<string | null>(null);
   const [savedLayouts, setSavedLayouts] = useState<SavedLayout[]>(() => {
     const saved = localStorage.getItem('dsp_simulator_layouts');
@@ -38,6 +40,7 @@ export const Simulator = () => {
         setInputs(layout.inputs);
         setOutputs(layout.outputs);
         setProcessors(layout.processors);
+        setPowerGenerators(layout.powerGenerators || []);
         setLoadedLayoutId(layout.id);
         // Clear it so it doesn't reload on next mount
         localStorage.removeItem('dsp_simulator_load_target');
@@ -53,7 +56,7 @@ export const Simulator = () => {
   }, [savedLayouts]);
 
   const saveCurrentLayout = () => {
-    if (inputs.length === 0 && outputs.length === 0 && processors.length === 0) return;
+    if (inputs.length === 0 && outputs.length === 0 && processors.length === 0 && powerGenerators.length === 0) return;
     
     if (loadedLayoutId) {
       const existingIndex = savedLayouts.findIndex(l => l.id === loadedLayoutId);
@@ -69,7 +72,8 @@ export const Simulator = () => {
           timestamp: Date.now(),
           inputs,
           outputs,
-          processors
+          processors,
+          powerGenerators
         };
         setSavedLayouts(updatedLayouts);
         localStorage.setItem('dsp_simulator_layouts', JSON.stringify(updatedLayouts));
@@ -89,7 +93,8 @@ export const Simulator = () => {
       timestamp: Date.now(),
       inputs,
       outputs,
-      processors
+      processors,
+      powerGenerators
     };
 
     const updatedLayouts = [newLayout, ...savedLayouts];
@@ -102,13 +107,43 @@ export const Simulator = () => {
   // Collapsible Sections State
   const [isIoOpen, setIsIoOpen] = useState(true);
   const [isProcessorsOpen, setIsProcessorsOpen] = useState(true);
+  const [isPowerOpen, setIsPowerOpen] = useState(true);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalTarget, setModalTarget] = useState<'input' | 'output' | 'processor_item' | 'processor_facility' | null>(null);
+  const [modalTarget, setModalTarget] = useState<'input' | 'output' | 'processor_item' | 'processor_facility' | 'power_facility' | 'power_fuel' | null>(null);
 
   // Local state for adding new items
   const sortedItems = useMemo(() => Object.values(ITEMS), []);
+  
+  // Power plant facilities
+  const powerPlantFacilities = useMemo(() => {
+    const facilityIds = new Set(POWER_RECIPES.map(r => r.facilityId));
+    return sortedItems.filter(item => facilityIds.has(item.id));
+  }, [sortedItems]);
+
+  const [selectedPowerFacilityId, setSelectedPowerFacilityId] = useState('');
+
+  const availablePowerFuels = useMemo(() => {
+    if (!selectedPowerFacilityId) return [];
+    return POWER_RECIPES.filter(r => r.facilityId === selectedPowerFacilityId)
+      .map(r => r.fuelItemId ? Object.values(ITEMS).find(i => i.id === r.fuelItemId) : null)
+      .filter((item): item is any => item !== undefined); // filter out null fuel recipes (wind/solar) if needed
+  }, [selectedPowerFacilityId]);
+
+  const [selectedPowerFuelId, setSelectedPowerFuelId] = useState<string | null>(null);
+
+  // Update selectedPowerFuelId when availablePowerFuels changes
+  useEffect(() => {
+    if (availablePowerFuels.length > 0) {
+      const currentExists = availablePowerFuels.find(i => i ? i.id === selectedPowerFuelId : selectedPowerFuelId === null);
+      if (!currentExists) {
+        setSelectedPowerFuelId(availablePowerFuels[0] ? availablePowerFuels[0].id : null);
+      }
+    } else {
+      setSelectedPowerFuelId(null);
+    }
+  }, [availablePowerFuels, selectedPowerFuelId]);
   
   // Producible items for processor selection
   const producibleItems = useMemo(() => {
@@ -169,7 +204,7 @@ export const Simulator = () => {
     return () => window.removeEventListener('click', handleWindowClick);
   }, [menuAnchor]);
 
-  const openModal = (target: 'input' | 'output' | 'processor_item' | 'processor_facility') => {
+  const openModal = (target: 'input' | 'output' | 'processor_item' | 'processor_facility' | 'power_facility' | 'power_fuel') => {
     setModalTarget(target);
     setIsModalOpen(true);
   };
@@ -179,6 +214,8 @@ export const Simulator = () => {
     if (modalTarget === 'output') setNewTargetItemId(itemId);
     if (modalTarget === 'processor_item') setSelectedProduceItemId(itemId);
     if (modalTarget === 'processor_facility') setSelectedFacilityId(itemId);
+    if (modalTarget === 'power_facility') setSelectedPowerFacilityId(itemId);
+    if (modalTarget === 'power_fuel') setSelectedPowerFuelId(itemId);
     setIsModalOpen(false);
   };
 
@@ -206,6 +243,20 @@ export const Simulator = () => {
 
   const removeProcessor = (index: number) => {
     setProcessors(processors.filter((_, i) => i !== index));
+  };
+
+  const addPowerGenerator = (recipeId: string) => {
+    setPowerGenerators([...powerGenerators, { recipeId, count: 1 }]);
+  };
+
+  const updatePowerGeneratorCount = (index: number, count: number) => {
+    const next = [...powerGenerators];
+    next[index].count = Math.max(0, count);
+    setPowerGenerators(next);
+  };
+
+  const removePowerGenerator = (index: number) => {
+    setPowerGenerators(powerGenerators.filter((_, i) => i !== index));
   };
 
   const addInput = (itemId?: string) => {
@@ -243,6 +294,8 @@ export const Simulator = () => {
   // Calculation
   const results = useMemo(() => {
     const itemStats: Record<string, { input: number; consumption: number; production: number; sink: number }> = {};
+    let totalPowerConsumption = 0;
+    let totalPowerGeneration = 0;
 
     const getStat = (id: string) => {
       if (!itemStats[id]) {
@@ -266,6 +319,15 @@ export const Simulator = () => {
       const recipe = RECIPES.find(r => r.id === proc.recipeId);
       const facilityItem = Object.values(ITEMS).find(i => i.id === proc.facilityId);
       
+      // Power Calculation
+      if (facilityItem?.powerConsumption) {
+        if (facilityItem.powerConsumption > 0) {
+          totalPowerConsumption += facilityItem.powerConsumption * proc.count;
+        } else {
+          totalPowerGeneration += Math.abs(facilityItem.powerConsumption) * proc.count;
+        }
+      }
+
       if (recipe) {
         const speed = facilityItem?.productionSpeed || 1;
         const multiplier = (proc.count * speed) / recipe.time;
@@ -285,20 +347,38 @@ export const Simulator = () => {
       }
     });
 
-    return Object.entries(itemStats).map(([id, stats]) => ({
-      id,
-      ...stats,
-      netRate: stats.input + stats.production - stats.consumption - stats.sink
-    })).filter(item => 
-      Math.abs(item.netRate) > 0.0001 || 
-      item.input > 0 || 
-      item.consumption > 0 || 
-      item.production > 0 ||
-      item.sink > 0
-    );
-  }, [inputs, outputs, processors]);
+    // Power Generators
+    powerGenerators.forEach(gen => {
+      const pRecipe = POWER_RECIPES.find(r => r.id === gen.recipeId);
+      if (pRecipe) {
+        totalPowerGeneration += pRecipe.powerGeneration * gen.count;
+        if (pRecipe.fuelItemId && pRecipe.fuelConsumption > 0) {
+          getStat(pRecipe.fuelItemId).consumption += pRecipe.fuelConsumption * gen.count;
+        }
+      }
+    });
 
-  const sortedResults = useMemo(() => [...results].sort((a, b) => b.netRate - a.netRate), [results]);
+    return {
+      items: Object.entries(itemStats).map(([id, stats]) => ({
+        id,
+        ...stats,
+        netRate: stats.input + stats.production - stats.consumption - stats.sink
+      })).filter(item => 
+        Math.abs(item.netRate) > 0.0001 || 
+        item.input > 0 || 
+        item.consumption > 0 || 
+        item.production > 0 ||
+        item.sink > 0
+      ),
+      power: {
+        consumption: totalPowerConsumption,
+        generation: totalPowerGeneration,
+        net: totalPowerGeneration - totalPowerConsumption
+      }
+    };
+  }, [inputs, outputs, processors, powerGenerators]);
+
+  const sortedResults = useMemo(() => [...results.items].sort((a, b) => b.netRate - a.netRate), [results.items]);
 
   const producibleItemIds = useMemo(() => {
     const ids = new Set<string>();
@@ -347,6 +427,12 @@ export const Simulator = () => {
     }
   };
 
+  const formatPower = (kw: number) => {
+    if (Math.abs(kw) >= 1000000) return `${(kw / 1000000).toFixed(2)} GW`;
+    if (Math.abs(kw) >= 1000) return `${(kw / 1000).toFixed(2)} MW`;
+    return `${kw.toFixed(0)} kW`;
+  };
+
   const newItem = Object.values(ITEMS).find(i => i.id === newItemId);
   const newTargetItem = Object.values(ITEMS).find(i => i.id === newTargetItemId);
   const selectedProduceItem = Object.values(ITEMS).find(i => i.id === selectedProduceItemId);
@@ -360,25 +446,29 @@ export const Simulator = () => {
             <button 
               onClick={() => { 
                 if(confirm(t('simulator.clearConfirm'))) { 
-                  setInputs([]); 
-                  setOutputs([]); 
-                  setProcessors([]); 
+                  setInputs([]);
+                  setOutputs([]);
+                  setProcessors([]);
+                  setPowerGenerators([]);
                   setNewItemId('');
                   setNewTargetItemId('');
                   setSelectedProduceItemId('');
                   setSelectedFacilityId('');
+                  setSelectedPowerFacilityId('');
+                  setSelectedPowerFuelId(null);
                   setLoadedLayoutId(null);
-                } 
-              }}
-              className="px-3 md:px-4 py-1.5 bg-white hover:bg-red-50 hover:text-red-600 text-slate-600 border border-slate-200 rounded-lg text-[10px] md:text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
-            >
-              <Trash2 size={14} />
-              <span className="hidden sm:inline">{t('simulator.clear')}</span>
-            </button>
-            <button 
-              onClick={saveCurrentLayout}
-              disabled={inputs.length === 0 && outputs.length === 0 && processors.length === 0}
-              className="px-3 md:px-4 py-1.5 bg-white hover:bg-blue-50 hover:text-blue-600 disabled:bg-slate-50 disabled:text-slate-300 text-slate-600 border border-slate-200 rounded-lg text-[10px] md:text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+                  }
+                  }}
+                  className="px-3 md:px-4 py-1.5 bg-white hover:bg-red-50 hover:text-red-600 text-slate-600 border border-slate-200 rounded-lg text-[10px] md:text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+                  >
+                  <Trash2 size={14} />
+                  <span className="hidden sm:inline">{t('simulator.clear')}</span>
+                  </button>
+                  <button
+                  onClick={saveCurrentLayout}
+                  disabled={inputs.length === 0 && outputs.length === 0 && processors.length === 0 && powerGenerators.length === 0}
+                  className="px-3 md:px-4 py-1.5 bg-white hover:bg-blue-50 hover:text-blue-600 disabled:bg-slate-50 disabled:text-slate-300 text-slate-600 border border-slate-200 rounded-lg text-[10px] md:text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+
             >
               <Save size={14} />
               <span className="hidden sm:inline">{t('simulator.save')}</span>
@@ -715,16 +805,17 @@ export const Simulator = () => {
 
                             <div className="flex items-center gap-2">
                               {(() => {
-                                const facilitySpeed = Object.values(ITEMS).find(i => i.id === selectedFacilityId)?.productionSpeed || 1;
-                                const actualTime = recipe.time / facilitySpeed;
+                                const facilityItem = Object.values(ITEMS).find(i => i.id === selectedFacilityId);
+                                const facilitySpeed = facilityItem?.productionSpeed || 1;
                                 const rate = (recipe.outputCount * facilitySpeed) / recipe.time;
+                                const power = facilityItem?.powerConsumption || 0;
                                 return (
                                   <>
                                     <div className="text-[10px] font-mono font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg border border-green-100 whitespace-nowrap">
                                       {rate.toFixed(2)}/s
                                     </div>
-                                    <div className="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 whitespace-nowrap">
-                                      {actualTime.toFixed(2)}s
+                                    <div className="text-[10px] font-mono font-bold text-red-400 bg-red-50 px-2 py-1 rounded-lg border border-red-100 whitespace-nowrap">
+                                      {formatPower(power)}
                                     </div>
                                   </>
                                 );
@@ -745,7 +836,6 @@ export const Simulator = () => {
                 )}
               </div>
 
-              {/* Compact Processors Table */}
               <div className="overflow-x-auto pt-2">
                 <table className="w-full border-collapse text-[10px]">
                   <thead className="text-slate-400 font-black uppercase tracking-tighter border-b border-slate-100">
@@ -753,6 +843,8 @@ export const Simulator = () => {
                       <th className="px-2 py-1 text-left">{t('itemDetail.facility')}</th>
                       <th className="px-2 py-1 text-left">{t('itemDetail.productionRecipe')}</th>
                       <th className="px-2 py-1 text-right w-20">{t('simulator.production')}</th>
+                      <th className="px-2 py-1 text-right w-20">{t('categories.Power')}</th>
+
                       <th className="px-2 py-1 text-right w-24">{t('simulator.count')}</th>
                       <th className="px-2 py-1 text-right w-8"></th>
                     </tr>
@@ -763,7 +855,7 @@ export const Simulator = () => {
                       const facilityItem = Object.values(ITEMS).find(i => i.id === proc.facilityId);
                       const speed = facilityItem?.productionSpeed || 1;
                       const rate = recipe ? (recipe.outputCount * proc.count * speed) / recipe.time : 0;
-                      
+                      const power = (facilityItem?.powerConsumption || 0) * proc.count;
                       return (
                         <tr key={idx} className="group hover:bg-slate-50 transition-colors">
                           <td className="px-2 py-3">
@@ -816,6 +908,10 @@ export const Simulator = () => {
                             <span className="font-mono font-bold text-green-600">+{rate.toFixed(2)}/s</span>
                           </td>
                           <td className="px-2 py-2 text-right">
+                            <span className="font-mono font-bold text-red-400">{formatPower(power)}</span>
+                          </td>
+
+                          <td className="px-2 py-2 text-right">
                             <div className="flex items-center justify-end gap-1">
                               <input 
                                 type="number" 
@@ -843,13 +939,214 @@ export const Simulator = () => {
           )}
         </section>
 
+        {/* Power Generation Section */}
+        <section id="power-generation-section" className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <button 
+            onClick={() => setIsPowerOpen(!isPowerOpen)}
+            className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center w-full hover:bg-slate-100 transition-colors"
+          >
+            <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+              <Zap size={14} />
+              {t('simulator.powerGeneration')}
+            </h2>
+            {isPowerOpen ? <ChevronUp size={14} className="text-slate-400" /> : <ChevronDown size={14} className="text-slate-400" />}
+          </button>
+          {isPowerOpen && (
+            <div className="p-4 space-y-4">
+              {/* Compact Add Power Generator UI */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                  <div className="space-y-1.5 flex flex-col">
+                    <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1">{t('itemDetail.facility')}</label>
+                    <button 
+                      onClick={() => openModal('power_facility')}
+                      className="w-full flex items-center gap-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl px-3 h-10 transition-all group shadow-sm"
+                    >
+                      <div className="w-8 h-8 bg-slate-50 rounded-lg p-1.5 shadow-sm border border-slate-100 group-hover:scale-110 transition-transform flex items-center justify-center shrink-0">
+                        {selectedPowerFacilityId ? (
+                          <img src={`${import.meta.env.BASE_URL}${Object.values(ITEMS).find(i => i.id === selectedPowerFacilityId)?.iconPath}`} alt="" className="w-full h-full object-contain" />
+                        ) : (
+                          <Package size={16} className="text-slate-300" />
+                        )}
+                      </div>
+                      <div className="text-left">
+                        <span className={`text-[10px] font-bold ${selectedPowerFacilityId ? 'text-slate-700' : 'text-slate-400 italic'}`}>
+                          {selectedPowerFacilityId ? getItemName(Object.values(ITEMS).find(i => i.id === selectedPowerFacilityId)) : t('simulator.select')}
+                        </span>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="space-y-1.5 flex flex-col">
+                    <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest px-1">{t('simulator.fuel')}</label>
+                    <div className="flex flex-wrap gap-2 items-center min-h-10">
+                      {availablePowerFuels.length > 0 ? availablePowerFuels.map(item => (
+                        <button
+                          key={item?.id || 'none'}
+                          onClick={() => setSelectedPowerFuelId(item?.id || null)}
+                          className={`group relative w-10 h-10 flex items-center justify-center rounded-xl transition-all ${
+                            selectedPowerFuelId === (item?.id || null)
+                              ? 'bg-white border-2 border-blue-600 shadow-md scale-110'
+                              : 'bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50'
+                          }`}
+                          title={item ? getItemName(item) : '-'}
+                        >
+                          {item ? (
+                            <img src={`${import.meta.env.BASE_URL}${item.iconPath}`} alt="" className="w-7 h-7 object-contain group-hover:scale-110 transition-transform" />
+                          ) : (
+                            <span className="text-slate-300">-</span>
+                          )}
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[8px] rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
+                            {item ? getItemName(item) : '-'}
+                          </div>
+                        </button>
+                      )) : (
+                        <div className="text-[10px] font-bold text-slate-400 italic bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 w-full">
+                          {t('simulator.select')}
+                        </div>
+                      )}
+
+                      {/* Add Button moved here */}
+                      <button
+                        onClick={() => {
+                          const recipe = POWER_RECIPES.find(r => 
+                            r.facilityId === selectedPowerFacilityId && 
+                            (r.fuelItemId === (selectedPowerFuelId || undefined))
+                          );
+                          if (recipe) addPowerGenerator(recipe.id);
+                        }}
+                        disabled={!selectedPowerFacilityId || (availablePowerFuels.length > 0 && selectedPowerFuelId === undefined)}
+                        className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white p-2 rounded-xl shadow-lg shadow-blue-100 transition-all active:scale-95 shrink-0 ml-auto"
+                      >
+                        <Plus size={20} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-[10px]">
+                  <thead className="text-slate-400 font-black uppercase tracking-tighter border-b border-slate-100">
+                    <tr>
+                      <th className="px-4 py-2 text-left">{t('itemDetail.facility')}</th>
+                      <th className="px-4 py-2 text-left">{t('simulator.fuel')}</th>
+                      <th className="px-4 py-2 text-right">{t('simulator.consumption')}</th>
+                      <th className="px-4 py-2 text-right">{t('simulator.powerGeneration')}</th>
+                      <th className="px-4 py-2 text-right w-24">{t('simulator.count')}</th>
+                      <th className="px-4 py-2 text-right w-8"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {powerGenerators.map((gen, idx) => {
+                      const recipe = POWER_RECIPES.find(r => r.id === gen.recipeId);
+                      const facility = Object.values(ITEMS).find(i => i.id === recipe?.facilityId);
+                      const fuel = recipe?.fuelItemId ? Object.values(ITEMS).find(i => i.id === recipe.fuelItemId) : null;
+                      const fuelConsumption = recipe ? recipe.fuelConsumption * gen.count : 0;
+                      
+                      return (
+                        <tr key={idx} className="group hover:bg-slate-50 transition-colors">
+                          <td className="px-4 py-2">
+                            <div className="flex items-center gap-3">
+                              <img src={`${import.meta.env.BASE_URL}${facility?.iconPath}`} alt="" className="w-8 h-8 object-contain" />
+                              <span className="font-bold text-slate-700">{getItemName(facility)}</span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-2">
+                            {fuel ? (
+                              <div className="flex items-center gap-2">
+                                <img src={`${import.meta.env.BASE_URL}${fuel.iconPath}`} alt="" className="w-6 h-6 object-contain" />
+                                <span className="font-medium text-slate-500">{getItemName(fuel)}</span>
+                              </div>
+                            ) : (
+                              <span className="text-slate-300 italic">-</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-2 text-right">
+                            {fuelConsumption > 0 ? (
+                              <span className="font-mono font-bold text-orange-600">
+                                -{fuelConsumption.toFixed(3)}/s
+                              </span>
+                            ) : (
+                              <span className="text-slate-300 italic">-</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-2 text-right">
+                            <span className="font-mono font-bold text-yellow-600">
+                              {recipe ? formatPower(recipe.powerGeneration) : '-'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2 text-right">
+                            <input
+                              type="number"
+                              value={gen.count}
+                              onChange={(e) => updatePowerGeneratorCount(idx, parseInt(e.target.value) || 0)}
+                              className="w-16 bg-transparent border-none text-right font-mono font-black text-blue-600 focus:ring-0 text-[10px] p-0"
+                            />
+                          </td>
+                          <td className="px-4 py-2 text-right">
+                            <button
+                              onClick={() => removePowerGenerator(idx)}
+                              className="text-slate-300 hover:text-red-500 transition-colors"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {powerGenerators.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-8 text-center text-slate-400 font-medium italic">
+                          {t('simulator.empty')}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </section>
+
         {/* Results Section */}
         <section className="bg-slate-900 rounded-[2rem] md:rounded-3xl text-white shadow-xl overflow-hidden flex flex-col">
-          <div className="px-6 py-4 border-b border-white/10 bg-white/5 flex justify-between items-center shrink-0">
+          <div className="px-6 py-4 border-b border-white/10 bg-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
             <h2 className="text-xs font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
               <TrendingUp size={14} />
               {t('simulator.results')}
             </h2>
+            
+            {/* Power Summary */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 bg-black/20 px-4 py-2 rounded-2xl border border-white/5">
+              <div className="flex items-center gap-2">
+                <Zap size={14} className={results.power.net >= 0 ? 'text-yellow-400' : 'text-red-400'} />
+                <div className="flex flex-col">
+                  <span className="text-[8px] font-black text-slate-500 uppercase leading-none mb-1">{t('simulator.netPower')}</span>
+                  <span className={`text-xs font-mono font-black leading-none ${results.power.net >= 0 ? 'text-yellow-400' : 'text-red-400'}`}>
+                    {results.power.net >= 0 ? '+' : ''}{formatPower(results.power.net)}
+                  </span>
+                </div>
+              </div>
+              <div className="hidden sm:block w-px h-6 bg-white/10"></div>
+              <div className="flex items-center gap-2">
+                <div className="flex flex-col">
+                  <span className="text-[8px] font-black text-slate-500 uppercase leading-none mb-1">{t('simulator.generation')}</span>
+                  <span className="text-[10px] font-mono font-bold text-green-400/80 leading-none">
+                    {formatPower(results.power.generation)}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex flex-col">
+                  <span className="text-[8px] font-black text-slate-500 uppercase leading-none mb-1">{t('simulator.consumptionLabel')}</span>
+                  <span className="text-[10px] font-mono font-bold text-red-400/80 leading-none">
+                    {formatPower(results.power.consumption)}
+                  </span>
+                </div>
+              </div>
+
+            </div>
           </div>
           <div className="flex-grow overflow-x-auto scrollbar-thin scrollbar-thumb-white/10">
             {sortedResults.length === 0 ? (
@@ -933,11 +1230,15 @@ export const Simulator = () => {
           modalTarget === 'input' ? t('simulator.inputs') :
           modalTarget === 'output' ? t('simulator.externalOutput') :
           modalTarget === 'processor_item' ? t('simulator.item') :
-          modalTarget === 'processor_facility' ? t('itemDetail.facility') : ''
+          modalTarget === 'processor_facility' ? t('itemDetail.facility') :
+          modalTarget === 'power_facility' ? t('itemDetail.facility') :
+          modalTarget === 'power_fuel' ? t('simulator.fuel') : ''
         }
         items={
           modalTarget === 'processor_item' ? producibleItems :
           modalTarget === 'processor_facility' ? availableFacilities :
+          modalTarget === 'power_facility' ? powerPlantFacilities :
+          modalTarget === 'power_fuel' ? (availablePowerFuels.filter(f => f !== null) as any) :
           undefined
         }
       />

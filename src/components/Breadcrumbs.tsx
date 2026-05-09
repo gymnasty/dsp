@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import React from 'react';
 
 interface BreadcrumbItem {
@@ -13,8 +12,6 @@ interface BreadcrumbsProps {
 }
 
 export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, extra }) => {
-  const { t } = useTranslation();
-
   return (
     <nav className="flex items-center justify-between gap-2 text-sm font-bold mb-8">
       <div className="flex items-center gap-2">

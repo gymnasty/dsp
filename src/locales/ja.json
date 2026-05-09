@@ -94,7 +94,12 @@
     "saved": "保存済み",
     "load": "読み込む",
     "savePrompt": "生産名を入力してください",
-    "deleteConfirm": "この生産を削除してもよろしいですか？"
+    "deleteConfirm": "この生産を削除してもよろしいですか？",
+    "powerGeneration": "発電",
+    "fuel": "燃料",
+    "netPower": "実質電力",
+    "generation": "発電量",
+    "consumptionLabel": "消費電力"
   },
   "items": {
     "coal": "石炭",

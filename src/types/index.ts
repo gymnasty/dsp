@@ -52,6 +52,7 @@ export interface Item {
   iconPath?: string;
   facilityType?: Facility; // For buildings, which facility type it is
   productionSpeed?: number; // For buildings, its base production speed (e.g. 0.75, 1, 2)
+  powerConsumption?: number; // For buildings, its power consumption in kW (negative for generation)
 }
 
 export interface Ingredient {
@@ -92,4 +93,18 @@ export interface SavedLayout {
   inputs: InputState[];
   outputs: OutputState[];
   processors: ProcessorState[];
+  powerGenerators?: PowerGeneratorState[];
+}
+
+export interface PowerRecipe {
+  id: string;
+  facilityId: string;
+  fuelItemId?: string;
+  powerGeneration: number; // in kW
+  fuelConsumption: number; // items per second
+}
+
+export interface PowerGeneratorState {
+  recipeId: string;
+  count: number;
 }

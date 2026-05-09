@@ -94,7 +94,12 @@
     "saved": "Saved",
     "load": "Load",
     "savePrompt": "Enter a name for this production:",
-    "deleteConfirm": "Are you sure you want to delete this production?"
+    "deleteConfirm": "Are you sure you want to delete this production?",
+    "powerGeneration": "Power Generation",
+    "fuel": "Fuel",
+    "netPower": "Net Power",
+    "generation": "Generation",
+    "consumptionLabel": "Consumption"
   },
   "items": {
     "coal": "Coal",
