@@ -1104,13 +1104,7 @@ export const Simulator = () => {
                         </tr>
                       );
                     })}
-                    {powerGenerators.length === 0 && (
-                      <tr>
-                        <td colSpan={5} className="px-4 py-8 text-center text-slate-400 font-medium italic">
-                          {t('simulator.empty')}
-                        </td>
-                      </tr>
-                    )}
+                    {/* Empty state removed as requested */}
                   </tbody>
                 </table>
               </div>
