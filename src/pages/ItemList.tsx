@@ -29,9 +29,9 @@ export const ItemList = () => {
         <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">{title}</h2>
       </div>
 
-      <div className="p-6">
-        <div className="mx-auto block w-fit border border-slate-200 rounded-lg shadow-sm bg-white">
-          <table className="border-collapse">
+      <div className="p-4 md:p-6">
+        <div className="overflow-x-auto md:overflow-visible scrollbar-thin scrollbar-thumb-slate-200 border border-slate-200 rounded-lg shadow-sm bg-white mx-auto w-fit max-w-full">
+          <table className="border-collapse min-w-max md:min-w-0">
             <tbody>
               {grid.map((row, rowIndex) => (
                 <tr key={rowIndex}>
@@ -89,9 +89,9 @@ export const ItemList = () => {
             <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">{t('categories.buildings')}</h2>
           </div>
           
-          <div className="p-6">
-            <div className="mx-auto block w-fit border border-slate-200 rounded-lg shadow-sm bg-white">
-              <table className="border-collapse">
+          <div className="p-4 md:p-6">
+            <div className="border border-slate-200 rounded-lg shadow-sm bg-white mx-auto w-fit max-w-full">
+              <table className="w-full border-collapse">
                 <tbody>
                   {buildingCategories.map(cat => {
                     const unsortedItems = Object.values(ITEMS).filter(item => item.type === ITEM_TYPES.BUILDING && item.category === cat);
@@ -109,8 +109,8 @@ export const ItemList = () => {
 
                     return (
                       <tr key={cat} className="border-b border-slate-100 last:border-0">
-                        <td className="bg-slate-50/50 px-4 py-2 border-r border-slate-100 min-w-[100px] align-middle">
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter whitespace-nowrap">
+                        <td className="bg-slate-50/50 px-2 py-2 border-r border-slate-100 w-16 sm:w-20 align-middle">
+                          <span className="text-[8px] sm:text-[10px] font-black text-slate-400 uppercase tracking-tighter block text-center leading-tight">
                             {t(`categories.${cat}`)}
                           </span>
                         </td>

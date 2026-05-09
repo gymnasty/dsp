@@ -5,7 +5,8 @@
     "simulator": "生産シミュレーター",
     "savedCalculations": "保存済み",
     "search": "検索",
-    "mainMenu": "メインメニュー"
+    "mainMenu": "メインメニュー",
+    "language": "言語"
   },
   "categories": {
     "components": "コンポーネント",

@@ -18,16 +18,9 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, extra }) => {
   return (
     <nav className="flex items-center justify-between gap-2 text-sm font-bold mb-8">
       <div className="flex items-center gap-2">
-        <Link 
-          to="/" 
-          className="text-blue-600 hover:text-blue-700 transition-colors"
-        >
-          {t('menu.mainMenu')}
-        </Link>
-        
         {items.map((item, index) => (
           <React.Fragment key={index}>
-            <span className="text-slate-300">/</span>
+            {index > 0 && <span className="text-slate-300">/</span>}
             {item.to ? (
               <Link 
                 to={item.to} 

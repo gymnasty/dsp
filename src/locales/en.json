@@ -5,7 +5,8 @@
     "simulator": "Production Simulator",
     "savedCalculations": "Saved Calculations",
     "search": "Search",
-    "mainMenu": "Main Menu"
+    "mainMenu": "Main Menu",
+    "language": "Language"
   },
   "categories": {
     "components": "Components",

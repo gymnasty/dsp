@@ -356,7 +356,7 @@ export const Simulator = () => {
       <Breadcrumbs 
         items={[{ label: t('menu.simulator') }]} 
         extra={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2 justify-end">
             <button 
               onClick={() => { 
                 if(confirm(t('simulator.clearConfirm'))) { 
@@ -370,34 +370,34 @@ export const Simulator = () => {
                   setLoadedLayoutId(null);
                 } 
               }}
-              className="px-4 py-1.5 bg-white hover:bg-red-50 hover:text-red-600 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm focus:ring-2 focus:ring-red-500 focus:outline-none"
+              className="px-3 md:px-4 py-1.5 bg-white hover:bg-red-50 hover:text-red-600 text-slate-600 border border-slate-200 rounded-lg text-[10px] md:text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
             >
               <Trash2 size={14} />
-              {t('simulator.clear')}
+              <span className="hidden sm:inline">{t('simulator.clear')}</span>
             </button>
             <button 
               onClick={saveCurrentLayout}
               disabled={inputs.length === 0 && outputs.length === 0 && processors.length === 0}
-              className="px-4 py-1.5 bg-white hover:bg-blue-50 hover:text-blue-600 disabled:bg-slate-50 disabled:text-slate-300 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="px-3 md:px-4 py-1.5 bg-white hover:bg-blue-50 hover:text-blue-600 disabled:bg-slate-50 disabled:text-slate-300 text-slate-600 border border-slate-200 rounded-lg text-[10px] md:text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
             >
               <Save size={14} />
-              {t('simulator.save')}
+              <span className="hidden sm:inline">{t('simulator.save')}</span>
             </button>
             <button 
               onClick={() => navigate('/saved')}
               disabled={savedLayouts.length === 0}
-              className="px-4 py-1.5 bg-white hover:bg-slate-50 disabled:bg-slate-50 disabled:text-slate-300 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm focus:ring-2 focus:ring-slate-400 focus:outline-none"
+              className="px-3 md:px-4 py-1.5 bg-white hover:bg-slate-50 disabled:bg-slate-50 disabled:text-slate-300 text-slate-600 border border-slate-200 rounded-lg text-[10px] md:text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
             >
               <Calculator size={14} />
-              {t('simulator.saved')}
+              <span className="hidden sm:inline">{t('simulator.saved')}</span>
             </button>
           </div>
         }
       />
 
-      <div className="space-y-8">
+      <div className="space-y-6 md:space-y-8">
         {/* Config Sections */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           {/* Inputs Section */}
           <section className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
             <button 
@@ -844,80 +844,82 @@ export const Simulator = () => {
         </section>
 
         {/* Results Section */}
-        <section className="bg-slate-900 rounded-3xl text-white shadow-xl overflow-hidden flex flex-col">
+        <section className="bg-slate-900 rounded-[2rem] md:rounded-3xl text-white shadow-xl overflow-hidden flex flex-col">
           <div className="px-6 py-4 border-b border-white/10 bg-white/5 flex justify-between items-center shrink-0">
             <h2 className="text-xs font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
               <TrendingUp size={14} />
               {t('simulator.results')}
             </h2>
           </div>
-          <div className="flex-grow overflow-x-auto">
+          <div className="flex-grow overflow-x-auto scrollbar-thin scrollbar-thumb-white/10">
             {sortedResults.length === 0 ? (
               <div className="flex flex-col items-center justify-center text-slate-500 space-y-4 py-12">
                 <Calculator size={32} className="opacity-20" />
                 <p className="text-xs font-bold text-center max-w-xs">{t('simulator.empty')}</p>
               </div>
             ) : (
-              <table className="w-full border-collapse text-[10px]">
-                <thead className="bg-white/5 text-slate-400 font-black uppercase tracking-tighter text-center">
-                  <tr>
-                    <th className="px-4 py-2 text-left w-48 font-black">{t('simulator.item')}</th>
-                    <th className="px-2 py-2 font-black">{t('simulator.inputRate')}</th>
-                    <th className="px-2 py-2 font-black">{t('simulator.production')}</th>
-                    <th className="px-2 py-2 font-black">{t('simulator.consumption')}</th>
-                    <th className="px-2 py-2 font-black">{t('simulator.externalOutput')}</th>
-                    <th className="px-4 py-2 text-right font-black">{t('simulator.netRate')}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {sortedResults.map((res) => {
-                    const item = Object.values(ITEMS).find(i => i.id === res.id);
-                    const isPositive = res.netRate > 0.0001;
-                    const isNegative = res.netRate < -0.0001;
-                    
-                    return (
-                      <tr key={res.id} className="hover:bg-white/5 transition-colors">
-                        <td className="px-4 py-2">
-                          <button 
-                            onClick={(e) => handleResultItemClick(e, res.id)}
-                            className="flex items-center gap-2 group/item text-left cursor-pointer"
-                          >
-                            <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center p-1 shrink-0 group-hover/item:scale-110 group-hover/item:bg-white/20 transition-all">
-                              <img src={`${import.meta.env.BASE_URL}${item?.iconPath}`} alt="" className="w-full h-full object-contain" />
+              <div className="min-w-[600px] md:min-w-0">
+                <table className="w-full border-collapse text-[10px]">
+                  <thead className="bg-white/5 text-slate-400 font-black uppercase tracking-tighter text-center">
+                    <tr>
+                      <th className="px-4 py-2 text-left w-48 font-black">{t('simulator.item')}</th>
+                      <th className="px-4 py-2 text-left font-black w-24">{t('simulator.netRate')}</th>
+                      <th className="px-2 py-2 font-black">{t('simulator.inputRate')}</th>
+                      <th className="px-2 py-2 font-black">{t('simulator.production')}</th>
+                      <th className="px-2 py-2 font-black">{t('simulator.consumption')}</th>
+                      <th className="px-2 py-2 font-black">{t('simulator.externalOutput')}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {sortedResults.map((res) => {
+                      const item = Object.values(ITEMS).find(i => i.id === res.id);
+                      const isPositive = res.netRate > 0.0001;
+                      const isNegative = res.netRate < -0.0001;
+                      
+                      return (
+                        <tr key={res.id} className="hover:bg-white/5 transition-colors">
+                          <td className="px-4 py-2">
+                            <button 
+                              onClick={(e) => handleResultItemClick(e, res.id)}
+                              className="flex items-center gap-2 group/item text-left cursor-pointer"
+                            >
+                              <div className="w-6 h-6 bg-white/10 rounded flex items-center justify-center p-1 shrink-0 group-hover/item:scale-110 group-hover/item:bg-white/20 transition-all">
+                                <img src={`${import.meta.env.BASE_URL}${item?.iconPath}`} alt="" className="w-full h-full object-contain" />
+                              </div>
+                              <span className="font-bold truncate text-slate-100 group-hover/item:text-blue-400 transition-colors">
+                                {getItemName(item)}
+                                <Plus size={8} className="inline ml-1 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                              </span>
+                            </button>
+                          </td>
+                          <td className="px-4 py-2">
+                            <div className="flex flex-col items-start">
+                              <span className={`font-mono font-black text-xs ${isPositive ? 'text-green-400' : isNegative ? 'text-red-400' : 'text-slate-400'}`}>
+                                {res.netRate > 0 ? '+' : ''}{res.netRate.toFixed(2)}/s
+                              </span>
+                              <span className="text-[8px] font-bold text-slate-500 uppercase">
+                                {(res.netRate * 60).toFixed(1)}/min
+                              </span>
                             </div>
-                            <span className="font-bold truncate text-slate-100 group-hover/item:text-blue-400 transition-colors">
-                              {getItemName(item)}
-                              <Plus size={8} className="inline ml-1 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                            </span>
-                          </button>
-                        </td>
-                        <td className="px-2 py-2 text-center font-mono text-slate-300">
-                          {res.input > 0 ? `+${res.input.toFixed(2)}` : '-'}
-                        </td>
-                        <td className="px-2 py-2 text-center font-mono text-green-400/70">
-                          {res.production > 0 ? `+${res.production.toFixed(2)}` : '-'}
-                        </td>
-                        <td className="px-2 py-2 text-center font-mono text-red-400/70">
-                          {res.consumption > 0 ? `-${res.consumption.toFixed(2)}` : '-'}
-                        </td>
-                        <td className="px-2 py-2 text-center font-mono text-orange-400/70">
-                          {res.sink > 0 ? `-${res.sink.toFixed(2)}` : '-'}
-                        </td>
-                        <td className="px-4 py-2 text-right">
-                          <div className="flex flex-col items-end">
-                            <span className={`font-mono font-black text-xs ${isPositive ? 'text-green-400' : isNegative ? 'text-red-400' : 'text-slate-400'}`}>
-                              {res.netRate > 0 ? '+' : ''}{res.netRate.toFixed(2)}/s
-                            </span>
-                            <span className="text-[8px] font-bold text-slate-500 uppercase">
-                              {(res.netRate * 60).toFixed(1)}/min
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          </td>
+                          <td className="px-2 py-2 text-center font-mono text-slate-300">
+                            {res.input > 0 ? `+${res.input.toFixed(2)}` : '-'}
+                          </td>
+                          <td className="px-2 py-2 text-center font-mono text-green-400/70">
+                            {res.production > 0 ? `+${res.production.toFixed(2)}` : '-'}
+                          </td>
+                          <td className="px-2 py-2 text-center font-mono text-red-400/70">
+                            {res.consumption > 0 ? `-${res.consumption.toFixed(2)}` : '-'}
+                          </td>
+                          <td className="px-2 py-2 text-center font-mono text-orange-400/70">
+                            {res.sink > 0 ? `-${res.sink.toFixed(2)}` : '-'}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </section>

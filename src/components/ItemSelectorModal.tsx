@@ -85,32 +85,32 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
       <div className="bg-white w-full max-w-[800px] max-h-[90vh] rounded-3xl shadow-2xl flex flex-col">
-        <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 shrink-0 rounded-t-3xl">
-          <div className="flex items-center gap-4">
-            <h3 className="text-lg font-black text-slate-800">{title}</h3>
-            <div className="flex bg-slate-200 p-1 rounded-xl">
+        <header className="px-4 md:px-6 py-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between bg-slate-50 shrink-0 rounded-t-3xl gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <h3 className="text-lg font-black text-slate-800 whitespace-nowrap">{title}</h3>
+            <div className="flex bg-slate-200 p-1 rounded-xl w-full sm:w-auto">
               <button
                 onClick={() => setActiveTab('component')}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'component' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
                 <Settings2 size={14} />
-                {t('categories.components')}
+                <span className="truncate">{t('categories.components')}</span>
               </button>
               <button
                 onClick={() => setActiveTab('building')}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'building' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
                 <Construction size={14} />
-                {t('categories.buildings')}
+                <span className="truncate">{t('categories.buildings')}</span>
               </button>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="relative">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="relative flex-grow">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
               <input 
                 autoFocus
@@ -118,26 +118,26 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
                 placeholder={t('menu.search')} 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-1.5 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all w-48"
+                className="bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-1.5 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all w-full md:w-48"
               />
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-xl transition-colors">
+            <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-xl transition-colors shrink-0">
               <X size={20} className="text-slate-500" />
             </button>
           </div>
         </header>
 
-        <div className="flex-grow overflow-y-auto px-6 py-10 scrollbar-thin scrollbar-thumb-slate-200 bg-white rounded-b-3xl">
+        <div className="flex-grow overflow-y-auto px-4 md:px-6 py-6 md:py-10 scrollbar-thin scrollbar-thumb-slate-200 bg-white rounded-b-3xl">
           {search ? (
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap justify-center md:justify-start gap-1">
               {filteredItems?.map(item => renderItemButton(item))}
               {filteredItems?.length === 0 && (
                 <div className="w-full py-20 text-center text-slate-400 font-bold">{t('simulator.empty')}</div>
               )}
             </div>
           ) : activeTab === 'component' ? (
-            <div className="space-y-4">
-              <table className="border-collapse mx-auto">
+            <div className="space-y-4 overflow-x-auto pb-4">
+              <table className="border-collapse mx-auto min-w-max">
                 <tbody>
                   {COMPONENT_GRID.map((row, rIdx) => (
                     <tr key={rIdx}>
@@ -153,8 +153,8 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="border border-slate-200 rounded-xl shadow-sm max-w-fit mx-auto">
-                <table className="border-collapse">
+              <div className="border border-slate-200 rounded-xl shadow-sm max-w-full md:max-w-fit mx-auto overflow-x-auto">
+                <table className="border-collapse min-w-full md:min-w-max">
                   <tbody>
                     {buildingCategories.map(cat => {
                       const unsortedItems = Object.values(ITEMS).filter(item => item.type === ITEM_TYPES.BUILDING && item.category === cat);
@@ -172,8 +172,8 @@ export const ItemSelectorModal: React.FC<ItemSelectorModalProps> = ({
 
                       return (
                         <tr key={cat} className="border-b border-slate-200 last:border-0">
-                          <td className="bg-slate-50 px-3 py-1 border-r border-slate-200 align-middle min-w-[80px]">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter whitespace-nowrap">
+                          <td className="bg-slate-50 px-2 sm:px-3 py-1 border-r border-slate-200 align-middle min-w-[70px] sm:min-w-[80px]">
+                            <span className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-tighter whitespace-nowrap">
                               {t(`categories.${cat}`)}
                             </span>
                           </td>
